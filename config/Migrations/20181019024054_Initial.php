@@ -1,4 +1,5 @@
 <?php
+
 use Migrations\AbstractMigration;
 use Phinx\Db\Adapter\MysqlAdapter;
 
@@ -9,7 +10,6 @@ class Initial extends AbstractMigration
 
     public function up()
     {
-
         $this->table('accounts')
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
@@ -206,11 +206,6 @@ class Initial extends AbstractMigration
             ])
             ->addIndex(
                 [
-                    'activity_id',
-                ]
-            )
-            ->addIndex(
-                [
                     'applicant_id',
                 ]
             )
@@ -347,11 +342,6 @@ class Initial extends AbstractMigration
             ])
             ->addIndex(
                 [
-                    'activity_id',
-                ]
-            )
-            ->addIndex(
-                [
                     'reviewer_id',
                 ]
             )
@@ -400,11 +390,6 @@ class Initial extends AbstractMigration
             ->addPrimaryKey(['activity_id', 'tag_id'])
             ->addIndex(
                 [
-                    'activity_id',
-                ]
-            )
-            ->addIndex(
-                [
                     'tag_id',
                 ]
             )
@@ -427,11 +412,6 @@ class Initial extends AbstractMigration
             ->addIndex(
                 [
                     'blocked_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'blocker_id',
                 ]
             )
             ->create();
@@ -524,11 +504,6 @@ class Initial extends AbstractMigration
                     'education_id',
                 ]
             )
-            ->addIndex(
-                [
-                    'user_id',
-                ]
-            )
             ->create();
 
         $this->table('following_tags')
@@ -550,11 +525,6 @@ class Initial extends AbstractMigration
                     'tag_id',
                 ]
             )
-            ->addIndex(
-                [
-                    'user_id',
-                ]
-            )
             ->create();
 
         $this->table('interested_activities')
@@ -574,11 +544,6 @@ class Initial extends AbstractMigration
             ->addIndex(
                 [
                     'activity_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'user_id',
                 ]
             )
             ->create();
@@ -619,11 +584,6 @@ class Initial extends AbstractMigration
                 'null' => true,
                 'signed' => false,
             ])
-            ->addIndex(
-                [
-                    'activity_id',
-                ]
-            )
             ->addIndex(
                 [
                     'location_id',
@@ -679,11 +639,6 @@ class Initial extends AbstractMigration
             ->addIndex(
                 [
                     'location_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'user_id',
                 ]
             )
             ->addIndex(
@@ -856,11 +811,6 @@ class Initial extends AbstractMigration
                     'media_type_id',
                 ]
             )
-            ->addIndex(
-                [
-                    'owner_id',
-                ]
-            )
             ->create();
 
         $this->table('media_types')
@@ -903,11 +853,6 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => false,
             ])
-            ->addIndex(
-                [
-                    'activity_id',
-                ]
-            )
             ->addIndex(
                 [
                     'user_id',
@@ -971,11 +916,6 @@ class Initial extends AbstractMigration
                     'matching_id',
                 ]
             )
-            ->addIndex(
-                [
-                    'personality_id',
-                ]
-            )
             ->create();
 
         $this->table('personality_compatibility_lookup')
@@ -1021,15 +961,11 @@ class Initial extends AbstractMigration
                 'default' => 'CURRENT_TIMESTAMP',
                 'limit' => null,
                 'null' => false,
+                'update' => 'CURRENT_TIMESTAMP',
             ])
             ->addIndex(
                 [
                     'search_type_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'user_id',
                 ]
             )
             ->addIndex(
@@ -1158,11 +1094,6 @@ class Initial extends AbstractMigration
             ->addIndex(
                 [
                     'device_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'user_id',
                 ]
             )
             ->create();
