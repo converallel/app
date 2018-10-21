@@ -8,13 +8,12 @@ use Cake\ORM\Entity;
  *
  * @property int $owner_id
  * @property int $position
- * @property int $media_type_id
+ * @property string $media_type
  * @property string $file_path
  * @property \Cake\I18n\FrozenTime $uploaded_at
  * @property string $caption
  *
  * @property \App\Model\Entity\User $user
- * @property \App\Model\Entity\MediaType $media_type
  */
 class Media extends Entity
 {
@@ -29,11 +28,10 @@ class Media extends Entity
      * @var array
      */
     protected $_accessible = [
-        'media_type_id' => true,
+        'media_type' => true,
         'file_path' => true,
         'uploaded_at' => true,
         'caption' => true,
-        'user' => true,
-        'media_type' => true
+        'user' => true
     ];
 }

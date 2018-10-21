@@ -26,13 +26,13 @@ class ActivityReviewsFixture extends TestFixture
         'helpful' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'not_helpful' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         '_indexes' => [
-            'fk_activity_review_user_id_idx' => ['type' => 'index', 'columns' => ['reviewer_id'], 'length' => []],
-            'review_idx' => ['type' => 'index', 'columns' => ['helpful', 'reviewed_at'], 'length' => []],
+            'reviewer_id' => ['type' => 'index', 'columns' => ['reviewer_id'], 'length' => []],
+            'helpful' => ['type' => 'index', 'columns' => ['helpful', 'reviewed_at'], 'length' => []],
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['activity_id', 'reviewer_id'], 'length' => []],
-            'fk_review_activity_id' => ['type' => 'foreign', 'columns' => ['activity_id'], 'references' => ['activities', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
-            'fk_review_reviewer_id' => ['type' => 'foreign', 'columns' => ['reviewer_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'activity_reviews_ibfk_1' => ['type' => 'foreign', 'columns' => ['activity_id'], 'references' => ['activities', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'activity_reviews_ibfk_2' => ['type' => 'foreign', 'columns' => ['reviewer_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -54,8 +54,8 @@ class ActivityReviewsFixture extends TestFixture
                 'reviewer_id' => 1,
                 'rating' => 1,
                 'review' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-                'reviewed_at' => 1539918446,
-                'modified_at' => 1539918446,
+                'reviewed_at' => 1540094364,
+                'modified_at' => 1540094364,
                 'helpful' => 1,
                 'not_helpful' => 1
             ],

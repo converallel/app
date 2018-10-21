@@ -28,14 +28,13 @@ class UsersTableTest extends TestCase
         'app.locations',
         'app.personalities',
         'app.education',
+        'app.activity_filter_education',
         'app.activity_filters',
-        'app.filter_education',
         'app.following_tags',
-        'app.interested_activities',
         'app.location_selection_histories',
-        'app.participation',
         'app.search_histories',
-        'app.user_devices'
+        'app.user_devices',
+        'app.activities'
     ];
 
     /**

@@ -25,7 +25,7 @@ class AccountsTableTest extends TestCase
      */
     public $fixtures = [
         'app.accounts',
-        'app.logins'
+        'app.user_logins'
     ];
 
     /**

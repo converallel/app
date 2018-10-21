@@ -11,7 +11,7 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\HasMany $Activities
  * @property \App\Model\Table\ActivityFiltersTable|\Cake\ORM\Association\HasMany $ActivityFilters
- * @property \App\Model\Table\ItinerariesTable|\Cake\ORM\Association\HasMany $Itineraries
+ * @property \App\Model\Table\ActivityItinerariesTable|\Cake\ORM\Association\HasMany $ActivityItineraries
  * @property \App\Model\Table\LocationSelectionHistoriesTable|\Cake\ORM\Association\HasMany $LocationSelectionHistories
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\HasMany $Users
  *
@@ -47,7 +47,7 @@ class LocationsTable extends Table
         $this->hasMany('ActivityFilters', [
             'foreignKey' => 'location_id'
         ]);
-        $this->hasMany('Itineraries', [
+        $this->hasMany('ActivityItineraries', [
             'foreignKey' => 'location_id'
         ]);
         $this->hasMany('LocationSelectionHistories', [
@@ -87,7 +87,7 @@ class LocationsTable extends Table
 
         $validator
             ->scalar('iso_country_code')
-            ->maxLength('iso_country_code', 45)
+            ->maxLength('iso_country_code', 30)
             ->allowEmpty('iso_country_code');
 
         $validator
@@ -97,7 +97,7 @@ class LocationsTable extends Table
 
         $validator
             ->scalar('postal_code')
-            ->maxLength('postal_code', 45)
+            ->maxLength('postal_code', 20)
             ->allowEmpty('postal_code');
 
         $validator
@@ -132,7 +132,7 @@ class LocationsTable extends Table
 
         $validator
             ->scalar('time_zone')
-            ->maxLength('time_zone', 45)
+            ->maxLength('time_zone', 50)
             ->allowEmpty('time_zone');
 
         return $validator;

@@ -9,7 +9,7 @@ use Cake\ORM\Entity;
  * @property int $activity_id
  * @property int $applicant_id
  * @property string $message
- * @property bool $status
+ * @property string $status
  * @property \Cake\I18n\FrozenTime $applied_at
  * @property \Cake\I18n\FrozenTime $modified_at
  *

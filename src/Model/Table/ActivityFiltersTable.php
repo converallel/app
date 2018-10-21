@@ -10,7 +10,7 @@ use Cake\Validation\Validator;
  * ActivityFilters Model
  *
  * @property \App\Model\Table\LocationsTable|\Cake\ORM\Association\BelongsTo $Locations
- * @property \App\Model\Table\FilterDateTypesTable|\Cake\ORM\Association\BelongsTo $FilterDateTypes
+ * @property \App\Model\Table\ActivityFilterDateTypesTable|\Cake\ORM\Association\BelongsTo $ActivityFilterDateTypes
  *
  * @method \App\Model\Entity\ActivityFilter get($primaryKey, $options = [])
  * @method \App\Model\Entity\ActivityFilter newEntity($data = null, array $options = [])
@@ -41,7 +41,7 @@ class ActivityFiltersTable extends Table
         $this->belongsTo('Locations', [
             'foreignKey' => 'location_id'
         ]);
-        $this->belongsTo('FilterDateTypes', [
+        $this->belongsTo('ActivityFilterDateTypes', [
             'foreignKey' => 'date_type_id',
             'joinType' => 'INNER'
         ]);
@@ -107,7 +107,7 @@ class ActivityFiltersTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['location_id'], 'Locations'));
-        $rules->add($rules->existsIn(['date_type_id'], 'FilterDateTypes'));
+        $rules->add($rules->existsIn(['date_type_id'], 'ActivityFilterDateTypes'));
 
         return $rules;
     }

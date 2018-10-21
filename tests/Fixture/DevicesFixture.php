@@ -17,12 +17,12 @@ class DevicesFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
-        'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
+        'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'uuid' => ['type' => 'uuid', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'name' => ['type' => 'string', 'length' => 45, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'uuid_UNIQUE' => ['type' => 'unique', 'columns' => ['uuid'], 'length' => []],
+            'uuid' => ['type' => 'unique', 'columns' => ['uuid'], 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -41,7 +41,7 @@ class DevicesFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'uuid' => '6276bcf1-65b5-433d-9d6c-398859841d46',
+                'uuid' => '11e4bd2c-3a7d-4e74-9662-0809c5fbf082',
                 'name' => 'Lorem ipsum dolor sit amet'
             ],
         ];

@@ -23,14 +23,12 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $modified_at
  *
  * @property \App\Model\Entity\Location $location
- * @property \App\Model\Entity\User $user
+ * @property \App\Model\Entity\User[] $users
  * @property \App\Model\Entity\ActivityStatus $activity_status
  * @property \App\Model\Entity\ActivityApplication[] $activity_applications
+ * @property \App\Model\Entity\ActivityItinerary[] $activity_itineraries
  * @property \App\Model\Entity\ActivityReview[] $activity_reviews
- * @property \App\Model\Entity\ActivityTag[] $activity_tags
- * @property \App\Model\Entity\InterestedActivity[] $interested_activities
- * @property \App\Model\Entity\Itinerary[] $itineraries
- * @property \App\Model\Entity\Participation[] $participation
+ * @property \App\Model\Entity\Tag[] $tags
  */
 class Activity extends Entity
 {
@@ -60,13 +58,11 @@ class Activity extends Entity
         'created_at' => true,
         'modified_at' => true,
         'location' => true,
-        'user' => true,
+        'users' => true,
         'activity_status' => true,
         'activity_applications' => true,
+        'activity_itineraries' => true,
         'activity_reviews' => true,
-        'activity_tags' => true,
-        'interested_activities' => true,
-        'itineraries' => true,
-        'participation' => true
+        'tags' => true
     ];
 }

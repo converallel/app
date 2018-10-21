@@ -23,7 +23,7 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\Activity[] $activities
  * @property \App\Model\Entity\ActivityFilter[] $activity_filters
- * @property \App\Model\Entity\Itinerary[] $itineraries
+ * @property \App\Model\Entity\ActivityItinerary[] $activity_itineraries
  * @property \App\Model\Entity\LocationSelectionHistory[] $location_selection_histories
  * @property \App\Model\Entity\User[] $users
  */
@@ -55,7 +55,7 @@ class Location extends Entity
         'time_zone' => true,
         'activities' => true,
         'activity_filters' => true,
-        'itineraries' => true,
+        'activity_itineraries' => true,
         'location_selection_histories' => true,
         'users' => true
     ];

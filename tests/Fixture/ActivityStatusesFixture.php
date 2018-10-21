@@ -18,10 +18,10 @@ class ActivityStatusesFixture extends TestFixture
     // @codingStandardsIgnoreStart
     public $fields = [
         'id' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'status' => ['type' => 'string', 'length' => 45, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'status' => ['type' => 'string', 'length' => 15, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'status_UNIQUE' => ['type' => 'unique', 'columns' => ['status'], 'length' => []],
+            'status' => ['type' => 'unique', 'columns' => ['status'], 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -40,7 +40,7 @@ class ActivityStatusesFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'status' => 'Lorem ipsum dolor sit amet'
+                'status' => 'Lorem ipsum d'
             ],
         ];
         parent::init();

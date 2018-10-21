@@ -23,7 +23,7 @@ class ActivitiesFixture extends TestFixture
         'end_date' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'location_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'customized_location' => ['type' => 'string', 'length' => 100, 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'organizer_id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'organizer_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'is_pair' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '1', 'comment' => '', 'precision' => null],
         'exclusive' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
         'location_visibility' => ['type' => 'boolean', 'length' => null, 'null' => true, 'default' => null, 'comment' => 'NULL - Sub-locality, 1 - Full address, 0 - Hidden', 'precision' => null],
@@ -33,16 +33,16 @@ class ActivitiesFixture extends TestFixture
         'created_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         'modified_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         '_indexes' => [
-            'fk_activity_location_id_idx' => ['type' => 'index', 'columns' => ['location_id'], 'length' => []],
-            'activity_idx' => ['type' => 'index', 'columns' => ['start_date', 'is_pair', 'status_id'], 'length' => []],
-            'fk_actifity_status_id_idx' => ['type' => 'index', 'columns' => ['status_id'], 'length' => []],
-            'fk_activity_organizer_fk_idx' => ['type' => 'index', 'columns' => ['organizer_id'], 'length' => []],
+            'location_id' => ['type' => 'index', 'columns' => ['location_id'], 'length' => []],
+            'organizer_id' => ['type' => 'index', 'columns' => ['organizer_id'], 'length' => []],
+            'status_id' => ['type' => 'index', 'columns' => ['status_id'], 'length' => []],
+            'start_date' => ['type' => 'index', 'columns' => ['start_date', 'is_pair', 'status_id'], 'length' => []],
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'fk_actifity_status_id' => ['type' => 'foreign', 'columns' => ['status_id'], 'references' => ['activity_statuses', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
-            'fk_activity_location_id' => ['type' => 'foreign', 'columns' => ['location_id'], 'references' => ['locations', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
-            'fk_activity_organizer_id' => ['type' => 'foreign', 'columns' => ['organizer_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'activities_ibfk_1' => ['type' => 'foreign', 'columns' => ['location_id'], 'references' => ['locations', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
+            'activities_ibfk_2' => ['type' => 'foreign', 'columns' => ['organizer_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'activities_ibfk_3' => ['type' => 'foreign', 'columns' => ['status_id'], 'references' => ['activity_statuses', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -62,8 +62,8 @@ class ActivitiesFixture extends TestFixture
             [
                 'id' => 1,
                 'title' => 'Lorem ipsum dolor sit amet',
-                'start_date' => '2018-10-19 03:07:26',
-                'end_date' => '2018-10-19 03:07:26',
+                'start_date' => '2018-10-21 03:59:24',
+                'end_date' => '2018-10-21 03:59:24',
                 'location_id' => 1,
                 'customized_location' => 'Lorem ipsum dolor sit amet',
                 'organizer_id' => 1,
@@ -73,8 +73,8 @@ class ActivitiesFixture extends TestFixture
                 'details' => 'Lorem ipsum dolor sit amet',
                 'status_id' => 1,
                 'group_size_limit' => 1,
-                'created_at' => 1539918446,
-                'modified_at' => 1539918446
+                'created_at' => 1540094364,
+                'modified_at' => 1540094364
             ],
         ];
         parent::init();

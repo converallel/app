@@ -25,8 +25,8 @@ class DevicesTableTest extends TestCase
      */
     public $fixtures = [
         'app.devices',
-        'app.logins',
-        'app.user_devices'
+        'app.user_devices',
+        'app.user_logins'
     ];
 
     /**

@@ -10,7 +10,6 @@ use Cake\Validation\Validator;
  * Media Model
  *
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
- * @property \App\Model\Table\MediaTypesTable|\Cake\ORM\Association\BelongsTo $MediaTypes
  *
  * @method \App\Model\Entity\Media get($primaryKey, $options = [])
  * @method \App\Model\Entity\Media newEntity($data = null, array $options = [])
@@ -42,10 +41,6 @@ class MediaTable extends Table
             'foreignKey' => 'owner_id',
             'joinType' => 'INNER'
         ]);
-        $this->belongsTo('MediaTypes', [
-            'foreignKey' => 'media_type_id',
-            'joinType' => 'INNER'
-        ]);
     }
 
     /**
@@ -58,6 +53,11 @@ class MediaTable extends Table
     {
         $validator
             ->allowEmpty('position', 'create');
+
+        $validator
+            ->scalar('media_type')
+            ->requirePresence('media_type', 'create')
+            ->notEmpty('media_type');
 
         $validator
             ->scalar('file_path')
@@ -88,7 +88,6 @@ class MediaTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['owner_id'], 'Users'));
-        $rules->add($rules->existsIn(['media_type_id'], 'MediaTypes'));
 
         return $rules;
     }

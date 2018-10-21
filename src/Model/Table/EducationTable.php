@@ -9,7 +9,7 @@ use Cake\Validation\Validator;
 /**
  * Education Model
  *
- * @property \App\Model\Table\FilterEducationTable|\Cake\ORM\Association\HasMany $FilterEducation
+ * @property \App\Model\Table\ActivityFilterEducationTable|\Cake\ORM\Association\HasMany $ActivityFilterEducation
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\HasMany $Users
  *
  * @method \App\Model\Entity\Education get($primaryKey, $options = [])
@@ -38,7 +38,7 @@ class EducationTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
-        $this->hasMany('FilterEducation', [
+        $this->hasMany('ActivityFilterEducation', [
             'foreignKey' => 'education_id'
         ]);
         $this->hasMany('Users', [
@@ -59,7 +59,7 @@ class EducationTable extends Table
 
         $validator
             ->scalar('degree')
-            ->maxLength('degree', 45)
+            ->maxLength('degree', 20)
             ->requirePresence('degree', 'create')
             ->notEmpty('degree')
             ->add('degree', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);

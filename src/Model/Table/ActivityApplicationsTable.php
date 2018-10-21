@@ -63,8 +63,9 @@ class ActivityApplicationsTable extends Table
             ->notEmpty('message');
 
         $validator
-            ->boolean('status')
-            ->allowEmpty('status');
+            ->scalar('status')
+            ->requirePresence('status', 'create')
+            ->notEmpty('status');
 
         $validator
             ->dateTime('applied_at')

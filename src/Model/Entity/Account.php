@@ -13,7 +13,7 @@ use Cake\ORM\Entity;
  * @property int $failed_login_attempts
  * @property \Cake\I18n\FrozenTime $created_at
  *
- * @property \App\Model\Entity\Login[] $logins
+ * @property \App\Model\Entity\UserLogin[] $user_logins
  */
 class Account extends Entity
 {
@@ -33,7 +33,7 @@ class Account extends Entity
         'password' => true,
         'failed_login_attempts' => true,
         'created_at' => true,
-        'logins' => true
+        'user_logins' => true
     ];
 
     /**

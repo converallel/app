@@ -24,18 +24,18 @@ class PersonalityCompatibilityFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
-        'personality_id' => ['type' => 'tinyinteger', 'length' => 2, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'matching_id' => ['type' => 'tinyinteger', 'length' => 2, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'compatibility_id' => ['type' => 'tinyinteger', 'length' => 2, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
+        'personality_id' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
+        'matching_id' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
+        'compatibility_id' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         '_indexes' => [
-            'fk_personality_matching_type_id_idx' => ['type' => 'index', 'columns' => ['matching_id'], 'length' => []],
-            'fk_personality_matching_seq_idx' => ['type' => 'index', 'columns' => ['compatibility_id'], 'length' => []],
+            'compatibility_id' => ['type' => 'index', 'columns' => ['compatibility_id'], 'length' => []],
+            'matching_id' => ['type' => 'index', 'columns' => ['matching_id'], 'length' => []],
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['personality_id', 'matching_id'], 'length' => []],
-            'fk_personality_match_personality_id' => ['type' => 'foreign', 'columns' => ['personality_id'], 'references' => ['personalities', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
-            'fk_personality_matching_id' => ['type' => 'foreign', 'columns' => ['matching_id'], 'references' => ['personalities', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
-            'fk_personality_matching_seq' => ['type' => 'foreign', 'columns' => ['compatibility_id'], 'references' => ['personality_compatibility_lookup', 'id'], 'update' => 'noAction', 'delete' => 'noAction', 'length' => []],
+            'personality_compatibility_ibfk_1' => ['type' => 'foreign', 'columns' => ['compatibility_id'], 'references' => ['personality_compatibility_lookup', 'id'], 'update' => 'noAction', 'delete' => 'noAction', 'length' => []],
+            'personality_compatibility_ibfk_2' => ['type' => 'foreign', 'columns' => ['matching_id'], 'references' => ['personalities', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
+            'personality_compatibility_ibfk_3' => ['type' => 'foreign', 'columns' => ['personality_id'], 'references' => ['personalities', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',

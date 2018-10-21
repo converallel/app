@@ -13,6 +13,7 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\ParentTag $parent_tag
  * @property \App\Model\Entity\ChildTag[] $child_tags
+ * @property \App\Model\Entity\Activity[] $activities
  */
 class Tag extends Entity
 {
@@ -31,6 +32,7 @@ class Tag extends Entity
         'tag' => true,
         'count' => true,
         'parent_tag' => true,
-        'child_tags' => true
+        'child_tags' => true,
+        'activities' => true
     ];
 }

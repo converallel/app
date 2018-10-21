@@ -19,7 +19,7 @@ use Cake\ORM\Entity;
  * @property bool $verified_user
  *
  * @property \App\Model\Entity\Location $location
- * @property \App\Model\Entity\FilterDateType $filter_date_type
+ * @property \App\Model\Entity\ActivityFilterDateType $activity_filter_date_type
  */
 class ActivityFilter extends Entity
 {
@@ -45,6 +45,6 @@ class ActivityFilter extends Entity
         'matching_personality' => true,
         'verified_user' => true,
         'location' => true,
-        'filter_date_type' => true
+        'activity_filter_date_type' => true
     ];
 }

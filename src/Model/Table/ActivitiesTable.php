@@ -13,11 +13,10 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  * @property \App\Model\Table\ActivityStatusesTable|\Cake\ORM\Association\BelongsTo $ActivityStatuses
  * @property \App\Model\Table\ActivityApplicationsTable|\Cake\ORM\Association\HasMany $ActivityApplications
+ * @property \App\Model\Table\ActivityItinerariesTable|\Cake\ORM\Association\HasMany $ActivityItineraries
  * @property \App\Model\Table\ActivityReviewsTable|\Cake\ORM\Association\HasMany $ActivityReviews
- * @property \App\Model\Table\ActivityTagsTable|\Cake\ORM\Association\HasMany $ActivityTags
- * @property \App\Model\Table\InterestedActivitiesTable|\Cake\ORM\Association\HasMany $InterestedActivities
- * @property \App\Model\Table\ItinerariesTable|\Cake\ORM\Association\HasMany $Itineraries
- * @property \App\Model\Table\ParticipationTable|\Cake\ORM\Association\HasMany $Participation
+ * @property \App\Model\Table\TagsTable|\Cake\ORM\Association\BelongsToMany $Tags
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Users
  *
  * @method \App\Model\Entity\Activity get($primaryKey, $options = [])
  * @method \App\Model\Entity\Activity newEntity($data = null, array $options = [])
@@ -60,20 +59,21 @@ class ActivitiesTable extends Table
         $this->hasMany('ActivityApplications', [
             'foreignKey' => 'activity_id'
         ]);
+        $this->hasMany('ActivityItineraries', [
+            'foreignKey' => 'activity_id'
+        ]);
         $this->hasMany('ActivityReviews', [
             'foreignKey' => 'activity_id'
         ]);
-        $this->hasMany('ActivityTags', [
-            'foreignKey' => 'activity_id'
+        $this->belongsToMany('Tags', [
+            'foreignKey' => 'activity_id',
+            'targetForeignKey' => 'tag_id',
+            'joinTable' => 'activities_tags'
         ]);
-        $this->hasMany('InterestedActivities', [
-            'foreignKey' => 'activity_id'
-        ]);
-        $this->hasMany('Itineraries', [
-            'foreignKey' => 'activity_id'
-        ]);
-        $this->hasMany('Participation', [
-            'foreignKey' => 'activity_id'
+        $this->belongsToMany('Users', [
+            'foreignKey' => 'activity_id',
+            'targetForeignKey' => 'user_id',
+            'joinTable' => 'activities_users'
         ]);
     }
 

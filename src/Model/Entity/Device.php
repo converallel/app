@@ -10,8 +10,8 @@ use Cake\ORM\Entity;
  * @property string $uuid
  * @property string $name
  *
- * @property \App\Model\Entity\Login[] $logins
  * @property \App\Model\Entity\UserDevice[] $user_devices
+ * @property \App\Model\Entity\UserLogin[] $user_logins
  */
 class Device extends Entity
 {
@@ -28,7 +28,7 @@ class Device extends Entity
     protected $_accessible = [
         'uuid' => true,
         'name' => true,
-        'logins' => true,
-        'user_devices' => true
+        'user_devices' => true,
+        'user_logins' => true
     ];
 }

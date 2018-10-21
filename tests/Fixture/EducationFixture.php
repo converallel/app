@@ -25,10 +25,10 @@ class EducationFixture extends TestFixture
     // @codingStandardsIgnoreStart
     public $fields = [
         'id' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'degree' => ['type' => 'string', 'length' => 45, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'degree' => ['type' => 'string', 'length' => 20, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'degree_UNIQUE' => ['type' => 'unique', 'columns' => ['degree'], 'length' => []],
+            'degree' => ['type' => 'unique', 'columns' => ['degree'], 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -47,7 +47,7 @@ class EducationFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'degree' => 'Lorem ipsum dolor sit amet'
+                'degree' => 'Lorem ipsum dolor '
             ],
         ];
         parent::init();

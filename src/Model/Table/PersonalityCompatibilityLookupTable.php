@@ -49,7 +49,7 @@ class PersonalityCompatibilityLookupTable extends Table
 
         $validator
             ->scalar('compatibility')
-            ->maxLength('compatibility', 45)
+            ->maxLength('compatibility', 30)
             ->requirePresence('compatibility', 'create')
             ->notEmpty('compatibility');
 

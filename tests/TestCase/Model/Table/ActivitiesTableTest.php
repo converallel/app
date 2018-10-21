@@ -29,11 +29,9 @@ class ActivitiesTableTest extends TestCase
         'app.users',
         'app.activity_statuses',
         'app.activity_applications',
+        'app.activity_itineraries',
         'app.activity_reviews',
-        'app.activity_tags',
-        'app.interested_activities',
-        'app.itineraries',
-        'app.participation'
+        'app.tags'
     ];
 
     /**

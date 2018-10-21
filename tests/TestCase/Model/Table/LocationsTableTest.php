@@ -27,7 +27,7 @@ class LocationsTableTest extends TestCase
         'app.locations',
         'app.activities',
         'app.activity_filters',
-        'app.itineraries',
+        'app.activity_itineraries',
         'app.location_selection_histories',
         'app.users'
     ];

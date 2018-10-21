@@ -9,7 +9,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property string $degree
  *
- * @property \App\Model\Entity\FilterEducation[] $filter_education
+ * @property \App\Model\Entity\ActivityFilterEducation[] $activity_filter_education
  * @property \App\Model\Entity\User[] $users
  */
 class Education extends Entity
@@ -26,7 +26,7 @@ class Education extends Entity
      */
     protected $_accessible = [
         'degree' => true,
-        'filter_education' => true,
+        'activity_filter_education' => true,
         'users' => true
     ];
 }

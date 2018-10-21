@@ -17,20 +17,15 @@ class MediaFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
-        'owner_id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
-        'position' => ['type' => 'tinyinteger', 'length' => 2, 'unsigned' => true, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
-        'media_type_id' => ['type' => 'tinyinteger', 'length' => 2, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
+        'owner_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'position' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
+        'media_type' => ['type' => 'string', 'length' => null, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'file_path' => ['type' => 'string', 'length' => 100, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'uploaded_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         'caption' => ['type' => 'string', 'length' => 300, 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        '_indexes' => [
-            'fk_media_owner_id_idx' => ['type' => 'index', 'columns' => ['owner_id'], 'length' => []],
-            'fk_media_media_type_id_idx' => ['type' => 'index', 'columns' => ['media_type_id'], 'length' => []],
-        ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['owner_id', 'position'], 'length' => []],
-            'fk_media_media_type_id' => ['type' => 'foreign', 'columns' => ['media_type_id'], 'references' => ['media_types', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
-            'fk_media_owner_id' => ['type' => 'foreign', 'columns' => ['owner_id'], 'references' => ['users', 'id'], 'update' => 'noAction', 'delete' => 'noAction', 'length' => []],
+            'media_ibfk_1' => ['type' => 'foreign', 'columns' => ['owner_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -50,9 +45,9 @@ class MediaFixture extends TestFixture
             [
                 'owner_id' => 1,
                 'position' => 1,
-                'media_type_id' => 1,
+                'media_type' => 'Lorem ipsum dolor sit amet',
                 'file_path' => 'Lorem ipsum dolor sit amet',
-                'uploaded_at' => 1539918446,
+                'uploaded_at' => 1540094364,
                 'caption' => 'Lorem ipsum dolor sit amet'
             ],
         ];

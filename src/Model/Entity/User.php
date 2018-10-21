@@ -10,8 +10,8 @@ use Cake\ORM\Entity;
  * @property string $given_name
  * @property string $family_name
  * @property \Cake\I18n\FrozenDate $birthdate
- * @property bool $gender
- * @property bool $sexual_orientation
+ * @property string $gender
+ * @property string $sexual_orientation
  * @property int $location_id
  * @property string $profile_image_path
  * @property int $personality_id
@@ -23,14 +23,13 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Location $location
  * @property \App\Model\Entity\Personality $personality
  * @property \App\Model\Entity\Education $education
+ * @property \App\Model\Entity\ActivityFilterEducation[] $activity_filter_education
  * @property \App\Model\Entity\ActivityFilter[] $activity_filters
- * @property \App\Model\Entity\FilterEducation[] $filter_education
  * @property \App\Model\Entity\FollowingTag[] $following_tags
- * @property \App\Model\Entity\InterestedActivity[] $interested_activities
  * @property \App\Model\Entity\LocationSelectionHistory[] $location_selection_histories
- * @property \App\Model\Entity\Participation[] $participation
  * @property \App\Model\Entity\SearchHistory[] $search_histories
  * @property \App\Model\Entity\UserDevice[] $user_devices
+ * @property \App\Model\Entity\Activity[] $activities
  */
 class User extends Entity
 {
@@ -60,13 +59,12 @@ class User extends Entity
         'location' => true,
         'personality' => true,
         'education' => true,
+        'activity_filter_education' => true,
         'activity_filters' => true,
-        'filter_education' => true,
         'following_tags' => true,
-        'interested_activities' => true,
         'location_selection_histories' => true,
-        'participation' => true,
         'search_histories' => true,
-        'user_devices' => true
+        'user_devices' => true,
+        'activities' => true
     ];
 }

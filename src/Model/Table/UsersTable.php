@@ -12,14 +12,13 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\LocationsTable|\Cake\ORM\Association\BelongsTo $Locations
  * @property \App\Model\Table\PersonalitiesTable|\Cake\ORM\Association\BelongsTo $Personalities
  * @property \App\Model\Table\EducationTable|\Cake\ORM\Association\BelongsTo $Education
+ * @property \App\Model\Table\ActivityFilterEducationTable|\Cake\ORM\Association\HasMany $ActivityFilterEducation
  * @property \App\Model\Table\ActivityFiltersTable|\Cake\ORM\Association\HasMany $ActivityFilters
- * @property \App\Model\Table\FilterEducationTable|\Cake\ORM\Association\HasMany $FilterEducation
  * @property \App\Model\Table\FollowingTagsTable|\Cake\ORM\Association\HasMany $FollowingTags
- * @property \App\Model\Table\InterestedActivitiesTable|\Cake\ORM\Association\HasMany $InterestedActivities
  * @property \App\Model\Table\LocationSelectionHistoriesTable|\Cake\ORM\Association\HasMany $LocationSelectionHistories
- * @property \App\Model\Table\ParticipationTable|\Cake\ORM\Association\HasMany $Participation
  * @property \App\Model\Table\SearchHistoriesTable|\Cake\ORM\Association\HasMany $SearchHistories
  * @property \App\Model\Table\UserDevicesTable|\Cake\ORM\Association\HasMany $UserDevices
+ * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\BelongsToMany $Activities
  *
  * @method \App\Model\Entity\User get($primaryKey, $options = [])
  * @method \App\Model\Entity\User newEntity($data = null, array $options = [])
@@ -57,22 +56,16 @@ class UsersTable extends Table
         $this->belongsTo('Education', [
             'foreignKey' => 'education_id'
         ]);
-        $this->hasMany('ActivityFilters', [
+        $this->hasMany('ActivityFilterEducation', [
             'foreignKey' => 'user_id'
         ]);
-        $this->hasMany('FilterEducation', [
+        $this->hasMany('ActivityFilters', [
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('FollowingTags', [
             'foreignKey' => 'user_id'
         ]);
-        $this->hasMany('InterestedActivities', [
-            'foreignKey' => 'user_id'
-        ]);
         $this->hasMany('LocationSelectionHistories', [
-            'foreignKey' => 'user_id'
-        ]);
-        $this->hasMany('Participation', [
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('SearchHistories', [
@@ -80,6 +73,11 @@ class UsersTable extends Table
         ]);
         $this->hasMany('UserDevices', [
             'foreignKey' => 'user_id'
+        ]);
+        $this->belongsToMany('Activities', [
+            'foreignKey' => 'user_id',
+            'targetForeignKey' => 'activity_id',
+            'joinTable' => 'activities_users'
         ]);
     }
 
@@ -113,12 +111,14 @@ class UsersTable extends Table
             ->notEmpty('birthdate');
 
         $validator
-            ->boolean('gender')
-            ->allowEmpty('gender');
+            ->scalar('gender')
+            ->requirePresence('gender', 'create')
+            ->notEmpty('gender');
 
         $validator
-            ->boolean('sexual_orientation')
-            ->allowEmpty('sexual_orientation');
+            ->scalar('sexual_orientation')
+            ->requirePresence('sexual_orientation', 'create')
+            ->notEmpty('sexual_orientation');
 
         $validator
             ->scalar('profile_image_path')

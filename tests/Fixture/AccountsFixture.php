@@ -17,7 +17,7 @@ class AccountsFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
-        'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
+        'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'email' => ['type' => 'string', 'length' => 60, 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'phone_number' => ['type' => 'string', 'length' => 20, 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'password' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
@@ -25,8 +25,8 @@ class AccountsFixture extends TestFixture
         'created_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'phone_number_UNIQUE' => ['type' => 'unique', 'columns' => ['phone_number'], 'length' => []],
-            'email_UNIQUE' => ['type' => 'unique', 'columns' => ['email'], 'length' => []],
+            'email' => ['type' => 'unique', 'columns' => ['email'], 'length' => []],
+            'phone_number' => ['type' => 'unique', 'columns' => ['phone_number'], 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -49,7 +49,7 @@ class AccountsFixture extends TestFixture
                 'phone_number' => 'Lorem ipsum dolor ',
                 'password' => 'Lorem ipsum dolor sit amet',
                 'failed_login_attempts' => 1,
-                'created_at' => 1539918445
+                'created_at' => 1540094364
             ],
         ];
         parent::init();

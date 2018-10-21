@@ -9,8 +9,8 @@ use Cake\Validation\Validator;
 /**
  * Devices Model
  *
- * @property \App\Model\Table\LoginsTable|\Cake\ORM\Association\HasMany $Logins
  * @property \App\Model\Table\UserDevicesTable|\Cake\ORM\Association\HasMany $UserDevices
+ * @property \App\Model\Table\UserLoginsTable|\Cake\ORM\Association\HasMany $UserLogins
  *
  * @method \App\Model\Entity\Device get($primaryKey, $options = [])
  * @method \App\Model\Entity\Device newEntity($data = null, array $options = [])
@@ -38,10 +38,10 @@ class DevicesTable extends Table
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 
-        $this->hasMany('Logins', [
+        $this->hasMany('UserDevices', [
             'foreignKey' => 'device_id'
         ]);
-        $this->hasMany('UserDevices', [
+        $this->hasMany('UserLogins', [
             'foreignKey' => 'device_id'
         ]);
     }

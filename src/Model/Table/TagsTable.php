@@ -11,6 +11,7 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\TagsTable|\Cake\ORM\Association\BelongsTo $ParentTags
  * @property \App\Model\Table\TagsTable|\Cake\ORM\Association\HasMany $ChildTags
+ * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\BelongsToMany $Activities
  *
  * @method \App\Model\Entity\Tag get($primaryKey, $options = [])
  * @method \App\Model\Entity\Tag newEntity($data = null, array $options = [])
@@ -45,6 +46,11 @@ class TagsTable extends Table
         $this->hasMany('ChildTags', [
             'className' => 'Tags',
             'foreignKey' => 'parent_id'
+        ]);
+        $this->belongsToMany('Activities', [
+            'foreignKey' => 'tag_id',
+            'targetForeignKey' => 'activity_id',
+            'joinTable' => 'activities_tags'
         ]);
     }
 

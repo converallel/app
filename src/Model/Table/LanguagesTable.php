@@ -49,7 +49,7 @@ class LanguagesTable extends Table
 
         $validator
             ->scalar('language')
-            ->maxLength('language', 45)
+            ->maxLength('language', 30)
             ->requirePresence('language', 'create')
             ->notEmpty('language')
             ->add('language', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);

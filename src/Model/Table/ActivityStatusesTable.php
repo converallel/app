@@ -49,7 +49,7 @@ class ActivityStatusesTable extends Table
 
         $validator
             ->scalar('status')
-            ->maxLength('status', 45)
+            ->maxLength('status', 15)
             ->requirePresence('status', 'create')
             ->notEmpty('status')
             ->add('status', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);

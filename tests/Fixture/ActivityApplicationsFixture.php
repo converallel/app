@@ -20,17 +20,17 @@ class ActivityApplicationsFixture extends TestFixture
         'activity_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'applicant_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'message' => ['type' => 'string', 'length' => 200, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'status' => ['type' => 'boolean', 'length' => null, 'null' => true, 'default' => null, 'comment' => '1 - Approved, 0 - Rejected, NULL - Undetermined', 'precision' => null],
+        'status' => ['type' => 'string', 'length' => null, 'null' => false, 'default' => 'TBD', 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'applied_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         'modified_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         '_indexes' => [
-            'fk_activity_application_user_id_idx' => ['type' => 'index', 'columns' => ['applicant_id'], 'length' => []],
-            'status_idx' => ['type' => 'index', 'columns' => ['status'], 'length' => []],
+            'applicant_id' => ['type' => 'index', 'columns' => ['applicant_id'], 'length' => []],
+            'status' => ['type' => 'index', 'columns' => ['status'], 'length' => []],
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['activity_id', 'applicant_id'], 'length' => []],
-            'fk_activity_application_activity_id' => ['type' => 'foreign', 'columns' => ['activity_id'], 'references' => ['activities', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
-            'fk_activity_application_user_id' => ['type' => 'foreign', 'columns' => ['applicant_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'activity_applications_ibfk_1' => ['type' => 'foreign', 'columns' => ['activity_id'], 'references' => ['activities', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'activity_applications_ibfk_2' => ['type' => 'foreign', 'columns' => ['applicant_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -51,9 +51,9 @@ class ActivityApplicationsFixture extends TestFixture
                 'activity_id' => 1,
                 'applicant_id' => 1,
                 'message' => 'Lorem ipsum dolor sit amet',
-                'status' => 1,
-                'applied_at' => 1539918446,
-                'modified_at' => 1539918446
+                'status' => 'Lorem ipsum dolor sit amet',
+                'applied_at' => 1540094364,
+                'modified_at' => 1540094364
             ],
         ];
         parent::init();

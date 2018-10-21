@@ -26,7 +26,7 @@ class ActivityFiltersTableTest extends TestCase
     public $fixtures = [
         'app.activity_filters',
         'app.locations',
-        'app.filter_date_types'
+        'app.activity_filter_date_types'
     ];
 
     /**

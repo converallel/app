@@ -9,7 +9,7 @@ use Cake\Validation\Validator;
 /**
  * Accounts Model
  *
- * @property \App\Model\Table\LoginsTable|\Cake\ORM\Association\HasMany $Logins
+ * @property \App\Model\Table\UserLoginsTable|\Cake\ORM\Association\HasMany $UserLogins
  *
  * @method \App\Model\Entity\Account get($primaryKey, $options = [])
  * @method \App\Model\Entity\Account newEntity($data = null, array $options = [])
@@ -37,7 +37,7 @@ class AccountsTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
-        $this->hasMany('Logins', [
+        $this->hasMany('UserLogins', [
             'foreignKey' => 'account_id'
         ]);
     }
