@@ -48,8 +48,8 @@ class SearchHistoriesFixture extends TestFixture
             [
                 'user_id' => 1,
                 'search_type_id' => 1,
-                'search_string' => 'fc7ab717-644c-4412-821c-661df4ed3c08',
-                'searched_at' => 1540094364
+                'search_string' => '49f6cdb2-a6b8-44a6-b60a-1307e3f2d641',
+                'searched_at' => 1540511521
             ],
         ];
         parent::init();

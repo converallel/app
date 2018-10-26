@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use Cake\ORM\Query;
@@ -10,7 +11,7 @@ use Cake\Validation\Validator;
  * Activities Model
  *
  * @property \App\Model\Table\LocationsTable|\Cake\ORM\Association\BelongsTo $Locations
- * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Organizers
  * @property \App\Model\Table\ActivityStatusesTable|\Cake\ORM\Association\BelongsTo $ActivityStatuses
  * @property \App\Model\Table\ActivityApplicationsTable|\Cake\ORM\Association\HasMany $ActivityApplications
  * @property \App\Model\Table\ActivityItinerariesTable|\Cake\ORM\Association\HasMany $ActivityItineraries
@@ -48,7 +49,8 @@ class ActivitiesTable extends Table
             'foreignKey' => 'location_id',
             'joinType' => 'INNER'
         ]);
-        $this->belongsTo('Users', [
+        $this->belongsTo('Organizers', [
+            'className' => 'Users',
             'foreignKey' => 'organizer_id',
             'joinType' => 'INNER'
         ]);
@@ -120,8 +122,9 @@ class ActivitiesTable extends Table
             ->notEmpty('exclusive');
 
         $validator
-            ->boolean('location_visibility')
-            ->allowEmpty('location_visibility');
+            ->scalar('location_visibility')
+            ->requirePresence('location_visibility', 'create')
+            ->notEmpty('location_visibility');
 
         $validator
             ->scalar('details')
@@ -158,5 +161,26 @@ class ActivitiesTable extends Table
         $rules->add($rules->existsIn(['status_id'], 'ActivityStatuses'));
 
         return $rules;
+    }
+
+    public function findBasicInformation(Query $query, array $options)
+    {
+        return
+            $query
+                ->select([
+                    'id', 'title', 'start_date', 'end_date', 'customized_location', 'is_pair', 'created_at',
+                    'modified_at', 'status' => 'ActivityStatuses.status', 'group_size_limit',
+//                'participant_count' => $query->func()->count('users')
+                ])
+                ->select($this->Locations)
+                ->contain([
+                    'ActivityStatuses', 'Locations', 'Tags',
+                    'Users' => function (Query $query) {
+                        return $query->select(['id', 'profile_image_path'])
+                            ->where(['type IN' => ['Organizers', 'Participated']])->order('type')->limit(5);
+                    },
+                    'Organizers' => function (Query $query) {
+                        return $query->find('basicInformation');
+                    }]);
     }
 }

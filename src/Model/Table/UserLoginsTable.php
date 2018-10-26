@@ -9,6 +9,7 @@ use Cake\Validation\Validator;
 /**
  * UserLogins Model
  *
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  * @property \App\Model\Table\DevicesTable|\Cake\ORM\Association\BelongsTo $Devices
  *
  * @method \App\Model\Entity\UserLogin get($primaryKey, $options = [])
@@ -34,9 +35,13 @@ class UserLoginsTable extends Table
         parent::initialize($config);
 
         $this->setTable('user_logins');
-        $this->setDisplayField('account_id');
-        $this->setPrimaryKey('account_id');
+        $this->setDisplayField('user_id');
+        $this->setPrimaryKey(['user_id', 'device_id', 'logged_in_at']);
 
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'INNER'
+        ]);
         $this->belongsTo('Devices', [
             'foreignKey' => 'device_id',
             'joinType' => 'INNER'
@@ -52,13 +57,8 @@ class UserLoginsTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->nonNegativeInteger('account_id')
-            ->allowEmpty('account_id', 'create');
-
-        $validator
             ->dateTime('logged_in_at')
-            ->requirePresence('logged_in_at', 'create')
-            ->notEmpty('logged_in_at');
+            ->allowEmpty('logged_in_at', 'create');
 
         $validator
             ->numeric('latitude')
@@ -80,6 +80,7 @@ class UserLoginsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['device_id'], 'Devices'));
 
         return $rules;

@@ -6,12 +6,13 @@ use Cake\ORM\Entity;
 /**
  * UserLogin Entity
  *
- * @property int $account_id
+ * @property int $user_id
  * @property int $device_id
  * @property \Cake\I18n\FrozenTime $logged_in_at
  * @property float $latitude
  * @property float $longitude
  *
+ * @property \App\Model\Entity\User $user
  * @property \App\Model\Entity\Device $device
  */
 class UserLogin extends Entity
@@ -27,10 +28,9 @@ class UserLogin extends Entity
      * @var array
      */
     protected $_accessible = [
-        'device_id' => true,
-        'logged_in_at' => true,
         'latitude' => true,
         'longitude' => true,
+        'user' => true,
         'device' => true
     ];
 }

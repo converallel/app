@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use Cake\ORM\Query;
@@ -18,6 +19,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\LocationSelectionHistoriesTable|\Cake\ORM\Association\HasMany $LocationSelectionHistories
  * @property \App\Model\Table\SearchHistoriesTable|\Cake\ORM\Association\HasMany $SearchHistories
  * @property \App\Model\Table\UserDevicesTable|\Cake\ORM\Association\HasMany $UserDevices
+ * @property \App\Model\Table\UserLoginsTable|\Cake\ORM\Association\HasMany $UserLogins
  * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\BelongsToMany $Activities
  *
  * @method \App\Model\Entity\User get($primaryKey, $options = [])
@@ -74,6 +76,9 @@ class UsersTable extends Table
         $this->hasMany('UserDevices', [
             'foreignKey' => 'user_id'
         ]);
+        $this->hasMany('UserLogins', [
+            'foreignKey' => 'user_id'
+        ]);
         $this->belongsToMany('Activities', [
             'foreignKey' => 'user_id',
             'targetForeignKey' => 'activity_id',
@@ -92,6 +97,27 @@ class UsersTable extends Table
         $validator
             ->nonNegativeInteger('id')
             ->allowEmpty('id', 'create');
+
+        $validator
+            ->email('email')
+            ->allowEmpty('email')
+            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+
+        $validator
+            ->scalar('phone_number')
+            ->maxLength('phone_number', 20)
+            ->allowEmpty('phone_number')
+            ->add('phone_number', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+
+        $validator
+            ->scalar('password')
+            ->maxLength('password', 255)
+            ->requirePresence('password', 'create')
+            ->notEmpty('password');
+
+        $validator
+            ->requirePresence('failed_login_attempts', 'create')
+            ->notEmpty('failed_login_attempts');
 
         $validator
             ->scalar('given_name')
@@ -139,6 +165,11 @@ class UsersTable extends Table
             ->requirePresence('verified', 'create')
             ->notEmpty('verified');
 
+        $validator
+            ->dateTime('created_at')
+            ->requirePresence('created_at', 'create')
+            ->notEmpty('created_at');
+
         return $validator;
     }
 
@@ -151,10 +182,22 @@ class UsersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
+        $rules->add($rules->isUnique(['email']));
+        $rules->add($rules->isUnique(['phone_number']));
         $rules->add($rules->existsIn(['location_id'], 'Locations'));
         $rules->add($rules->existsIn(['personality_id'], 'Personalities'));
         $rules->add($rules->existsIn(['education_id'], 'Education'));
 
         return $rules;
+    }
+
+    /**
+     * @param Query $query
+     * @param array $options
+     * @return Query
+     */
+    public function findBasicInformation(Query $query, array $options)
+    {
+        return $query->select(['id', 'given_name', 'family_name', 'birthdate', 'gender', 'verified']);
     }
 }

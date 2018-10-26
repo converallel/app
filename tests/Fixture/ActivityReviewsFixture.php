@@ -54,8 +54,8 @@ class ActivityReviewsFixture extends TestFixture
                 'reviewer_id' => 1,
                 'rating' => 1,
                 'review' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-                'reviewed_at' => 1540094364,
-                'modified_at' => 1540094364,
+                'reviewed_at' => 1540511521,
+                'modified_at' => 1540511521,
                 'helpful' => 1,
                 'not_helpful' => 1
             ],

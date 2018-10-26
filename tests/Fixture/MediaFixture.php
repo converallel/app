@@ -47,7 +47,7 @@ class MediaFixture extends TestFixture
                 'position' => 1,
                 'media_type' => 'Lorem ipsum dolor sit amet',
                 'file_path' => 'Lorem ipsum dolor sit amet',
-                'uploaded_at' => 1540094364,
+                'uploaded_at' => 1540511521,
                 'caption' => 'Lorem ipsum dolor sit amet'
             ],
         ];

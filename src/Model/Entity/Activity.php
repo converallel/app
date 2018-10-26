@@ -15,7 +15,7 @@ use Cake\ORM\Entity;
  * @property int $organizer_id
  * @property bool $is_pair
  * @property bool $exclusive
- * @property bool $location_visibility
+ * @property string $location_visibility
  * @property string $details
  * @property int $status_id
  * @property int $group_size_limit

@@ -12,10 +12,13 @@
  * @since     0.2.9
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Controller\Exception\SecurityException;
 use Cake\Event\Event;
+use Cake\Routing\Router;
 
 /**
  * Application Controller
@@ -44,12 +47,37 @@ class AppController extends Controller
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
         ]);
-        $this->loadComponent('Flash');
+        $this->loadComponent('Security', ['blackHoleCallback' => 'forceSSL']);
+    }
 
-        /*
-         * Enable the following component for recommended CakePHP security settings.
-         * see https://book.cakephp.org/3.0/en/controllers/components/security.html
-         */
-        //$this->loadComponent('Security');
+    public function beforeFilter(Event $event)
+    {
+//        $this->Security->requireSecure();
+    }
+
+    /**
+     * @param string $error
+     * @param SecurityException|null $exception
+     * @return \Cake\Http\Response|null
+     */
+    public function forceSSL($error = '', SecurityException $exception = null)
+    {
+        if ($exception instanceof SecurityException && $exception->getType() === 'secure') {
+            return $this->redirect('https://' . env('SERVER_NAME') . Router::url($this->request->getRequestTarget()));
+        }
+
+        throw $exception;
+    }
+
+    /**
+     * @param array|string $data
+     * @param int $status
+     * @return \Cake\Http\Response
+     */
+    protected function response($data, $status = 200)
+    {
+        if (is_string($data))
+            $data = ['message' => $data];
+        return $this->getResponse()->withStringBody(json_encode($data))->withStatus($status)->withType('application/json');
     }
 }

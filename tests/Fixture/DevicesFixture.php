@@ -41,7 +41,7 @@ class DevicesFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'uuid' => '11e4bd2c-3a7d-4e74-9662-0809c5fbf082',
+                'uuid' => '3a6ed568-5291-477a-bccb-f00f6c5aed12',
                 'name' => 'Lorem ipsum dolor sit amet'
             ],
         ];

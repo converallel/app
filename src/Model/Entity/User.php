@@ -7,6 +7,10 @@ use Cake\ORM\Entity;
  * User Entity
  *
  * @property int $id
+ * @property string $email
+ * @property string $phone_number
+ * @property string $password
+ * @property int $failed_login_attempts
  * @property string $given_name
  * @property string $family_name
  * @property \Cake\I18n\FrozenDate $birthdate
@@ -19,6 +23,7 @@ use Cake\ORM\Entity;
  * @property string $bio
  * @property int $rating
  * @property bool $verified
+ * @property \Cake\I18n\FrozenTime $created_at
  *
  * @property \App\Model\Entity\Location $location
  * @property \App\Model\Entity\Personality $personality
@@ -29,6 +34,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\LocationSelectionHistory[] $location_selection_histories
  * @property \App\Model\Entity\SearchHistory[] $search_histories
  * @property \App\Model\Entity\UserDevice[] $user_devices
+ * @property \App\Model\Entity\UserLogin[] $user_logins
  * @property \App\Model\Entity\Activity[] $activities
  */
 class User extends Entity
@@ -44,6 +50,10 @@ class User extends Entity
      * @var array
      */
     protected $_accessible = [
+        'email' => true,
+        'phone_number' => true,
+        'password' => true,
+        'failed_login_attempts' => true,
         'given_name' => true,
         'family_name' => true,
         'birthdate' => true,
@@ -56,6 +66,7 @@ class User extends Entity
         'bio' => true,
         'rating' => true,
         'verified' => true,
+        'created_at' => true,
         'location' => true,
         'personality' => true,
         'education' => true,
@@ -65,6 +76,16 @@ class User extends Entity
         'location_selection_histories' => true,
         'search_histories' => true,
         'user_devices' => true,
+        'user_logins' => true,
         'activities' => true
+    ];
+
+    /**
+     * Fields that are excluded from JSON versions of the entity.
+     *
+     * @var array
+     */
+    protected $_hidden = [
+        'password'
     ];
 }

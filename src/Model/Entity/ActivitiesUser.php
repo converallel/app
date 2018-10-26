@@ -9,7 +9,6 @@ use Cake\ORM\Entity;
  * @property int $activity_id
  * @property int $user_id
  * @property string $type
- * @property \Cake\I18n\FrozenTime $added_at
  *
  * @property \App\Model\Entity\Activity $activity
  * @property \App\Model\Entity\User $user
@@ -27,8 +26,6 @@ class ActivitiesUser extends Entity
      * @var array
      */
     protected $_accessible = [
-        'type' => true,
-        'added_at' => true,
         'activity' => true,
         'user' => true
     ];

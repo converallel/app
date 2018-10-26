@@ -36,7 +36,7 @@ class ActivitiesUsersTable extends Table
 
         $this->setTable('activities_users');
         $this->setDisplayField('activity_id');
-        $this->setPrimaryKey(['activity_id', 'user_id']);
+        $this->setPrimaryKey(['activity_id', 'user_id', 'type']);
 
         $this->belongsTo('Activities', [
             'foreignKey' => 'activity_id',
@@ -58,13 +58,7 @@ class ActivitiesUsersTable extends Table
     {
         $validator
             ->scalar('type')
-            ->requirePresence('type', 'create')
-            ->notEmpty('type');
-
-        $validator
-            ->dateTime('added_at')
-            ->requirePresence('added_at', 'create')
-            ->notEmpty('added_at');
+            ->allowEmpty('type', 'create');
 
         return $validator;
     }

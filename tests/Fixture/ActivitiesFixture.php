@@ -26,7 +26,7 @@ class ActivitiesFixture extends TestFixture
         'organizer_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'is_pair' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '1', 'comment' => '', 'precision' => null],
         'exclusive' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
-        'location_visibility' => ['type' => 'boolean', 'length' => null, 'null' => true, 'default' => null, 'comment' => 'NULL - Sub-locality, 1 - Full address, 0 - Hidden', 'precision' => null],
+        'location_visibility' => ['type' => 'string', 'length' => null, 'null' => false, 'default' => 'Vicinity', 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'details' => ['type' => 'string', 'length' => 300, 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'status_id' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => '1', 'comment' => '', 'precision' => null],
         'group_size_limit' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
@@ -62,19 +62,19 @@ class ActivitiesFixture extends TestFixture
             [
                 'id' => 1,
                 'title' => 'Lorem ipsum dolor sit amet',
-                'start_date' => '2018-10-21 03:59:24',
-                'end_date' => '2018-10-21 03:59:24',
+                'start_date' => '2018-10-25 23:52:00',
+                'end_date' => '2018-10-25 23:52:00',
                 'location_id' => 1,
                 'customized_location' => 'Lorem ipsum dolor sit amet',
                 'organizer_id' => 1,
                 'is_pair' => 1,
                 'exclusive' => 1,
-                'location_visibility' => 1,
+                'location_visibility' => 'Lorem ipsum dolor sit amet',
                 'details' => 'Lorem ipsum dolor sit amet',
                 'status_id' => 1,
                 'group_size_limit' => 1,
-                'created_at' => 1540094364,
-                'modified_at' => 1540094364
+                'created_at' => 1540511520,
+                'modified_at' => 1540511520
             ],
         ];
         parent::init();

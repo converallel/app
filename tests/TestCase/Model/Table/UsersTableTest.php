@@ -34,6 +34,7 @@ class UsersTableTest extends TestCase
         'app.location_selection_histories',
         'app.search_histories',
         'app.user_devices',
+        'app.user_logins',
         'app.activities'
     ];
 

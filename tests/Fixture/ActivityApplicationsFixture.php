@@ -52,8 +52,8 @@ class ActivityApplicationsFixture extends TestFixture
                 'applicant_id' => 1,
                 'message' => 'Lorem ipsum dolor sit amet',
                 'status' => 'Lorem ipsum dolor sit amet',
-                'applied_at' => 1540094364,
-                'modified_at' => 1540094364
+                'applied_at' => 1540511520,
+                'modified_at' => 1540511520
             ],
         ];
         parent::init();

@@ -10,55 +10,6 @@ class Initial extends AbstractMigration
     public function up()
     {
 
-        $this->table('accounts')
-            ->addColumn('id', 'integer', [
-                'autoIncrement' => true,
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['id'])
-            ->addColumn('email', 'string', [
-                'default' => null,
-                'limit' => 60,
-                'null' => true,
-            ])
-            ->addColumn('phone_number', 'string', [
-                'default' => null,
-                'limit' => 20,
-                'null' => true,
-            ])
-            ->addColumn('password', 'string', [
-                'default' => null,
-                'limit' => 255,
-                'null' => false,
-            ])
-            ->addColumn('failed_login_attempts', 'integer', [
-                'default' => '0',
-                'limit' => MysqlAdapter::INT_TINY,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addColumn('created_at', 'timestamp', [
-                'default' => 'CURRENT_TIMESTAMP',
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addIndex(
-                [
-                    'email',
-                ],
-                ['unique' => true]
-            )
-            ->addIndex(
-                [
-                    'phone_number',
-                ],
-                ['unique' => true]
-            )
-            ->create();
-
         $this->table('activities')
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
@@ -110,11 +61,11 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => false,
             ])
-            ->addColumn('location_visibility', 'boolean', [
-                'comment' => 'NULL - Sub-locality, 1 - Full address, 0 - Hidden',
-                'default' => null,
+            ->addColumn('location_visibility', 'enum', [
+                'default' => 'Vicinity',
                 'limit' => null,
-                'null' => true,
+                'null' => false,
+                'values' => ['Full Address', 'Hidden', 'Vicinity'],
             ])
             ->addColumn('details', 'string', [
                 'default' => null,
@@ -202,26 +153,16 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
-            ->addPrimaryKey(['activity_id', 'user_id'])
+            ->addPrimaryKey(['activity_id', 'user_id', 'type'])
             ->addColumn('type', 'enum', [
                 'default' => null,
                 'limit' => null,
                 'null' => false,
-                'values' => ['Interested', 'Participated'],
-            ])
-            ->addColumn('added_at', 'timestamp', [
-                'default' => 'CURRENT_TIMESTAMP',
-                'limit' => null,
-                'null' => false,
+                'values' => ['Interested', 'Organized', 'Participated'],
             ])
             ->addIndex(
                 [
                     'user_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'added_at',
                 ]
             )
             ->create();
@@ -1021,13 +962,13 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('user_logins')
-            ->addColumn('account_id', 'integer', [
+            ->addColumn('user_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => false,
                 'signed' => false,
             ])
-            ->addPrimaryKey(['account_id'])
+            ->addPrimaryKey(['user_id', 'device_id', 'logged_in_at'])
             ->addColumn('device_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
@@ -1067,6 +1008,27 @@ class Initial extends AbstractMigration
                 'signed' => false,
             ])
             ->addPrimaryKey(['id'])
+            ->addColumn('email', 'string', [
+                'default' => null,
+                'limit' => 60,
+                'null' => true,
+            ])
+            ->addColumn('phone_number', 'string', [
+                'default' => null,
+                'limit' => 20,
+                'null' => true,
+            ])
+            ->addColumn('password', 'string', [
+                'default' => null,
+                'limit' => 255,
+                'null' => false,
+            ])
+            ->addColumn('failed_login_attempts', 'integer', [
+                'default' => '0',
+                'limit' => MysqlAdapter::INT_TINY,
+                'null' => false,
+                'signed' => false,
+            ])
             ->addColumn('given_name', 'string', [
                 'default' => null,
                 'limit' => 45,
@@ -1134,6 +1096,23 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => false,
             ])
+            ->addColumn('created_at', 'timestamp', [
+                'default' => 'CURRENT_TIMESTAMP',
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addIndex(
+                [
+                    'email',
+                ],
+                ['unique' => true]
+            )
+            ->addIndex(
+                [
+                    'phone_number',
+                ],
+                ['unique' => true]
+            )
             ->addIndex(
                 [
                     'education_id',
@@ -1540,15 +1519,6 @@ class Initial extends AbstractMigration
                 ]
             )
             ->addForeignKey(
-                'id',
-                'accounts',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
-            ->addForeignKey(
                 'location_id',
                 'locations',
                 'id',
@@ -1572,7 +1542,7 @@ class Initial extends AbstractMigration
         $this->execute("
         CREATE TRIGGER email_phone_number_not_both_null
           BEFORE INSERT
-          ON accounts
+          ON users
           FOR EACH ROW
           BEGIN
             IF (NEW.email IS NULL AND NEW.phone_number IS NULL)
@@ -1625,7 +1595,7 @@ class Initial extends AbstractMigration
           BEGIN
             DECLARE age TINYINT;
             SET age = YEAR(UTC_DATE()) - YEAR(NEW.birthdate);
-            INSERT INTO activity_filter (user_id, from_age, to_age) VALUE (NEW.id, GREATEST(18, age - 8), age + 8);
+            INSERT INTO activity_filters (user_id, from_age, to_age) VALUE (NEW.id, GREATEST(18, age - 8), age + 8);
           END;
         ");
     }
@@ -1776,16 +1746,12 @@ class Initial extends AbstractMigration
                 'education_id'
             )
             ->dropForeignKey(
-                'id'
-            )
-            ->dropForeignKey(
                 'location_id'
             )
             ->dropForeignKey(
                 'personality_id'
             )->save();
 
-        $this->table('accounts')->drop()->save();
         $this->table('activities')->drop()->save();
         $this->table('activities_tags')->drop()->save();
         $this->table('activities_users')->drop()->save();
