@@ -18,10 +18,9 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-use Cake\Core\Plugin;
+use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
-use Cake\Routing\Route\DashedRoute;
 
 /**
  * The default class to use for all routes
@@ -49,12 +48,20 @@ Router::defaultRouteClass(DashedRoute::class);
 Router::scope('/', function (RouteBuilder $routes) {
 
     $routes->resources('Activities', function (RouteBuilder $routes) {
-        $routes->resources('Users', ['only' => ['view', 'add', 'edit', 'delete']]);
+        $routes->resources('Users', ['prefix' => 'activities', 'only' => ['index', 'create', 'delete']]);
+        $routes->resources('Applications', ['only' => ['index']]);
     });
 
-    $routes->resources('Users', ['only' => ['view', 'add', 'edit', 'delete']]);
+    $routes->resources('Applications', ['only' => ['create', 'update', 'delete']]);
 
-    $routes->resources('Locations', ['only' => ['view', 'add']]);
+    $routes->resources('Locations', ['only' => ['view', 'create']]);
+
+    $routes->resources('Users', ['only' => ['view', 'create', 'update', 'delete']]);
+
+    $routes->resources('Tags', ['only' => ['index', 'view']], function (RouteBuilder $routes) {
+        $routes->resources('Activities', ['only' => ['index']]);
+    });
+
     /**
      * Connect catchall routes for all controllers.
      *

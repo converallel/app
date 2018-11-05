@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\ActivityApplicationsTable;
+use App\Model\Table\PersonalityCompatibilityLevelsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\ActivityApplicationsTable Test Case
+ * App\Model\Table\PersonalityCompatibilityLevelsTable Test Case
  */
-class ActivityApplicationsTableTest extends TestCase
+class PersonalityCompatibilityLevelsTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\ActivityApplicationsTable
+     * @var \App\Model\Table\PersonalityCompatibilityLevelsTable
      */
-    public $ActivityApplications;
+    public $PersonalityCompatibilityLevels;
 
     /**
      * Fixtures
@@ -24,9 +24,7 @@ class ActivityApplicationsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.activity_applications',
-        'app.activities',
-        'app.users'
+        'app.personality_compatibility_levels'
     ];
 
     /**
@@ -37,8 +35,8 @@ class ActivityApplicationsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('ActivityApplications') ? [] : ['className' => ActivityApplicationsTable::class];
-        $this->ActivityApplications = TableRegistry::getTableLocator()->get('ActivityApplications', $config);
+        $config = TableRegistry::getTableLocator()->exists('PersonalityCompatibilityLevels') ? [] : ['className' => PersonalityCompatibilityLevelsTable::class];
+        $this->PersonalityCompatibilityLevels = TableRegistry::getTableLocator()->get('PersonalityCompatibilityLevels', $config);
     }
 
     /**
@@ -48,7 +46,7 @@ class ActivityApplicationsTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->ActivityApplications);
+        unset($this->PersonalityCompatibilityLevels);
 
         parent::tearDown();
     }
@@ -69,16 +67,6 @@ class ActivityApplicationsTableTest extends TestCase
      * @return void
      */
     public function testValidationDefault()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test buildRules method
-     *
-     * @return void
-     */
-    public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

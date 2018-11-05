@@ -22,6 +22,5 @@ class ActivityStatus extends Entity
      * @var array
      */
     protected $_accessible = [
-        'status' => true
     ];
 }

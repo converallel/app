@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\ActivityReviewsTable;
+use App\Model\Table\ReviewsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\ActivityReviewsTable Test Case
+ * App\Model\Table\ReviewsTable Test Case
  */
-class ActivityReviewsTableTest extends TestCase
+class ReviewsTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\ActivityReviewsTable
+     * @var \App\Model\Table\ReviewsTable
      */
-    public $ActivityReviews;
+    public $Reviews;
 
     /**
      * Fixtures
@@ -24,7 +24,7 @@ class ActivityReviewsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.activity_reviews',
+        'app.reviews',
         'app.activities',
         'app.users'
     ];
@@ -37,8 +37,8 @@ class ActivityReviewsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('ActivityReviews') ? [] : ['className' => ActivityReviewsTable::class];
-        $this->ActivityReviews = TableRegistry::getTableLocator()->get('ActivityReviews', $config);
+        $config = TableRegistry::getTableLocator()->exists('Reviews') ? [] : ['className' => ReviewsTable::class];
+        $this->Reviews = TableRegistry::getTableLocator()->get('Reviews', $config);
     }
 
     /**
@@ -48,7 +48,7 @@ class ActivityReviewsTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->ActivityReviews);
+        unset($this->Reviews);
 
         parent::tearDown();
     }

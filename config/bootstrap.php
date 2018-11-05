@@ -196,3 +196,8 @@ Type::build('timestamp')
 //Inflector::rules('irregular', ['red' => 'redlings']);
 //Inflector::rules('uninflected', ['dontinflectme']);
 //Inflector::rules('transliteration', ['/å/' => 'aa']);
+
+/*
+ * Load plugins
+ */
+Plugin::load('Cake/ElasticSearch', ['bootstrap' => true]);

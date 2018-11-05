@@ -4,13 +4,20 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * PersonalityCompatibilityLookup Entity
+ * Application Entity
  *
  * @property int $id
- * @property string $compatibility
- * @property string $details
+ * @property int $activity_id
+ * @property int $user_id
+ * @property string $message
+ * @property string $status
+ * @property \Cake\I18n\FrozenTime $applied_at
+ * @property \Cake\I18n\FrozenTime $modified_at
+ *
+ * @property \App\Model\Entity\Activity $activity
+ * @property \App\Model\Entity\User $user
  */
-class PersonalityCompatibilityLookup extends Entity
+class Application extends Entity
 {
 
     /**
@@ -23,7 +30,8 @@ class PersonalityCompatibilityLookup extends Entity
      * @var array
      */
     protected $_accessible = [
-        'compatibility' => true,
-        'details' => true
+        'activity_id' => true,
+        'user_id' => true,
+        'message' => true,
     ];
 }

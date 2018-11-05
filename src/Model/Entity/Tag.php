@@ -6,14 +6,15 @@ use Cake\ORM\Entity;
 /**
  * Tag Entity
  *
- * @property int $tag_id
+ * @property int $id
  * @property int $parent_id
- * @property string $tag
+ * @property string $name
  * @property int $count
  *
  * @property \App\Model\Entity\ParentTag $parent_tag
  * @property \App\Model\Entity\ChildTag[] $child_tags
  * @property \App\Model\Entity\Activity[] $activities
+ * @property \App\Model\Entity\User[] $users
  */
 class Tag extends Entity
 {
@@ -28,11 +29,5 @@ class Tag extends Entity
      * @var array
      */
     protected $_accessible = [
-        'parent_id' => true,
-        'tag' => true,
-        'count' => true,
-        'parent_tag' => true,
-        'child_tags' => true,
-        'activities' => true
     ];
 }

@@ -17,7 +17,7 @@ class UsersFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
-        'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'email' => ['type' => 'string', 'length' => 60, 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'phone_number' => ['type' => 'string', 'length' => 20, 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'password' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
@@ -73,7 +73,7 @@ class UsersFixture extends TestFixture
                 'failed_login_attempts' => 1,
                 'given_name' => 'Lorem ipsum dolor sit amet',
                 'family_name' => 'Lorem ipsum dolor sit amet',
-                'birthdate' => '2018-10-25',
+                'birthdate' => '2018-11-05',
                 'gender' => 'Lorem ipsum dolor sit amet',
                 'sexual_orientation' => 'Lorem ipsum dolor sit amet',
                 'location_id' => 1,
@@ -83,7 +83,7 @@ class UsersFixture extends TestFixture
                 'bio' => 'Lorem ipsum dolor sit amet',
                 'rating' => 1,
                 'verified' => 1,
-                'created_at' => 1540511521
+                'created_at' => 1541385338
             ],
         ];
         parent::init();

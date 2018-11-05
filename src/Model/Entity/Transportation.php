@@ -22,6 +22,5 @@ class Transportation extends Entity
      * @var array
      */
     protected $_accessible = [
-        'mode' => true
     ];
 }

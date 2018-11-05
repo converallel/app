@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\PersonalityCompatibilityLookupTable;
+use App\Model\Table\UsersTagsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\PersonalityCompatibilityLookupTable Test Case
+ * App\Model\Table\UsersTagsTable Test Case
  */
-class PersonalityCompatibilityLookupTableTest extends TestCase
+class UsersTagsTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\PersonalityCompatibilityLookupTable
+     * @var \App\Model\Table\UsersTagsTable
      */
-    public $PersonalityCompatibilityLookup;
+    public $UsersTags;
 
     /**
      * Fixtures
@@ -24,7 +24,9 @@ class PersonalityCompatibilityLookupTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.personality_compatibility_lookup'
+        'app.users_tags',
+        'app.users',
+        'app.tags'
     ];
 
     /**
@@ -35,8 +37,8 @@ class PersonalityCompatibilityLookupTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('PersonalityCompatibilityLookup') ? [] : ['className' => PersonalityCompatibilityLookupTable::class];
-        $this->PersonalityCompatibilityLookup = TableRegistry::getTableLocator()->get('PersonalityCompatibilityLookup', $config);
+        $config = TableRegistry::getTableLocator()->exists('UsersTags') ? [] : ['className' => UsersTagsTable::class];
+        $this->UsersTags = TableRegistry::getTableLocator()->get('UsersTags', $config);
     }
 
     /**
@@ -46,7 +48,7 @@ class PersonalityCompatibilityLookupTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->PersonalityCompatibilityLookup);
+        unset($this->UsersTags);
 
         parent::tearDown();
     }
@@ -62,11 +64,11 @@ class PersonalityCompatibilityLookupTableTest extends TestCase
     }
 
     /**
-     * Test validationDefault method
+     * Test buildRules method
      *
      * @return void
      */
-    public function testValidationDefault()
+    public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

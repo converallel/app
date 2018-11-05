@@ -34,8 +34,8 @@ class MediaTable extends Table
         parent::initialize($config);
 
         $this->setTable('media');
-        $this->setDisplayField('owner_id');
-        $this->setPrimaryKey(['owner_id', 'position']);
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Users', [
             'foreignKey' => 'owner_id',
@@ -52,7 +52,12 @@ class MediaTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->allowEmpty('position', 'create');
+            ->nonNegativeInteger('id')
+            ->allowEmpty('id', 'create');
+
+        $validator
+            ->requirePresence('position', 'create')
+            ->notEmpty('position');
 
         $validator
             ->scalar('media_type')

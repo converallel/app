@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\FollowingTagsTable;
+use App\Model\Table\UserContactsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\FollowingTagsTable Test Case
+ * App\Model\Table\UserContactsTable Test Case
  */
-class FollowingTagsTableTest extends TestCase
+class UserContactsTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\FollowingTagsTable
+     * @var \App\Model\Table\UserContactsTable
      */
-    public $FollowingTags;
+    public $UserContacts;
 
     /**
      * Fixtures
@@ -24,9 +24,7 @@ class FollowingTagsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.following_tags',
-        'app.users',
-        'app.tags'
+        'app.user_contacts'
     ];
 
     /**
@@ -37,8 +35,8 @@ class FollowingTagsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('FollowingTags') ? [] : ['className' => FollowingTagsTable::class];
-        $this->FollowingTags = TableRegistry::getTableLocator()->get('FollowingTags', $config);
+        $config = TableRegistry::getTableLocator()->exists('UserContacts') ? [] : ['className' => UserContactsTable::class];
+        $this->UserContacts = TableRegistry::getTableLocator()->get('UserContacts', $config);
     }
 
     /**
@@ -48,7 +46,7 @@ class FollowingTagsTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->FollowingTags);
+        unset($this->UserContacts);
 
         parent::tearDown();
     }
@@ -64,11 +62,11 @@ class FollowingTagsTableTest extends TestCase
     }
 
     /**
-     * Test buildRules method
+     * Test validationDefault method
      *
      * @return void
      */
-    public function testBuildRules()
+    public function testValidationDefault()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

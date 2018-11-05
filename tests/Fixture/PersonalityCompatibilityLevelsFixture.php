@@ -4,18 +4,11 @@ namespace App\Test\Fixture;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
- * PersonalityCompatibilityLookupFixture
+ * PersonalityCompatibilityLevelsFixture
  *
  */
-class PersonalityCompatibilityLookupFixture extends TestFixture
+class PersonalityCompatibilityLevelsFixture extends TestFixture
 {
-
-    /**
-     * Table name
-     *
-     * @var string
-     */
-    public $table = 'personality_compatibility_lookup';
 
     /**
      * Fields
@@ -25,8 +18,8 @@ class PersonalityCompatibilityLookupFixture extends TestFixture
     // @codingStandardsIgnoreStart
     public $fields = [
         'id' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
-        'compatibility' => ['type' => 'string', 'length' => 30, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'details' => ['type' => 'string', 'length' => 100, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'title' => ['type' => 'string', 'length' => 30, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'description' => ['type' => 'string', 'length' => 100, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -47,8 +40,8 @@ class PersonalityCompatibilityLookupFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'compatibility' => 'Lorem ipsum dolor sit amet',
-                'details' => 'Lorem ipsum dolor sit amet'
+                'title' => 'Lorem ipsum dolor sit amet',
+                'description' => 'Lorem ipsum dolor sit amet'
             ],
         ];
         parent::init();

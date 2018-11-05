@@ -35,8 +35,8 @@ class UserLoginsTable extends Table
         parent::initialize($config);
 
         $this->setTable('user_logins');
-        $this->setDisplayField('user_id');
-        $this->setPrimaryKey(['user_id', 'device_id', 'logged_in_at']);
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
@@ -57,8 +57,13 @@ class UserLoginsTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
+            ->nonNegativeInteger('id')
+            ->allowEmpty('id', 'create');
+
+        $validator
             ->dateTime('logged_in_at')
-            ->allowEmpty('logged_in_at', 'create');
+            ->requirePresence('logged_in_at', 'create')
+            ->notEmpty('logged_in_at');
 
         $validator
             ->numeric('latitude')

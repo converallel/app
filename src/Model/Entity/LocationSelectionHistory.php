@@ -6,6 +6,7 @@ use Cake\ORM\Entity;
 /**
  * LocationSelectionHistory Entity
  *
+ * @property int $id
  * @property int $user_id
  * @property int $location_id
  * @property \Cake\I18n\FrozenTime $selected_at
@@ -26,8 +27,7 @@ class LocationSelectionHistory extends Entity
      * @var array
      */
     protected $_accessible = [
-        'selected_at' => true,
-        'user' => true,
-        'location' => true
+        'user_id' => true,
+        'location_id' => true,
     ];
 }

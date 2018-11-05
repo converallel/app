@@ -11,7 +11,7 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\PersonalitiesTable|\Cake\ORM\Association\BelongsTo $Personalities
  * @property \App\Model\Table\PersonalitiesTable|\Cake\ORM\Association\BelongsTo $Personalities
- * @property \App\Model\Table\PersonalityCompatibilityLookupTable|\Cake\ORM\Association\BelongsTo $PersonalityCompatibilityLookup
+ * @property \App\Model\Table\PersonalityCompatibilityLevelsTable|\Cake\ORM\Association\BelongsTo $PersonalityCompatibilityLevels
  *
  * @method \App\Model\Entity\PersonalityCompatibility get($primaryKey, $options = [])
  * @method \App\Model\Entity\PersonalityCompatibility newEntity($data = null, array $options = [])
@@ -47,8 +47,8 @@ class PersonalityCompatibilityTable extends Table
             'foreignKey' => 'matching_id',
             'joinType' => 'INNER'
         ]);
-        $this->belongsTo('PersonalityCompatibilityLookup', [
-            'foreignKey' => 'compatibility_id',
+        $this->belongsTo('PersonalityCompatibilityLevels', [
+            'foreignKey' => 'level_id',
             'joinType' => 'INNER'
         ]);
     }
@@ -64,7 +64,7 @@ class PersonalityCompatibilityTable extends Table
     {
         $rules->add($rules->existsIn(['personality_id'], 'Personalities'));
         $rules->add($rules->existsIn(['matching_id'], 'Personalities'));
-        $rules->add($rules->existsIn(['compatibility_id'], 'PersonalityCompatibilityLookup'));
+        $rules->add($rules->existsIn(['level_id'], 'PersonalityCompatibilityLevels'));
 
         return $rules;
     }

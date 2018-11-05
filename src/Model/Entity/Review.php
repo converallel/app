@@ -4,12 +4,13 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * ActivityReview Entity
+ * Review Entity
  *
+ * @property int $id
  * @property int $activity_id
  * @property int $reviewer_id
  * @property int $rating
- * @property string $review
+ * @property string $message
  * @property \Cake\I18n\FrozenTime $reviewed_at
  * @property \Cake\I18n\FrozenTime $modified_at
  * @property int $helpful
@@ -18,7 +19,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Activity $activity
  * @property \App\Model\Entity\User $user
  */
-class ActivityReview extends Entity
+class Review extends Entity
 {
 
     /**
@@ -31,13 +32,11 @@ class ActivityReview extends Entity
      * @var array
      */
     protected $_accessible = [
+        'activity_id' => true,
+        'reviewer_id' => true,
         'rating' => true,
-        'review' => true,
-        'reviewed_at' => true,
-        'modified_at' => true,
+        'message' => true,
         'helpful' => true,
         'not_helpful' => true,
-        'activity' => true,
-        'user' => true
     ];
 }

@@ -24,7 +24,5 @@ class SearchType extends Entity
      * @var array
      */
     protected $_accessible = [
-        'type' => true,
-        'search_histories' => true
     ];
 }

@@ -25,8 +25,5 @@ class Personality extends Entity
      * @var array
      */
     protected $_accessible = [
-        'type' => true,
-        'personality_compatibility' => true,
-        'users' => true
     ];
 }

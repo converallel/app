@@ -17,7 +17,7 @@ class UsersController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Http\Response|void
+     * @return \Cake\Http\Response
      */
     public function index()
     {
@@ -26,7 +26,7 @@ class UsersController extends AppController
         ];
         $users = $this->paginate($this->Users);
 
-        $this->set(['users' => $users, '_serialize' => 'users']);
+        return $this->response($users);
     }
 
     /**
@@ -38,11 +38,23 @@ class UsersController extends AppController
      */
     public function view($id = null)
     {
-        $user = $this->Users->get($id, [
-            'contain' => ['Locations', 'Personalities', 'Education', 'Activities', 'FollowingTags',]
-        ]);
+        $user = $this->Users
+            ->find('basicInformation')
+            ->select(['sexual_orientation', 'bio', 'education' => 'Education.degree', 'personality' => 'Personalities.type'])
+            ->select($this->Users->Locations)
+            ->contain([
+                'Locations', 'Personalities', 'Education', 'Tags',
+                'Activities' => function (Query $query) {
+                    return $query->find('basicInformation')->limit(5);
+                },
+            ])
+            ->where(['Users.id' => $id])
+            ->first();
 
-        return $this->response($user);
+        if ($user)
+            return $this->response($user);
+
+        return $this->response("Not Found", 404);
     }
 
     /**
@@ -53,7 +65,7 @@ class UsersController extends AppController
     public function add()
     {
         $user = $this->Users->newEntity();
-        $user = $this->Users->patchEntity($user, $this->request->getData());
+        $user = $this->Users->patchEntity($user, $this->getRequest()->getData());
         if ($user = $this->Users->save($user)) {
             return $this->response(['id' => $user->id]);
         }
@@ -69,12 +81,13 @@ class UsersController extends AppController
      */
     public function edit($id = null)
     {
+        $this->getRequest()->allowMethod('patch');
         $user = $this->Users->get($id, [
-            'contain' => ['Activities']
+            'contain' => ['Personalities']
         ]);
-        $user = $this->Users->patchEntity($user, $this->request->getData());
+        $user = $this->Users->patchEntity($user, $this->getRequest()->getData());
         if ($this->Users->save($user)) {
-            return $this->getResponse();
+            return $this->response(null, 204);
         }
         return $this->response('The user could not be saved. Please, try again.', 400);
     }
@@ -90,7 +103,7 @@ class UsersController extends AppController
     {
         $user = $this->Users->get($id);
         if ($this->Users->delete($user)) {
-            return $this->getResponse();
+            return $this->response();
         }
         return $this->response('The user could not be deleted. Please, try again.', 400);
     }

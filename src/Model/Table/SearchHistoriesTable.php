@@ -35,8 +35,8 @@ class SearchHistoriesTable extends Table
         parent::initialize($config);
 
         $this->setTable('search_histories');
-        $this->setDisplayField('user_id');
-        $this->setPrimaryKey(['user_id', 'search_type_id', 'search_string']);
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
@@ -57,9 +57,14 @@ class SearchHistoriesTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
+            ->nonNegativeInteger('id')
+            ->allowEmpty('id', 'create');
+
+        $validator
             ->scalar('search_string')
             ->maxLength('search_string', 100)
-            ->allowEmpty('search_string', 'create');
+            ->requirePresence('search_string', 'create')
+            ->notEmpty('search_string');
 
         $validator
             ->dateTime('searched_at')

@@ -22,6 +22,5 @@ class Language extends Entity
      * @var array
      */
     protected $_accessible = [
-        'language' => true
     ];
 }

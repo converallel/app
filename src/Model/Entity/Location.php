@@ -53,10 +53,5 @@ class Location extends Entity
         'thoroughfare' => true,
         'sub_thoroughfare' => true,
         'time_zone' => true,
-        'activities' => true,
-        'activity_filters' => true,
-        'activity_itineraries' => true,
-        'location_selection_histories' => true,
-        'users' => true
     ];
 }

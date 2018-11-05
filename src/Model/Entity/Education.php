@@ -25,8 +25,5 @@ class Education extends Entity
      * @var array
      */
     protected $_accessible = [
-        'degree' => true,
-        'activity_filter_education' => true,
-        'users' => true
     ];
 }

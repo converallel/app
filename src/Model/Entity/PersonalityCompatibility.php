@@ -8,10 +8,10 @@ use Cake\ORM\Entity;
  *
  * @property int $personality_id
  * @property int $matching_id
- * @property int $compatibility_id
+ * @property int $level_id
  *
  * @property \App\Model\Entity\Personality $personality
- * @property \App\Model\Entity\PersonalityCompatibilityLookup $personality_compatibility_lookup
+ * @property \App\Model\Entity\PersonalityCompatibilityLevel $personality_compatibility_level
  */
 class PersonalityCompatibility extends Entity
 {
@@ -26,8 +26,6 @@ class PersonalityCompatibility extends Entity
      * @var array
      */
     protected $_accessible = [
-        'compatibility_id' => true,
-        'personality' => true,
-        'personality_compatibility_lookup' => true
+        'level_id' => true,
     ];
 }

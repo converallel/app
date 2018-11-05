@@ -4,10 +4,10 @@ namespace App\Test\Fixture;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
- * ActivityApplicationsFixture
+ * ApplicationsFixture
  *
  */
-class ActivityApplicationsFixture extends TestFixture
+class ApplicationsFixture extends TestFixture
 {
 
     /**
@@ -17,20 +17,22 @@ class ActivityApplicationsFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
+        'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'activity_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
-        'applicant_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'user_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'message' => ['type' => 'string', 'length' => 200, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'status' => ['type' => 'string', 'length' => null, 'null' => false, 'default' => 'TBD', 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'applied_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         'modified_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         '_indexes' => [
-            'applicant_id' => ['type' => 'index', 'columns' => ['applicant_id'], 'length' => []],
+            'user_id' => ['type' => 'index', 'columns' => ['user_id'], 'length' => []],
             'status' => ['type' => 'index', 'columns' => ['status'], 'length' => []],
         ],
         '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['activity_id', 'applicant_id'], 'length' => []],
-            'activity_applications_ibfk_1' => ['type' => 'foreign', 'columns' => ['activity_id'], 'references' => ['activities', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
-            'activity_applications_ibfk_2' => ['type' => 'foreign', 'columns' => ['applicant_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
+            'activity_id' => ['type' => 'unique', 'columns' => ['activity_id', 'user_id'], 'length' => []],
+            'applications_ibfk_1' => ['type' => 'foreign', 'columns' => ['activity_id'], 'references' => ['activities', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'applications_ibfk_2' => ['type' => 'foreign', 'columns' => ['user_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -48,12 +50,13 @@ class ActivityApplicationsFixture extends TestFixture
     {
         $this->records = [
             [
+                'id' => 1,
                 'activity_id' => 1,
-                'applicant_id' => 1,
+                'user_id' => 1,
                 'message' => 'Lorem ipsum dolor sit amet',
                 'status' => 'Lorem ipsum dolor sit amet',
-                'applied_at' => 1540511520,
-                'modified_at' => 1540511520
+                'applied_at' => 1541385338,
+                'modified_at' => 1541385338
             ],
         ];
         parent::init();

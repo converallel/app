@@ -6,6 +6,7 @@ use Cake\ORM\Entity;
 /**
  * Media Entity
  *
+ * @property int $id
  * @property int $owner_id
  * @property int $position
  * @property string $media_type
@@ -28,10 +29,10 @@ class Media extends Entity
      * @var array
      */
     protected $_accessible = [
+        'owner_id' => true,
+        'position' => true,
         'media_type' => true,
         'file_path' => true,
-        'uploaded_at' => true,
         'caption' => true,
-        'user' => true
     ];
 }

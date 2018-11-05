@@ -22,6 +22,5 @@ class ActivityFilterDateType extends Entity
      * @var array
      */
     protected $_accessible = [
-        'type' => true
     ];
 }

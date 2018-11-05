@@ -26,7 +26,7 @@ class PersonalityCompatibilityTableTest extends TestCase
     public $fixtures = [
         'app.personality_compatibility',
         'app.personalities',
-        'app.personality_compatibility_lookup'
+        'app.personality_compatibility_levels'
     ];
 
     /**

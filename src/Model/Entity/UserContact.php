@@ -4,15 +4,13 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * FollowingTag Entity
+ * UserContact Entity
  *
  * @property int $user_id
- * @property int $tag_id
- *
- * @property \App\Model\Entity\User $user
- * @property \App\Model\Entity\Tag $tag
+ * @property string $type
+ * @property string $contact
  */
-class FollowingTag extends Entity
+class UserContact extends Entity
 {
 
     /**
@@ -25,7 +23,7 @@ class FollowingTag extends Entity
      * @var array
      */
     protected $_accessible = [
-        'user' => true,
-        'tag' => true
+        'type' => true,
+        'contact' => true
     ];
 }

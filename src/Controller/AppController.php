@@ -17,6 +17,7 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Controller\Exception\SecurityException;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Routing\Router;
 
@@ -31,6 +32,8 @@ use Cake\Routing\Router;
 class AppController extends Controller
 {
 
+    protected $user_id = 2;
+
     /**
      * Initialization hook method.
      *
@@ -39,16 +42,31 @@ class AppController extends Controller
      * e.g. `$this->loadComponent('Security');`
      *
      * @return void
+     * @throws \Exception
      */
     public function initialize()
     {
         parent::initialize();
 
+//        $this->loadComponent('Auth', [
+//            'authenticate' => [
+//                'Digest' => [
+//                    'fields' => ['username' => ['email', 'phone_number'], 'password' => 'digest_hash'],
+//                    'userModel' => 'Users'
+//                ],
+//            ],
+//            'storage' => 'Memory',
+//            'unauthorizedRedirect' => false
+//        ]);
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
         ]);
-        $this->loadComponent('Security', ['blackHoleCallback' => 'forceSSL']);
+//        $this->loadComponent('Security', ['blackHoleCallback' => 'forceSSL']);
+
+//        $this->user_id = $this->Auth->user('id');
+        Configure::write('user_id', $this->user_id);
     }
+
 
     public function beforeFilter(Event $event)
     {
@@ -74,10 +92,14 @@ class AppController extends Controller
      * @param int $status
      * @return \Cake\Http\Response
      */
-    protected function response($data, $status = 200)
+    protected function response($data = null, $status = 200)
     {
         if (is_string($data))
             $data = ['message' => $data];
-        return $this->getResponse()->withStringBody(json_encode($data))->withStatus($status)->withType('application/json');
+
+        if (is_null($data))
+            return $this->getResponse()->withStatus($status)->withType('application/json');
+        else
+            return $this->getResponse()->withStringBody(json_encode($data))->withStatus($status)->withType('application/json');
     }
 }

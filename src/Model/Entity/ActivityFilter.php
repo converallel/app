@@ -44,7 +44,5 @@ class ActivityFilter extends Entity
         'to_age' => true,
         'matching_personality' => true,
         'verified_user' => true,
-        'location' => true,
-        'activity_filter_date_type' => true
     ];
 }

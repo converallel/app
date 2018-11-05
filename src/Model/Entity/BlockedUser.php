@@ -24,6 +24,7 @@ class BlockedUser extends Entity
      * @var array
      */
     protected $_accessible = [
-        'user' => true
+        'blocker_id' => true,
+        'blocked_id' => true
     ];
 }

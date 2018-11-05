@@ -25,7 +25,7 @@ class ActivityFilterEducation extends Entity
      * @var array
      */
     protected $_accessible = [
-        'user' => true,
-        'education' => true
+        'user_id' => true,
+        'education_id' => true
     ];
 }

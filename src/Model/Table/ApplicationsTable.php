@@ -1,27 +1,29 @@
 <?php
+
 namespace App\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * ActivityApplications Model
+ * Applications Model
  *
  * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\BelongsTo $Activities
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  *
- * @method \App\Model\Entity\ActivityApplication get($primaryKey, $options = [])
- * @method \App\Model\Entity\ActivityApplication newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\ActivityApplication[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\ActivityApplication|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\ActivityApplication|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\ActivityApplication patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\ActivityApplication[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\ActivityApplication findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\Application get($primaryKey, $options = [])
+ * @method \App\Model\Entity\Application newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\Application[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\Application|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Application|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Application patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\Application[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\Application findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @mixin \Cake\ORM\Behavior\CounterCacheBehavior
  */
-class ActivityApplicationsTable extends Table
+class ApplicationsTable extends Table
 {
 
     /**
@@ -34,16 +36,20 @@ class ActivityApplicationsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('activity_applications');
-        $this->setDisplayField('activity_id');
-        $this->setPrimaryKey(['activity_id', 'applicant_id']);
+        $this->setTable('applications');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
+
+        $this->addBehavior('CounterCache', [
+            'Activities' => ['application_count']
+        ]);
 
         $this->belongsTo('Activities', [
             'foreignKey' => 'activity_id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Users', [
-            'foreignKey' => 'applicant_id',
+            'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
     }
@@ -57,6 +63,10 @@ class ActivityApplicationsTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
+            ->nonNegativeInteger('id')
+            ->allowEmpty('id', 'create');
+
+        $validator
             ->scalar('message')
             ->maxLength('message', 200)
             ->requirePresence('message', 'create')
@@ -64,18 +74,14 @@ class ActivityApplicationsTable extends Table
 
         $validator
             ->scalar('status')
-            ->requirePresence('status', 'create')
             ->notEmpty('status');
 
         $validator
-            ->dateTime('applied_at')
-            ->requirePresence('applied_at', 'create')
-            ->notEmpty('applied_at');
-
-        $validator
-            ->dateTime('modified_at')
-            ->requirePresence('modified_at', 'create')
-            ->notEmpty('modified_at');
+            ->add('activity_id', 'unique', [
+                'rule' => ['validateUnique', ['scope' => 'user_id']],
+                'message' => __('You\'ve already applied to this activity.'),
+                'provider' => 'table'
+            ]);
 
         return $validator;
     }
@@ -90,7 +96,7 @@ class ActivityApplicationsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['activity_id'], 'Activities'));
-        $rules->add($rules->existsIn(['applicant_id'], 'Users'));
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
     }

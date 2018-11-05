@@ -4,15 +4,13 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * ActivitiesTag Entity
+ * PersonalityCompatibilityLevel Entity
  *
- * @property int $activity_id
- * @property int $tag_id
- *
- * @property \App\Model\Entity\Activity $activity
- * @property \App\Model\Entity\Tag $tag
+ * @property int $id
+ * @property string $title
+ * @property string $description
  */
-class ActivitiesTag extends Entity
+class PersonalityCompatibilityLevel extends Entity
 {
 
     /**
@@ -25,7 +23,5 @@ class ActivitiesTag extends Entity
      * @var array
      */
     protected $_accessible = [
-        'activity_id' => true,
-        'tag_id' => true
     ];
 }

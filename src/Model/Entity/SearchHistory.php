@@ -6,6 +6,7 @@ use Cake\ORM\Entity;
 /**
  * SearchHistory Entity
  *
+ * @property int $id
  * @property int $user_id
  * @property int $search_type_id
  * @property string $search_string
@@ -27,8 +28,8 @@ class SearchHistory extends Entity
      * @var array
      */
     protected $_accessible = [
-        'searched_at' => true,
-        'user' => true,
-        'search_type' => true
+        'user_id' => true,
+        'search_type_id' => true,
+        'search_string' => true,
     ];
 }

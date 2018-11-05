@@ -1,7 +1,7 @@
 <?php
+
 namespace App\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -35,8 +35,8 @@ class ActivitiesUsersTable extends Table
         parent::initialize($config);
 
         $this->setTable('activities_users');
-        $this->setDisplayField('activity_id');
-        $this->setPrimaryKey(['activity_id', 'user_id', 'type']);
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Activities', [
             'foreignKey' => 'activity_id',
@@ -57,8 +57,18 @@ class ActivitiesUsersTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
+            ->nonNegativeInteger('id')
+            ->allowEmpty('id', 'create');
+
+        $validator
             ->scalar('type')
-            ->allowEmpty('type', 'create');
+            ->requirePresence('type', 'create')
+            ->notEmpty('type');
+
+        $validator
+            ->dateTime('created_at')
+            ->requirePresence('created_at', 'create')
+            ->notEmpty('created_at');
 
         return $validator;
     }

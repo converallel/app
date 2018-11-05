@@ -30,12 +30,14 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Education $education
  * @property \App\Model\Entity\ActivityFilterEducation[] $activity_filter_education
  * @property \App\Model\Entity\ActivityFilter[] $activity_filters
- * @property \App\Model\Entity\FollowingTag[] $following_tags
+ * @property \App\Model\Entity\Application[] $applications
  * @property \App\Model\Entity\LocationSelectionHistory[] $location_selection_histories
  * @property \App\Model\Entity\SearchHistory[] $search_histories
+ * @property \App\Model\Entity\UserContact[] $user_contacts
  * @property \App\Model\Entity\UserDevice[] $user_devices
  * @property \App\Model\Entity\UserLogin[] $user_logins
  * @property \App\Model\Entity\Activity[] $activities
+ * @property \App\Model\Entity\Tag[] $tags
  */
 class User extends Entity
 {
@@ -65,19 +67,7 @@ class User extends Entity
         'education_id' => true,
         'bio' => true,
         'rating' => true,
-        'verified' => true,
-        'created_at' => true,
-        'location' => true,
-        'personality' => true,
-        'education' => true,
-        'activity_filter_education' => true,
-        'activity_filters' => true,
-        'following_tags' => true,
-        'location_selection_histories' => true,
-        'search_histories' => true,
-        'user_devices' => true,
-        'user_logins' => true,
-        'activities' => true
+        'verified' => true
     ];
 
     /**
@@ -86,6 +76,8 @@ class User extends Entity
      * @var array
      */
     protected $_hidden = [
-        'password'
+        'password',
+        'rating',
+        '_joinData'
     ];
 }

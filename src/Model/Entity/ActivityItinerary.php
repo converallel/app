@@ -34,8 +34,5 @@ class ActivityItinerary extends Entity
         'arrive_on' => true,
         'depart_on' => true,
         'transportation_mode_id' => true,
-        'activity' => true,
-        'location' => true,
-        'transportation' => true
     ];
 }

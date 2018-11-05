@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\TagsTable;
+use App\Model\Table\ApplicationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\TagsTable Test Case
+ * App\Model\Table\ApplicationsTable Test Case
  */
-class TagsTableTest extends TestCase
+class ApplicationsTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\TagsTable
+     * @var \App\Model\Table\ApplicationsTable
      */
-    public $Tags;
+    public $Applications;
 
     /**
      * Fixtures
@@ -24,7 +24,7 @@ class TagsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.tags',
+        'app.applications',
         'app.activities',
         'app.users'
     ];
@@ -37,8 +37,8 @@ class TagsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('Tags') ? [] : ['className' => TagsTable::class];
-        $this->Tags = TableRegistry::getTableLocator()->get('Tags', $config);
+        $config = TableRegistry::getTableLocator()->exists('Applications') ? [] : ['className' => ApplicationsTable::class];
+        $this->Applications = TableRegistry::getTableLocator()->get('Applications', $config);
     }
 
     /**
@@ -48,7 +48,7 @@ class TagsTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->Tags);
+        unset($this->Applications);
 
         parent::tearDown();
     }

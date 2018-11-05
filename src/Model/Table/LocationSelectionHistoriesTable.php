@@ -35,8 +35,8 @@ class LocationSelectionHistoriesTable extends Table
         parent::initialize($config);
 
         $this->setTable('location_selection_histories');
-        $this->setDisplayField('user_id');
-        $this->setPrimaryKey(['user_id', 'location_id']);
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
@@ -56,6 +56,10 @@ class LocationSelectionHistoriesTable extends Table
      */
     public function validationDefault(Validator $validator)
     {
+        $validator
+            ->nonNegativeInteger('id')
+            ->allowEmpty('id', 'create');
+
         $validator
             ->dateTime('selected_at')
             ->requirePresence('selected_at', 'create')

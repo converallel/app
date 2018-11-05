@@ -2,11 +2,10 @@
 
 namespace App\Controller;
 
-use Cake\ORM\TableRegistry;
-
 /**
  * Activities Controller
  *
+ * @property \App\Model\Table\ActivityFiltersTable $ActivityFilters
  * @property \App\Model\Table\ActivitiesTable $Activities
  *
  * @method \App\Model\Entity\Activity[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
@@ -21,25 +20,27 @@ class ActivitiesController extends AppController
      */
     public function index()
     {
-//        $user_id = $this->Auth->user('id');
+        $user_id = $this->user_id;
+        $start_date = date("Y-m-d h:i:s");
+        $end_date = date("Y-m-d h:i:s", strtotime("+10 year"));
 
-        $tableLocator = TableRegistry::getTableLocator();
-        $activityFilters = $tableLocator->get('ActivityFilters');
-
+        $this->loadModel('ActivityFilters');
 
         $query = $this->Activities->find();
         $query
             ->find('basicInformation')
             ->where([
-//                'start_date BETWEEN ? AND ?' => ['2019-03-03 05:06:07', '2019-03-05 05:06:07'],
+                'start_date BETWEEN :start_date AND :end_date',
                 'is_pair' => true,
-                'status' => 'Active',
+                'ActivityStatuses.status' => 'Active',
             ])
             ->order([
                 'Activities.start_date' => 'ASC',
                 'Activities.id' => 'DESC'
             ])
-            ->limit(10);
+            ->limit(10)
+            ->bind(':start_date', $start_date)
+            ->bind(':end_date', $end_date);
 
         $this->paginate = [
             'maxLimit' => 10
@@ -53,16 +54,22 @@ class ActivitiesController extends AppController
      * View method
      *
      * @param string|null $id Activity id.
-     * @return \Cake\Http\Response|void
+     * @return \Cake\Http\Response
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
-        $activity = $this->Activities->get($id, [
-            'contain' => ['Locations', 'ActivityStatuses', 'Users', 'Tags', 'ActivityApplications', 'ActivityItineraries', 'ActivityReviews']
-        ]);
+        $activity = $this->Activities
+            ->find('basicInformation')
+            ->select(['application_count', 'review_count'])
+            ->contain(['ActivityItineraries'])
+            ->where(['Activities.id' => $id])
+            ->first();
 
-        $this->set(['activity' => $activity, '_serialize' => 'activity']);
+        if ($activity)
+            return $this->response($activity);
+
+        return $this->response("Not Found", 404);
     }
 
     /**
@@ -73,9 +80,10 @@ class ActivitiesController extends AppController
     public function add()
     {
         $activity = $this->Activities->newEntity();
-        $activity = $this->Activities->patchEntity($activity, $this->request->getData());
-        if ($activity = $this->Activities->save($activity)) {
-            $this->set(['id' => $activity->id, '_serialize' => 'id']);
+        $activity = $this->Activities->patchEntity($activity, $this->getRequest()->getData(), [
+            'associated' => ['Tags' => ['onlyIds' => true]]
+        ]);
+        if ($this->Activities->save($activity)) {
             return $this->response(['id' => $activity->id]);
         }
         return $this->response('The activity could not be saved. Please, try again.', 400);
@@ -85,47 +93,35 @@ class ActivitiesController extends AppController
      * Edit method
      *
      * @param string|null $id Activity id.
-     * @return \Cake\Http\Response|void
+     * @return \Cake\Http\Response
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
+        $this->getRequest()->allowMethod('patch');
         $activity = $this->Activities->get($id, [
-            'contain' => ['Users', 'Tags']
+            'contain' => ['Tags']
         ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $activity = $this->Activities->patchEntity($activity, $this->request->getData());
-            if ($this->Activities->save($activity)) {
-                $this->Flash->success(__('The activity has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The activity could not be saved. Please, try again.'));
+        $activity = $this->Activities->patchEntity($activity, $this->getRequest()->getData());
+        if ($this->Activities->save($activity)) {
+            return $this->response(null, 204);
         }
-        $locations = $this->Activities->Locations->find('list', ['limit' => 200]);
-        $activityStatuses = $this->Activities->ActivityStatuses->find('list', ['limit' => 200]);
-        $users = $this->Activities->Users->find('list', ['limit' => 200]);
-        $tags = $this->Activities->Tags->find('list', ['limit' => 200]);
-        $this->set(compact('activity', 'locations', 'activityStatuses', 'users', 'tags'));
+        return $this->response('The activity could not be saved. Please, try again.', 400);
     }
 
     /**
      * Delete method
      *
      * @param string|null $id Activity id.
-     * @return \Cake\Http\Response|void
+     * @return \Cake\Http\Response
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
         $activity = $this->Activities->get($id);
         if ($this->Activities->delete($activity)) {
-            $this->Flash->success(__('The activity has been deleted.'));
-        } else {
-            $this->Flash->error(__('The activity could not be deleted. Please, try again.'));
+            return $this->response();
         }
-
-        return $this->redirect(['action' => 'index']);
+        return $this->response('The activity could not be deleted. Please, try again.', 400);
     }
 }

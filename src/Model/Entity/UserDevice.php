@@ -25,7 +25,7 @@ class UserDevice extends Entity
      * @var array
      */
     protected $_accessible = [
-        'user' => true,
-        'device' => true
+        'user_id' => true,
+        'device_id' => true
     ];
 }

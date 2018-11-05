@@ -12,6 +12,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\TagsTable|\Cake\ORM\Association\BelongsTo $ParentTags
  * @property \App\Model\Table\TagsTable|\Cake\ORM\Association\HasMany $ChildTags
  * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\BelongsToMany $Activities
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Users
  *
  * @method \App\Model\Entity\Tag get($primaryKey, $options = [])
  * @method \App\Model\Entity\Tag newEntity($data = null, array $options = [])
@@ -36,8 +37,8 @@ class TagsTable extends Table
         parent::initialize($config);
 
         $this->setTable('tags');
-        $this->setDisplayField('tag_id');
-        $this->setPrimaryKey('tag_id');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('ParentTags', [
             'className' => 'Tags',
@@ -52,6 +53,11 @@ class TagsTable extends Table
             'targetForeignKey' => 'activity_id',
             'joinTable' => 'activities_tags'
         ]);
+        $this->belongsToMany('Users', [
+            'foreignKey' => 'tag_id',
+            'targetForeignKey' => 'user_id',
+            'joinTable' => 'users_tags'
+        ]);
     }
 
     /**
@@ -63,14 +69,14 @@ class TagsTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->allowEmpty('tag_id', 'create');
+            ->allowEmpty('id', 'create');
 
         $validator
-            ->scalar('tag')
-            ->maxLength('tag', 45)
-            ->requirePresence('tag', 'create')
-            ->notEmpty('tag')
-            ->add('tag', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->scalar('name')
+            ->maxLength('name', 30)
+            ->requirePresence('name', 'create')
+            ->notEmpty('name')
+            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
             ->nonNegativeInteger('count')

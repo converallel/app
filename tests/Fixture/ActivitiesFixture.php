@@ -30,6 +30,10 @@ class ActivitiesFixture extends TestFixture
         'details' => ['type' => 'string', 'length' => 300, 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'status_id' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => '1', 'comment' => '', 'precision' => null],
         'group_size_limit' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
+        'application_count' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
+        'organizer_count' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
+        'participant_count' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
+        'review_count' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
         'created_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         'modified_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         '_indexes' => [
@@ -62,8 +66,8 @@ class ActivitiesFixture extends TestFixture
             [
                 'id' => 1,
                 'title' => 'Lorem ipsum dolor sit amet',
-                'start_date' => '2018-10-25 23:52:00',
-                'end_date' => '2018-10-25 23:52:00',
+                'start_date' => '2018-11-05 02:35:38',
+                'end_date' => '2018-11-05 02:35:38',
                 'location_id' => 1,
                 'customized_location' => 'Lorem ipsum dolor sit amet',
                 'organizer_id' => 1,
@@ -73,8 +77,12 @@ class ActivitiesFixture extends TestFixture
                 'details' => 'Lorem ipsum dolor sit amet',
                 'status_id' => 1,
                 'group_size_limit' => 1,
-                'created_at' => 1540511520,
-                'modified_at' => 1540511520
+                'application_count' => 1,
+                'organizer_count' => 1,
+                'participant_count' => 1,
+                'review_count' => 1,
+                'created_at' => 1541385338,
+                'modified_at' => 1541385338
             ],
         ];
         parent::init();

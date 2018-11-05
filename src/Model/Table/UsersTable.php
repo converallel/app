@@ -15,12 +15,14 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\EducationTable|\Cake\ORM\Association\BelongsTo $Education
  * @property \App\Model\Table\ActivityFilterEducationTable|\Cake\ORM\Association\HasMany $ActivityFilterEducation
  * @property \App\Model\Table\ActivityFiltersTable|\Cake\ORM\Association\HasMany $ActivityFilters
- * @property \App\Model\Table\FollowingTagsTable|\Cake\ORM\Association\HasMany $FollowingTags
+ * @property \App\Model\Table\ApplicationsTable|\Cake\ORM\Association\HasMany $Applications
  * @property \App\Model\Table\LocationSelectionHistoriesTable|\Cake\ORM\Association\HasMany $LocationSelectionHistories
  * @property \App\Model\Table\SearchHistoriesTable|\Cake\ORM\Association\HasMany $SearchHistories
+ * @property \App\Model\Table\UserContactsTable|\Cake\ORM\Association\HasMany $UserContacts
  * @property \App\Model\Table\UserDevicesTable|\Cake\ORM\Association\HasMany $UserDevices
  * @property \App\Model\Table\UserLoginsTable|\Cake\ORM\Association\HasMany $UserLogins
  * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\BelongsToMany $Activities
+ * @property \App\Model\Table\TagsTable|\Cake\ORM\Association\BelongsToMany $Tags
  *
  * @method \App\Model\Entity\User get($primaryKey, $options = [])
  * @method \App\Model\Entity\User newEntity($data = null, array $options = [])
@@ -48,6 +50,13 @@ class UsersTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
+//        $this->addBehavior('CounterCache', [
+//            'Activities' => [
+//                'organizer_count' => ['finder' => 'organizers'],
+//                'participant_count' => ['finder' => 'participants'],
+//            ]
+//        ]);
+
         $this->belongsTo('Locations', [
             'foreignKey' => 'location_id',
             'joinType' => 'INNER'
@@ -64,13 +73,16 @@ class UsersTable extends Table
         $this->hasMany('ActivityFilters', [
             'foreignKey' => 'user_id'
         ]);
-        $this->hasMany('FollowingTags', [
+        $this->hasMany('Applications', [
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('LocationSelectionHistories', [
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('SearchHistories', [
+            'foreignKey' => 'user_id'
+        ]);
+        $this->hasMany('UserContacts', [
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('UserDevices', [
@@ -83,6 +95,11 @@ class UsersTable extends Table
             'foreignKey' => 'user_id',
             'targetForeignKey' => 'activity_id',
             'joinTable' => 'activities_users'
+        ]);
+        $this->belongsToMany('Tags', [
+            'foreignKey' => 'user_id',
+            'targetForeignKey' => 'tag_id',
+            'joinTable' => 'users_tags'
         ]);
     }
 
@@ -116,7 +133,7 @@ class UsersTable extends Table
             ->notEmpty('password');
 
         $validator
-            ->requirePresence('failed_login_attempts', 'create')
+            ->nonNegativeInteger('failed_login_attempts')
             ->notEmpty('failed_login_attempts');
 
         $validator
@@ -157,18 +174,12 @@ class UsersTable extends Table
             ->allowEmpty('bio');
 
         $validator
-            ->requirePresence('rating', 'create')
+            ->nonNegativeInteger('rating')
             ->notEmpty('rating');
 
         $validator
             ->boolean('verified')
-            ->requirePresence('verified', 'create')
             ->notEmpty('verified');
-
-        $validator
-            ->dateTime('created_at')
-            ->requirePresence('created_at', 'create')
-            ->notEmpty('created_at');
 
         return $validator;
     }
@@ -196,8 +207,18 @@ class UsersTable extends Table
      * @param array $options
      * @return Query
      */
+    public function findMinimumInformation(Query $query, array $options)
+    {
+        return $query->select(['id', 'profile_image_path']);
+    }
+
+    /**
+     * @param Query $query
+     * @param array $options
+     * @return Query
+     */
     public function findBasicInformation(Query $query, array $options)
     {
-        return $query->select(['id', 'given_name', 'family_name', 'birthdate', 'gender', 'verified']);
+        return $query->select(['id', 'given_name', 'family_name', 'birthdate', 'gender', 'profile_image_path', 'verified']);
     }
 }

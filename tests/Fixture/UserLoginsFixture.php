@@ -17,6 +17,7 @@ class UserLoginsFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
+        'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'user_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'device_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'logged_in_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
@@ -26,7 +27,8 @@ class UserLoginsFixture extends TestFixture
             'device_id' => ['type' => 'index', 'columns' => ['device_id'], 'length' => []],
         ],
         '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['user_id', 'device_id', 'logged_in_at'], 'length' => []],
+            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
+            'user_id' => ['type' => 'unique', 'columns' => ['user_id', 'device_id', 'logged_in_at'], 'length' => []],
             'user_logins_ibfk_1' => ['type' => 'foreign', 'columns' => ['device_id'], 'references' => ['devices', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
         ],
         '_options' => [
@@ -45,9 +47,10 @@ class UserLoginsFixture extends TestFixture
     {
         $this->records = [
             [
+                'id' => 1,
                 'user_id' => 1,
                 'device_id' => 1,
-                'logged_in_at' => 1540511521,
+                'logged_in_at' => 1541385338,
                 'latitude' => 1,
                 'longitude' => 1
             ],

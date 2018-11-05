@@ -28,7 +28,5 @@ class Device extends Entity
     protected $_accessible = [
         'uuid' => true,
         'name' => true,
-        'user_devices' => true,
-        'user_logins' => true
     ];
 }

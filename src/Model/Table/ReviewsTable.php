@@ -1,27 +1,29 @@
 <?php
+
 namespace App\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * ActivityReviews Model
+ * Reviews Model
  *
  * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\BelongsTo $Activities
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  *
- * @method \App\Model\Entity\ActivityReview get($primaryKey, $options = [])
- * @method \App\Model\Entity\ActivityReview newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\ActivityReview[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\ActivityReview|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\ActivityReview|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\ActivityReview patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\ActivityReview[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\ActivityReview findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\Review get($primaryKey, $options = [])
+ * @method \App\Model\Entity\Review newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\Review[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\Review|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Review|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Review patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\Review[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\Review findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @mixin \Cake\ORM\Behavior\CounterCacheBehavior
  */
-class ActivityReviewsTable extends Table
+class ReviewsTable extends Table
 {
 
     /**
@@ -34,9 +36,13 @@ class ActivityReviewsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('activity_reviews');
-        $this->setDisplayField('activity_id');
-        $this->setPrimaryKey(['activity_id', 'reviewer_id']);
+        $this->setTable('reviews');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
+
+        $this->addBehavior('CounterCache', [
+            'Activities' => ['review_count']
+        ]);
 
         $this->belongsTo('Activities', [
             'foreignKey' => 'activity_id',
@@ -45,6 +51,12 @@ class ActivityReviewsTable extends Table
         $this->belongsTo('Users', [
             'foreignKey' => 'reviewer_id',
             'joinType' => 'INNER'
+        ]);
+
+        $this->addBehavior('CounterCache', [
+            'Activities' => [
+                'review_count'
+            ]
         ]);
     }
 
@@ -57,12 +69,16 @@ class ActivityReviewsTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
+            ->nonNegativeInteger('id')
+            ->allowEmpty('id', 'create');
+
+        $validator
             ->requirePresence('rating', 'create')
             ->notEmpty('rating');
 
         $validator
-            ->scalar('review')
-            ->allowEmpty('review');
+            ->scalar('message')
+            ->allowEmpty('message');
 
         $validator
             ->dateTime('reviewed_at')

@@ -23,6 +23,5 @@ class TimeZone extends Entity
      * @var array
      */
     protected $_accessible = [
-        'timezone' => true
     ];
 }

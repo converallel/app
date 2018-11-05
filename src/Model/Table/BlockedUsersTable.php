@@ -9,8 +9,8 @@ use Cake\Validation\Validator;
 /**
  * BlockedUsers Model
  *
- * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
- * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Blockers
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $BlockedUsers
  *
  * @method \App\Model\Entity\BlockedUser get($primaryKey, $options = [])
  * @method \App\Model\Entity\BlockedUser newEntity($data = null, array $options = [])
@@ -38,11 +38,13 @@ class BlockedUsersTable extends Table
         $this->setDisplayField('blocker_id');
         $this->setPrimaryKey(['blocker_id', 'blocked_id']);
 
-        $this->belongsTo('Users', [
+        $this->belongsTo('Blockers', [
+            'className' => 'Users',
             'foreignKey' => 'blocker_id',
             'joinType' => 'INNER'
         ]);
-        $this->belongsTo('Users', [
+        $this->belongsTo('BlockedUsers', [
+            'className' => 'Users',
             'foreignKey' => 'blocked_id',
             'joinType' => 'INNER'
         ]);

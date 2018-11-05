@@ -2,6 +2,7 @@
 
 namespace App\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -11,13 +12,15 @@ use Cake\Validation\Validator;
  * Activities Model
  *
  * @property \App\Model\Table\LocationsTable|\Cake\ORM\Association\BelongsTo $Locations
- * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Organizers
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Organizer
  * @property \App\Model\Table\ActivityStatusesTable|\Cake\ORM\Association\BelongsTo $ActivityStatuses
- * @property \App\Model\Table\ActivityApplicationsTable|\Cake\ORM\Association\HasMany $ActivityApplications
  * @property \App\Model\Table\ActivityItinerariesTable|\Cake\ORM\Association\HasMany $ActivityItineraries
- * @property \App\Model\Table\ActivityReviewsTable|\Cake\ORM\Association\HasMany $ActivityReviews
+ * @property \App\Model\Table\ApplicationsTable|\Cake\ORM\Association\HasMany $Applications
+ * @property \App\Model\Table\ReviewsTable|\Cake\ORM\Association\HasMany $Reviews
  * @property \App\Model\Table\TagsTable|\Cake\ORM\Association\BelongsToMany $Tags
- * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Users
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Followers
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Organizers
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Participants
  *
  * @method \App\Model\Entity\Activity get($primaryKey, $options = [])
  * @method \App\Model\Entity\Activity newEntity($data = null, array $options = [])
@@ -49,7 +52,7 @@ class ActivitiesTable extends Table
             'foreignKey' => 'location_id',
             'joinType' => 'INNER'
         ]);
-        $this->belongsTo('Organizers', [
+        $this->belongsTo('Organizer', [
             'className' => 'Users',
             'foreignKey' => 'organizer_id',
             'joinType' => 'INNER'
@@ -58,13 +61,13 @@ class ActivitiesTable extends Table
             'foreignKey' => 'status_id',
             'joinType' => 'INNER'
         ]);
-        $this->hasMany('ActivityApplications', [
-            'foreignKey' => 'activity_id'
-        ]);
         $this->hasMany('ActivityItineraries', [
             'foreignKey' => 'activity_id'
         ]);
-        $this->hasMany('ActivityReviews', [
+        $this->hasMany('Applications', [
+            'foreignKey' => 'activity_id'
+        ]);
+        $this->hasMany('Reviews', [
             'foreignKey' => 'activity_id'
         ]);
         $this->belongsToMany('Tags', [
@@ -72,10 +75,32 @@ class ActivitiesTable extends Table
             'targetForeignKey' => 'tag_id',
             'joinTable' => 'activities_tags'
         ]);
-        $this->belongsToMany('Users', [
+        $this->belongsToMany('Followers', [
+            'className' => 'Users',
             'foreignKey' => 'activity_id',
             'targetForeignKey' => 'user_id',
-            'joinTable' => 'activities_users'
+            'joinTable' => 'activities_users',
+            'through' => 'ActivitiesUsers',
+            'cascadeCallbacks' => true,
+            'conditions' => ['ActivitiesUsers.type' => 'Following']
+        ]);
+        $this->belongsToMany('Organizers', [
+            'className' => 'Users',
+            'foreignKey' => 'activity_id',
+            'targetForeignKey' => 'user_id',
+            'joinTable' => 'activities_users',
+            'through' => 'ActivitiesUsers',
+            'cascadeCallbacks' => true,
+            'conditions' => ['ActivitiesUsers.type' => 'Organizing']
+        ]);
+        $this->belongsToMany('Participants', [
+            'className' => 'Users',
+            'foreignKey' => 'activity_id',
+            'targetForeignKey' => 'user_id',
+            'joinTable' => 'activities_users',
+            'through' => 'ActivitiesUsers',
+            'cascadeCallbacks' => true,
+            'conditions' => ['ActivitiesUsers.type' => 'Participating']
         ]);
     }
 
@@ -118,12 +143,10 @@ class ActivitiesTable extends Table
 
         $validator
             ->boolean('exclusive')
-            ->requirePresence('exclusive', 'create')
             ->notEmpty('exclusive');
 
         $validator
             ->scalar('location_visibility')
-            ->requirePresence('location_visibility', 'create')
             ->notEmpty('location_visibility');
 
         $validator
@@ -132,17 +155,11 @@ class ActivitiesTable extends Table
             ->allowEmpty('details');
 
         $validator
+            ->range('group_size_limit', [3, 100])
             ->allowEmpty('group_size_limit');
 
         $validator
-            ->dateTime('created_at')
-            ->requirePresence('created_at', 'create')
-            ->notEmpty('created_at');
-
-        $validator
-            ->dateTime('modified_at')
-            ->requirePresence('modified_at', 'create')
-            ->notEmpty('modified_at');
+            ->hasAtMost('tags', 10, 'You can only have 10 tags');
 
         return $validator;
     }
@@ -157,30 +174,74 @@ class ActivitiesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['location_id'], 'Locations'));
-        $rules->add($rules->existsIn(['organizer_id'], 'Users'));
+        $rules->add($rules->existsIn(['organizer_id'], 'Organizer'));
         $rules->add($rules->existsIn(['status_id'], 'ActivityStatuses'));
 
         return $rules;
     }
 
+    /**
+     * @param Query $query
+     * @param array $options
+     * @return array|Query
+     */
     public function findBasicInformation(Query $query, array $options)
     {
+        $viewer_id = Configure::read('user_id');
         return
             $query
                 ->select([
                     'id', 'title', 'start_date', 'end_date', 'customized_location', 'is_pair', 'created_at',
                     'modified_at', 'status' => 'ActivityStatuses.status', 'group_size_limit',
-//                'participant_count' => $query->func()->count('users')
+                    'applied' => 'applications.user_id IS NOT NULL',
+                    'following' => 'followers.user_id IS NOT NULL',
+                    'participating' => 'participants.user_id IS NOT NULL',
+                    'organizer_count', 'participant_count',
                 ])
                 ->select($this->Locations)
                 ->contain([
                     'ActivityStatuses', 'Locations', 'Tags',
-                    'Users' => function (Query $query) {
-                        return $query->select(['id', 'profile_image_path'])
-                            ->where(['type IN' => ['Organizers', 'Participated']])->order('type')->limit(5);
+                    'Organizer' => ['finder' => 'basicInformation'],
+                    'Organizers' => function (Query $query) use ($viewer_id) {
+                        return $query->find('minimumInformation')->limit(5);
                     },
-                    'Organizers' => function (Query $query) {
-                        return $query->find('basicInformation');
-                    }]);
+                    'Participants' => function (Query $query) {
+                        return $query->find('minimumInformation')->limit(5);
+                    },
+                ])
+                ->leftJoin(['applications'],
+                    ['activities.id = applications.activity_id', "applications.user_id = $viewer_id"])
+                ->leftJoin(['followers' => 'activities_users'],
+                    ['activities.id = followers.activity_id', "followers.user_id = $viewer_id",
+                        "followers.type = 'Following'"])
+                ->leftJoin(['participants' => 'activities_users'],
+                    ['activities.id = participants.activity_id', "participants.user_id = $viewer_id",
+                        "participants.type = 'Participating'"]);
+    }
+
+    /**
+     * @param Query $query
+     * @param array $options
+     * @return Query
+     */
+    public function findOrganizers(Query $query, array $options)
+    {
+        $activity_id = $options['activity_id'];
+        return $query->innerJoinWith('ActivitiesUsers', function (Query $query) use ($activity_id) {
+            return $query->where(['activity_id' => $activity_id, 'type' => 'Organizing']);
+        });
+    }
+
+    /**
+     * @param Query $query
+     * @param array $options
+     * @return Query
+     */
+    public function findParticipants(Query $query, array $options)
+    {
+        $activity_id = $options['activity_id'];
+        return $query->innerJoinWith('ActivitiesUsers', function (Query $query) use ($activity_id) {
+            return $query->where(['activity_id' => $activity_id, 'type' => 'Participating']);
+        });
     }
 }

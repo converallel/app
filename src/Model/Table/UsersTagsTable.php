@@ -7,21 +7,21 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * FollowingTags Model
+ * UsersTags Model
  *
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  * @property \App\Model\Table\TagsTable|\Cake\ORM\Association\BelongsTo $Tags
  *
- * @method \App\Model\Entity\FollowingTag get($primaryKey, $options = [])
- * @method \App\Model\Entity\FollowingTag newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\FollowingTag[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\FollowingTag|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\FollowingTag|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\FollowingTag patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\FollowingTag[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\FollowingTag findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\UsersTag get($primaryKey, $options = [])
+ * @method \App\Model\Entity\UsersTag newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\UsersTag[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\UsersTag|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\UsersTag|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\UsersTag patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\UsersTag[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\UsersTag findOrCreate($search, callable $callback = null, $options = [])
  */
-class FollowingTagsTable extends Table
+class UsersTagsTable extends Table
 {
 
     /**
@@ -34,7 +34,7 @@ class FollowingTagsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('following_tags');
+        $this->setTable('users_tags');
         $this->setDisplayField('user_id');
         $this->setPrimaryKey(['user_id', 'tag_id']);
 
