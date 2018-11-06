@@ -8,10 +8,10 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $activity_id
- * @property int $reviewer_id
+ * @property int $user_id
  * @property int $rating
  * @property string $message
- * @property \Cake\I18n\FrozenTime $reviewed_at
+ * @property \Cake\I18n\FrozenTime $created_at
  * @property \Cake\I18n\FrozenTime $modified_at
  * @property int $helpful
  * @property int $not_helpful
@@ -33,7 +33,7 @@ class Review extends Entity
      */
     protected $_accessible = [
         'activity_id' => true,
-        'reviewer_id' => true,
+        'user_id' => true,
         'rating' => true,
         'message' => true,
         'helpful' => true,

@@ -66,7 +66,7 @@ class UsersController extends AppController
     {
         $user = $this->Users->newEntity();
         $user = $this->Users->patchEntity($user, $this->getRequest()->getData());
-        if ($user = $this->Users->save($user)) {
+        if ($this->Users->save($user)) {
             return $this->response(['id' => $user->id]);
         }
         return $this->response('The user could not be saved. Please, try again.', 400);

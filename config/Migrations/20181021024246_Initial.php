@@ -55,11 +55,13 @@ class Initial extends AbstractMigration
                 'default' => true,
                 'limit' => null,
                 'null' => false,
+                'signed' => false,
             ])
             ->addColumn('exclusive', 'boolean', [
                 'default' => false,
                 'limit' => null,
                 'null' => false,
+                'signed' => false,
             ])
             ->addColumn('location_visibility', 'enum', [
                 'default' => 'Vicinity',
@@ -243,7 +245,7 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'values' => ['Approved', 'Rejected', 'TBD'],
             ])
-            ->addColumn('applied_at', 'timestamp', [
+            ->addColumn('created_at', 'timestamp', [
                 'default' => 'CURRENT_TIMESTAMP',
                 'limit' => null,
                 'null' => false,
@@ -285,6 +287,7 @@ class Initial extends AbstractMigration
                 'default' => true,
                 'limit' => null,
                 'null' => false,
+                'signed' => false,
             ])
             ->addColumn('location_id', 'integer', [
                 'default' => null,
@@ -330,11 +333,13 @@ class Initial extends AbstractMigration
                 'default' => false,
                 'limit' => null,
                 'null' => false,
+                'signed' => false,
             ])
             ->addColumn('verified_user', 'boolean', [
                 'default' => false,
                 'limit' => null,
                 'null' => false,
+                'signed' => false,
             ])
             ->addIndex(
                 [
@@ -817,7 +822,7 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
-            ->addColumn('reviewer_id', 'integer', [
+            ->addColumn('user_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => false,
@@ -835,7 +840,7 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => true,
             ])
-            ->addColumn('reviewed_at', 'timestamp', [
+            ->addColumn('created_at', 'timestamp', [
                 'default' => 'CURRENT_TIMESTAMP',
                 'limit' => null,
                 'null' => false,
@@ -847,31 +852,33 @@ class Initial extends AbstractMigration
                 'update' => 'CURRENT_TIMESTAMP',
             ])
             ->addColumn('helpful', 'integer', [
-                'default' => null,
+                'default' => 0,
                 'limit' => 11,
-                'null' => true,
+                'null' => false,
                 'signed' => false,
             ])
             ->addColumn('not_helpful', 'integer', [
-                'default' => null,
+                'default' => 0,
                 'limit' => 11,
-                'null' => true,
+                'null' => false,
                 'signed' => false,
             ])
             ->addIndex(
                 [
                     'activity_id',
-                ]
+                    'user_id'
+                ],
+                ['unique' => true]
             )
             ->addIndex(
                 [
-                    'reviewer_id',
+                    'user_id',
                 ]
             )
             ->addIndex(
                 [
                     'helpful',
-                    'reviewed_at',
+                    'created_at',
                 ]
             )
             ->create();
@@ -1240,6 +1247,7 @@ class Initial extends AbstractMigration
                 'default' => false,
                 'limit' => null,
                 'null' => false,
+                'signed' => false,
             ])
             ->addColumn('created_at', 'timestamp', [
                 'default' => 'CURRENT_TIMESTAMP',
@@ -1577,7 +1585,7 @@ class Initial extends AbstractMigration
                 ]
             )
             ->addForeignKey(
-                'reviewer_id',
+                'user_id',
                 'users',
                 'id',
                 [
@@ -1861,7 +1869,7 @@ class Initial extends AbstractMigration
                 'activity_id'
             )
             ->dropForeignKey(
-                'reviewer_id'
+                'user_id'
             )->save();
 
         $this->table('search_histories')

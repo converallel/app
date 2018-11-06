@@ -11,7 +11,7 @@ use Cake\ORM\Entity;
  * @property int $user_id
  * @property string $message
  * @property string $status
- * @property \Cake\I18n\FrozenTime $applied_at
+ * @property \Cake\I18n\FrozenTime $created_at
  * @property \Cake\I18n\FrozenTime $modified_at
  *
  * @property \App\Model\Entity\Activity $activity

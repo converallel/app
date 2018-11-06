@@ -123,7 +123,9 @@ class UsersTable extends Table
         $validator
             ->scalar('phone_number')
             ->maxLength('phone_number', 20)
-            ->allowEmpty('phone_number')
+            ->requirePresence('phone_number', function ($context) {
+                return $context['newRecord'] && !isset($context['data']['email']);
+            }, "Email and phone number can't both be empty")
             ->add('phone_number', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
@@ -133,7 +135,7 @@ class UsersTable extends Table
             ->notEmpty('password');
 
         $validator
-            ->nonNegativeInteger('failed_login_attempts')
+            ->range('failed_login_attempts', [0, 5])
             ->notEmpty('failed_login_attempts');
 
         $validator
@@ -174,7 +176,7 @@ class UsersTable extends Table
             ->allowEmpty('bio');
 
         $validator
-            ->nonNegativeInteger('rating')
+            ->range('rating', [1, 10], "User's rating should be a number between 1 and 10")
             ->notEmpty('rating');
 
         $validator

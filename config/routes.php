@@ -50,9 +50,12 @@ Router::scope('/', function (RouteBuilder $routes) {
     $routes->resources('Activities', function (RouteBuilder $routes) {
         $routes->resources('Users', ['prefix' => 'activities', 'only' => ['index', 'create', 'delete']]);
         $routes->resources('Applications', ['only' => ['index']]);
+        $routes->resources('Reviews', ['only' => ['index']]);
     });
 
     $routes->resources('Applications', ['only' => ['create', 'update', 'delete']]);
+
+    $routes->resources('Reviews', ['only' => ['create', 'update', 'delete']]);
 
     $routes->resources('Locations', ['only' => ['view', 'create']]);
 

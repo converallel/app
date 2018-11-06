@@ -49,7 +49,7 @@ class ReviewsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Users', [
-            'foreignKey' => 'reviewer_id',
+            'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
 
@@ -74,21 +74,11 @@ class ReviewsTable extends Table
 
         $validator
             ->requirePresence('rating', 'create')
-            ->notEmpty('rating');
+            ->range('rating', [1, 5], 'Rating should be a number between 1 and 5');
 
         $validator
             ->scalar('message')
             ->allowEmpty('message');
-
-        $validator
-            ->dateTime('reviewed_at')
-            ->requirePresence('reviewed_at', 'create')
-            ->notEmpty('reviewed_at');
-
-        $validator
-            ->dateTime('modified_at')
-            ->requirePresence('modified_at', 'create')
-            ->notEmpty('modified_at');
 
         $validator
             ->nonNegativeInteger('helpful')
@@ -111,7 +101,7 @@ class ReviewsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['activity_id'], 'Activities'));
-        $rules->add($rules->existsIn(['reviewer_id'], 'Users'));
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
     }
