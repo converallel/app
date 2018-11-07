@@ -1,7 +1,6 @@
 <?php
-namespace App\Controller;
 
-use App\Controller\AppController;
+namespace App\Controller;
 
 /**
  * Locations Controller
@@ -70,6 +69,7 @@ class LocationsController extends AppController
      */
     public function edit($id = null)
     {
+
         $location = $this->Locations->get($id, [
             'contain' => []
         ]);
@@ -104,4 +104,19 @@ class LocationsController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+//    public function lookup($latitude, $longitude)
+//    {
+//        $distance = 0.31; // mile(s) ≈ 0.5km
+//        $lat_deviation = rad2deg($distance / 3959);
+//        $lng_deviation = rad2deg(asin($distance / 3959) / cos(deg2rad($latitude)));
+//
+//        $this->Locations->find()
+//            ->where([
+//                'latitude' => $latitude,
+//                'longitude' => $longitude
+//            ])
+//            ->order($this->greatCircleDistance($latitude, $longitude, ))
+//            ->first();
+//    }
 }

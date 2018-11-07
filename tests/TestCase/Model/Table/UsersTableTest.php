@@ -30,6 +30,7 @@ class UsersTableTest extends TestCase
         'app.education',
         'app.activity_filter_education',
         'app.activity_filters',
+        'app.api_logs',
         'app.applications',
         'app.location_selection_histories',
         'app.search_histories',
@@ -90,6 +91,26 @@ class UsersTableTest extends TestCase
      * @return void
      */
     public function testBuildRules()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test findMinimumInformation method
+     *
+     * @return void
+     */
+    public function testFindMinimumInformation()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test findBasicInformation method
+     *
+     * @return void
+     */
+    public function testFindBasicInformation()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

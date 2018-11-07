@@ -1,4 +1,5 @@
 <?php
+
 use Migrations\AbstractMigration;
 use Phinx\Db\Adapter\MysqlAdapter;
 
@@ -145,6 +146,27 @@ class Initial extends AbstractMigration
             )
             ->create();
 
+        $this->table('activities_tags')
+            ->addColumn('activity_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addColumn('tag_id', 'integer', [
+                'default' => null,
+                'limit' => MysqlAdapter::INT_SMALL,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addPrimaryKey(['activity_id', 'tag_id'])
+            ->addIndex(
+                [
+                    'tag_id',
+                ]
+            )
+            ->create();
+
         $this->table('activities_users')
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
@@ -192,85 +214,44 @@ class Initial extends AbstractMigration
             )
             ->create();
 
-        $this->table('activities_tags')
-            ->addColumn('activity_id', 'integer', [
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addColumn('tag_id', 'integer', [
-                'default' => null,
-                'limit' => MysqlAdapter::INT_SMALL,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['activity_id', 'tag_id'])
-            ->addIndex(
-                [
-                    'tag_id',
-                ]
-            )
-            ->create();
-
-        $this->table('applications')
+        $this->table('activity_filter_date_types')
             ->addColumn('id', 'integer', [
-                'autoIncrement' => true,
                 'default' => null,
-                'limit' => 11,
+                'limit' => MysqlAdapter::INT_TINY,
                 'null' => false,
                 'signed' => false,
             ])
             ->addPrimaryKey(['id'])
-            ->addColumn('activity_id', 'integer', [
+            ->addColumn('type', 'string', [
                 'default' => null,
-                'limit' => 11,
+                'limit' => 20,
                 'null' => false,
-                'signed' => false,
             ])
+            ->addIndex(
+                [
+                    'type',
+                ],
+                ['unique' => true]
+            )
+            ->create();
+
+        $this->table('activity_filter_education')
             ->addColumn('user_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => false,
                 'signed' => false,
             ])
-            ->addColumn('message', 'string', [
+            ->addColumn('education_id', 'integer', [
                 'default' => null,
-                'limit' => 200,
+                'limit' => MysqlAdapter::INT_TINY,
                 'null' => false,
+                'signed' => false,
             ])
-            ->addColumn('status', 'enum', [
-                'default' => 'TBD',
-                'limit' => null,
-                'null' => false,
-                'values' => ['Approved', 'Rejected', 'TBD'],
-            ])
-            ->addColumn('created_at', 'timestamp', [
-                'default' => 'CURRENT_TIMESTAMP',
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addColumn('modified_at', 'timestamp', [
-                'default' => 'CURRENT_TIMESTAMP',
-                'limit' => null,
-                'null' => false,
-                'update' => 'CURRENT_TIMESTAMP',
-            ])
+            ->addPrimaryKey(['user_id', 'education_id'])
             ->addIndex(
                 [
-                    'activity_id',
-                    'user_id'
-                ],
-                ['unique' => true]
-            )
-            ->addIndex(
-                [
-                    'user_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'status',
+                    'education_id',
                 ]
             )
             ->create();
@@ -422,6 +403,132 @@ class Initial extends AbstractMigration
             )
             ->create();
 
+        $this->table('api_logs')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addPrimaryKey(['id'])
+            ->addColumn('user_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => true,
+                'signed' => false,
+            ])
+            ->addColumn('ip_address', 'string', [
+                'default' => null,
+                'limit' => 45,
+                'null' => false,
+            ])
+            ->addColumn('request_method', 'enum', [
+                'default' => null,
+                'limit' => 10,
+                'null' => false,
+                'values' => ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH']
+            ])
+            ->addColumn('request_url', 'string', [
+                'default' => null,
+                'limit' => 45,
+                'null' => false,
+            ])
+            ->addColumn('request_headers', 'json', [
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addColumn('request_body', 'json', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('status_code', 'integer', [
+                'default' => null,
+                'limit' => MysqlAdapter::INT_SMALL,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addColumn('created_at', 'timestamp', [
+                'default' => 'CURRENT_TIMESTAMP',
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addIndex(
+                [
+                    'user_id',
+                ]
+            )
+            ->addIndex(
+                [
+                    'status_code',
+                ]
+            )
+            ->create();
+
+        $this->table('applications')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addPrimaryKey(['id'])
+            ->addColumn('activity_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addColumn('user_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addColumn('message', 'string', [
+                'default' => null,
+                'limit' => 200,
+                'null' => false,
+            ])
+            ->addColumn('status', 'enum', [
+                'default' => 'TBD',
+                'limit' => null,
+                'null' => false,
+                'values' => ['Approved', 'Rejected', 'TBD'],
+            ])
+            ->addColumn('created_at', 'timestamp', [
+                'default' => 'CURRENT_TIMESTAMP',
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addColumn('modified_at', 'timestamp', [
+                'default' => 'CURRENT_TIMESTAMP',
+                'limit' => null,
+                'null' => false,
+                'update' => 'CURRENT_TIMESTAMP',
+            ])
+            ->addIndex(
+                [
+                    'activity_id',
+                    'user_id'
+                ],
+                ['unique' => true]
+            )
+            ->addIndex(
+                [
+                    'user_id',
+                ]
+            )
+            ->addIndex(
+                [
+                    'status',
+                ]
+            )
+            ->create();
+
         $this->table('blocked_users')
             ->addColumn('blocker_id', 'integer', [
                 'default' => null,
@@ -491,46 +598,19 @@ class Initial extends AbstractMigration
             )
             ->create();
 
-        $this->table('activity_filter_date_types')
-            ->addColumn('id', 'integer', [
+        $this->table('http_status_codes')
+            ->addColumn('code', 'integer', [
                 'default' => null,
-                'limit' => MysqlAdapter::INT_TINY,
+                'limit' => MysqlAdapter::INT_SMALL,
                 'null' => false,
                 'signed' => false,
             ])
-            ->addPrimaryKey(['id'])
-            ->addColumn('type', 'string', [
+            ->addPrimaryKey(['code'])
+            ->addColumn('definition', 'string', [
                 'default' => null,
-                'limit' => 20,
+                'limit' => 40,
                 'null' => false,
             ])
-            ->addIndex(
-                [
-                    'type',
-                ],
-                ['unique' => true]
-            )
-            ->create();
-
-        $this->table('activity_filter_education')
-            ->addColumn('user_id', 'integer', [
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addColumn('education_id', 'integer', [
-                'default' => null,
-                'limit' => MysqlAdapter::INT_TINY,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['user_id', 'education_id'])
-            ->addIndex(
-                [
-                    'education_id',
-                ]
-            )
             ->create();
 
         $this->table('languages')
@@ -1325,6 +1405,27 @@ class Initial extends AbstractMigration
             )
             ->update();
 
+        $this->table('activities_tags')
+            ->addForeignKey(
+                'activity_id',
+                'activities',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->addForeignKey(
+                'tag_id',
+                'tags',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'NO_ACTION'
+                ]
+            )
+            ->update();
+
         $this->table('activities_users')
             ->addForeignKey(
                 'activity_id',
@@ -1346,23 +1447,23 @@ class Initial extends AbstractMigration
             )
             ->update();
 
-        $this->table('activities_tags')
+        $this->table('activity_filter_education')
             ->addForeignKey(
-                'activity_id',
-                'activities',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
-            ->addForeignKey(
-                'tag_id',
-                'tags',
+                'education_id',
+                'education',
                 'id',
                 [
                     'update' => 'CASCADE',
                     'delete' => 'NO_ACTION'
+                ]
+            )
+            ->addForeignKey(
+                'user_id',
+                'users',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
                 ]
             )
             ->update();
@@ -1427,6 +1528,27 @@ class Initial extends AbstractMigration
             )
             ->update();
 
+        $this->table('api_logs')
+            ->addForeignKey(
+                'status_code',
+                'http_status_codes',
+                'code',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'NO_ACTION'
+                ]
+            )
+            ->addForeignKey(
+                'user_id',
+                'users',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->update();
+
         $this->table('applications')
             ->addForeignKey(
                 'activity_id',
@@ -1460,48 +1582,6 @@ class Initial extends AbstractMigration
             )
             ->addForeignKey(
                 'blocker_id',
-                'users',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
-            ->update();
-
-        $this->table('activity_filter_education')
-            ->addForeignKey(
-                'education_id',
-                'education',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'NO_ACTION'
-                ]
-            )
-            ->addForeignKey(
-                'user_id',
-                'users',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
-            ->update();
-
-        $this->table('users_tags')
-            ->addForeignKey(
-                'tag_id',
-                'tags',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
-            ->addForeignKey(
-                'user_id',
                 'users',
                 'id',
                 [
@@ -1673,6 +1753,27 @@ class Initial extends AbstractMigration
             )
             ->update();
 
+        $this->table('users_tags')
+            ->addForeignKey(
+                'tag_id',
+                'tags',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->addForeignKey(
+                'user_id',
+                'users',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->update();
+
         $this->table('users')
             ->addForeignKey(
                 'education_id',
@@ -1794,9 +1895,17 @@ class Initial extends AbstractMigration
                 'tag_id'
             )->save();
 
-        $this->table('applications')
+        $this->table('activity_filter_education')
             ->dropForeignKey(
-                'activity_id'
+                'education_id'
+            )
+            ->dropForeignKey(
+                'user_id'
+            )->save();
+
+        $this->table('location_selection_histories')
+            ->dropForeignKey(
+                'location_id'
             )
             ->dropForeignKey(
                 'user_id'
@@ -1824,28 +1933,28 @@ class Initial extends AbstractMigration
                 'transportation_mode_id'
             )->save();
 
+        $this->table('api_logs')
+            ->dropForeignKey(
+                'status_code'
+            )
+            ->dropForeignKey(
+                'user_id'
+            )->save();
+
+        $this->table('applications')
+            ->dropForeignKey(
+                'activity_id'
+            )
+            ->dropForeignKey(
+                'user_id'
+            )->save();
+
         $this->table('blocked_users')
             ->dropForeignKey(
                 'blocked_id'
             )
             ->dropForeignKey(
                 'blocker_id'
-            )->save();
-
-        $this->table('activity_filter_education')
-            ->dropForeignKey(
-                'education_id'
-            )
-            ->dropForeignKey(
-                'user_id'
-            )->save();
-
-        $this->table('location_selection_histories')
-            ->dropForeignKey(
-                'location_id'
-            )
-            ->dropForeignKey(
-                'user_id'
             )->save();
 
         $this->table('media')
@@ -1925,15 +2034,17 @@ class Initial extends AbstractMigration
         $this->table('activities')->drop()->save();
         $this->table('activities_tags')->drop()->save();
         $this->table('activities_users')->drop()->save();
+        $this->table('activity_filter_date_types')->drop()->save();
+        $this->table('activity_filter_education')->drop()->save();
         $this->table('activity_filters')->drop()->save();
         $this->table('activity_itineraries')->drop()->save();
         $this->table('activity_statuses')->drop()->save();
+        $this->table('api_logs')->drop()->save();
         $this->table('applications')->drop()->save();
         $this->table('blocked_users')->drop()->save();
         $this->table('devices')->drop()->save();
         $this->table('education')->drop()->save();
-        $this->table('activity_filter_date_types')->drop()->save();
-        $this->table('activity_filter_education')->drop()->save();
+        $this->table('http_status_codes')->drop()->save();
         $this->table('languages')->drop()->save();
         $this->table('location_selection_histories')->drop()->save();
         $this->table('locations')->drop()->save();

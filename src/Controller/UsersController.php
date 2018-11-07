@@ -21,12 +21,17 @@ class UsersController extends AppController
      */
     public function index()
     {
+        if ($activity_id = $this->getRequest()->getParam('activity_id')) {
+
+        }
+
         $this->paginate = [
             'contain' => ['Locations', 'Personalities', 'Education']
         ];
         $users = $this->paginate($this->Users);
 
-        return $this->response($users);
+        $_serialize = ['users'];
+        $this->set(compact('users', '_serialize'));
     }
 
     /**
@@ -51,9 +56,14 @@ class UsersController extends AppController
             ->where(['Users.id' => $id])
             ->first();
 
-        if ($user)
-            return $this->response($user);
+        if ($user) {
+            $_serialize = ['user'];
+            $this->set(compact('user', '_serialize'));
+        }
+//            return $this->response($user);
 
+        $_serialize = ['users'];
+        $this->set(compact('users', '_serialize'));
         return $this->response("Not Found", 404);
     }
 

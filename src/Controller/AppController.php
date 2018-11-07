@@ -19,6 +19,8 @@ use Cake\Controller\Controller;
 use Cake\Controller\Exception\SecurityException;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Log\Log;
+use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 
 /**
@@ -48,22 +50,22 @@ class AppController extends Controller
     {
         parent::initialize();
 
-//        $this->loadComponent('Auth', [
-//            'authenticate' => [
-//                'Digest' => [
-//                    'fields' => ['username' => ['email', 'phone_number'], 'password' => 'digest_hash'],
-//                    'userModel' => 'Users'
-//                ],
-//            ],
-//            'storage' => 'Memory',
-//            'unauthorizedRedirect' => false
-//        ]);
+        $this->loadComponent('Auth', [
+            'authenticate' => [
+                'Digest' => [
+                    'fields' => ['username' => ['email', 'phone_number'], 'password' => 'digest_hash'],
+                    'userModel' => 'Users'
+                ],
+            ],
+            'storage' => 'Memory',
+            'unauthorizedRedirect' => false
+        ]);
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
         ]);
 //        $this->loadComponent('Security', ['blackHoleCallback' => 'forceSSL']);
 
-//        $this->user_id = $this->Auth->user('id');
+        $this->user_id = $this->Auth->user('id');
         Configure::write('user_id', $this->user_id);
     }
 
@@ -87,6 +89,16 @@ class AppController extends Controller
         throw $exception;
     }
 
+    protected function setSerialized(array $data, $status = 200) {
+        if (is_string($data))
+            $data = ['message' => $data];
+
+        $this->getResponse()->withStatus($status);
+        $_serialize = $data;
+
+        $this->set(compact('data', '_serialize'));
+    }
+
     /**
      * @param array|string $data
      * @param int $status
@@ -98,8 +110,52 @@ class AppController extends Controller
             $data = ['message' => $data];
 
         if (is_null($data))
-            return $this->getResponse()->withStatus($status)->withType('application/json');
+            return $this->getResponse()->withStatus($status);
         else
-            return $this->getResponse()->withStringBody(json_encode($data))->withStatus($status)->withType('application/json');
+            return $this->getResponse()->withStringBody(json_encode($data))->withStatus($status);
+    }
+
+    /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    /*::                                                                         :*/
+    /*::  This routine calculates the distance between two points (given the     :*/
+    /*::  latitude/longitude of those points). It is being used to calculate     :*/
+    /*::  the distance between two locations using GeoDataSource(TM) Products    :*/
+    /*::                                                                         :*/
+    /*::  Definitions:                                                           :*/
+    /*::    South latitudes are negative, east longitudes are positive           :*/
+    /*::                                                                         :*/
+    /*::  Passed to function:                                                    :*/
+    /*::    lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  :*/
+    /*::    lat2, lon2 = Latitude and Longitude of point 2 (in decimal degrees)  :*/
+    /*::    unit = the unit you desire for results                               :*/
+    /*::           where: 'M' is statute miles (default)                         :*/
+    /*::                  'K' is kilometers                                      :*/
+    /*::                  'N' is nautical miles                                  :*/
+    /*::  Worldwide cities and other features databases with latitude longitude  :*/
+    /*::  are available at https://www.geodatasource.com                          :*/
+    /*::                                                                         :*/
+    /*::  For enquiries, please contact sales@geodatasource.com                  :*/
+    /*::                                                                         :*/
+    /*::  Official Web site: https://www.geodatasource.com                        :*/
+    /*::                                                                         :*/
+    /*::         GeoDataSource.com (C) All Rights Reserved 2017		   		     :*/
+    /*::                                                                         :*/
+    /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    function greatCircleDistance($lat1, $lng1, $lat2, $lng2, $unit = 'M')
+    {
+        $theta = $lng1 - $lng2;
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
+
+        if ($unit == 'K') {
+            return ($miles * 1.609344);
+        } else if ($unit == 'N') {
+            return ($miles * 0.8684);
+        } else {
+            return $miles;
+        }
     }
 }

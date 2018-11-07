@@ -12,8 +12,10 @@
  * @since     3.3.0
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App;
 
+use App\Middleware\ApiLoggingMiddleware;
 use Cake\Core\Configure;
 use Cake\Core\Exception\MissingPluginException;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
@@ -68,21 +70,20 @@ class Application extends BaseApplication
     public function middleware($middlewareQueue)
     {
         $middlewareQueue
+            // Log the http request & response in the database
+            ->add(new ApiLoggingMiddleware())
             // Catch any exceptions in the lower layers,
             // and make an error page/response
             ->add(ErrorHandlerMiddleware::class)
-
             // Handle plugin/theme assets like CakePHP normally does.
             ->add(new AssetMiddleware([
                 'cacheTime' => Configure::read('Asset.cacheTime')
             ]))
-
             // Add routing middleware.
             // Routes collection cache enabled by default, to disable route caching
             // pass null as cacheConfig, example: `new RoutingMiddleware($this)`
             // you might want to disable this cache in case your routing is extremely simple
             ->add(new RoutingMiddleware($this, '_cake_routes_'))
-
             // Add csrf middleware.
             ->add(new CsrfProtectionMiddleware([
                 'httpOnly' => true

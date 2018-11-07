@@ -42,10 +42,8 @@ class ApplicationsController extends AppController
      */
     public function add()
     {
-        $activity_id = $this->getRequest()->getParam('activity_id');
         $data = $this->getRequest()->getData();
         $data['user_id'] = $this->user_id;
-        $data['activity_id'] = $activity_id;
 
         $application = $this->Applications->newEntity();
         $application = $this->Applications->patchEntity($application, $data);
