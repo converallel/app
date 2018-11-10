@@ -2,6 +2,7 @@
 
 namespace App\Model\Table;
 
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -52,6 +53,13 @@ class UsersTable extends Table
         $this->setTable('users');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+//        $this->addBehavior('CounterCache', [
+//            'Activities' => [
+//                'organizer_count' => ['finder' => 'organizers'],
+//                'participant_count' => ['finder' => 'participants'],
+//            ]
+//        ]);
 
         $this->belongsTo('Locations', [
             'foreignKey' => 'location_id',
@@ -131,7 +139,9 @@ class UsersTable extends Table
         $validator
             ->scalar('phone_number')
             ->maxLength('phone_number', 20)
-            ->allowEmpty('phone_number')
+            ->requirePresence('phone_number', function ($context) {
+                return $context['newRecord'] && !isset($context['data']['email']);
+            }, "Email and phone number can't both be empty")
             ->add('phone_number', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
@@ -141,7 +151,7 @@ class UsersTable extends Table
             ->notEmpty('password');
 
         $validator
-            ->requirePresence('failed_login_attempts', 'create')
+            ->range('failed_login_attempts', [0, 5])
             ->notEmpty('failed_login_attempts');
 
         $validator
@@ -182,18 +192,12 @@ class UsersTable extends Table
             ->allowEmpty('bio');
 
         $validator
-            ->requirePresence('rating', 'create')
+            ->range('rating', [1, 10], "User's rating should be a number between 1 and 10")
             ->notEmpty('rating');
 
         $validator
             ->boolean('verified')
-            ->requirePresence('verified', 'create')
             ->notEmpty('verified');
-
-        $validator
-            ->dateTime('created_at')
-            ->requirePresence('created_at', 'create')
-            ->notEmpty('created_at');
 
         return $validator;
     }
@@ -214,5 +218,25 @@ class UsersTable extends Table
         $rules->add($rules->existsIn(['education_id'], 'Education'));
 
         return $rules;
+    }
+
+    /**
+     * @param Query $query
+     * @param array $options
+     * @return Query
+     */
+    public function findMinimumInformation(Query $query, array $options)
+    {
+        return $query->select(['id', 'profile_image_path']);
+    }
+
+    /**
+     * @param Query $query
+     * @param array $options
+     * @return Query
+     */
+    public function findBasicInformation(Query $query, array $options)
+    {
+        return $query->select(['id', 'given_name', 'family_name', 'birthdate', 'gender', 'profile_image_path', 'verified']);
     }
 }
