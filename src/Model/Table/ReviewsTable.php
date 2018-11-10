@@ -52,12 +52,6 @@ class ReviewsTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
-
-        $this->addBehavior('CounterCache', [
-            'Activities' => [
-                'review_count'
-            ]
-        ]);
     }
 
     /**
@@ -81,12 +75,10 @@ class ReviewsTable extends Table
             ->allowEmpty('message');
 
         $validator
-            ->nonNegativeInteger('helpful')
-            ->allowEmpty('helpful');
+            ->nonNegativeInteger('helpful');
 
         $validator
-            ->nonNegativeInteger('not_helpful')
-            ->allowEmpty('not_helpful');
+            ->nonNegativeInteger('not_helpful');
 
         return $validator;
     }

@@ -55,7 +55,7 @@ class FilesFixture extends TestFixture
                 'name' => 'Lorem ipsum dolor sit amet',
                 'extension' => 'Lorem ip',
                 'size' => 1,
-                'uploaded_at' => 1541814238
+                'uploaded_at' => 1541815385
             ],
         ];
         parent::init();

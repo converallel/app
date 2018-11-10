@@ -52,7 +52,7 @@ class SearchHistoriesFixture extends TestFixture
                 'user_id' => 1,
                 'search_type_id' => 1,
                 'search_string' => 'Lorem ipsum dolor sit amet',
-                'searched_at' => 1541385338
+                'searched_at' => 1541815385
             ],
         ];
         parent::init();

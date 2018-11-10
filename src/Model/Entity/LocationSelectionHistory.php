@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -28,6 +29,6 @@ class LocationSelectionHistory extends Entity
      */
     protected $_accessible = [
         'user_id' => true,
-        'location_id' => true,
+        'location_id' => true
     ];
 }

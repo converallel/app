@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -11,8 +12,8 @@ use Cake\ORM\Entity;
  * @property string $name
  * @property int $count
  *
- * @property \App\Model\Entity\ParentTag $parent_tag
- * @property \App\Model\Entity\ChildTag[] $child_tags
+ * @property \App\Model\Entity\Tag $parent_tag
+ * @property \App\Model\Entity\Tag[] $child_tags
  * @property \App\Model\Entity\Activity[] $activities
  * @property \App\Model\Entity\User[] $users
  */

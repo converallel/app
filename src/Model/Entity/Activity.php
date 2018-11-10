@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -27,13 +28,12 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $modified_at
  *
  * @property \App\Model\Entity\Location $location
- * @property \App\Model\Entity\User $organizer
+ * @property \App\Model\Entity\User[] $users
  * @property \App\Model\Entity\ActivityStatus $activity_status
  * @property \App\Model\Entity\ActivityItinerary[] $activity_itineraries
  * @property \App\Model\Entity\Application[] $applications
  * @property \App\Model\Entity\Review[] $reviews
  * @property \App\Model\Entity\Tag[] $tags
- * @property \App\Model\Entity\User[] $users
  */
 class Activity extends Entity
 {

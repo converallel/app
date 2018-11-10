@@ -1,16 +1,15 @@
 <?php
+
 namespace App\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\Validation\Validator;
 
 /**
  * PersonalityCompatibility Model
  *
  * @property \App\Model\Table\PersonalitiesTable|\Cake\ORM\Association\BelongsTo $Personalities
- * @property \App\Model\Table\PersonalitiesTable|\Cake\ORM\Association\BelongsTo $Personalities
+ * @property \App\Model\Table\PersonalitiesTable|\Cake\ORM\Association\BelongsTo $MatchingPersonalities
  * @property \App\Model\Table\PersonalityCompatibilityLevelsTable|\Cake\ORM\Association\BelongsTo $PersonalityCompatibilityLevels
  *
  * @method \App\Model\Entity\PersonalityCompatibility get($primaryKey, $options = [])
@@ -43,7 +42,8 @@ class PersonalityCompatibilityTable extends Table
             'foreignKey' => 'personality_id',
             'joinType' => 'INNER'
         ]);
-        $this->belongsTo('Personalities', [
+        $this->belongsTo('MatchingPersonalities', [
+            'className' => 'Personalities',
             'foreignKey' => 'matching_id',
             'joinType' => 'INNER'
         ]);

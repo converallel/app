@@ -83,7 +83,7 @@ class UsersFixture extends TestFixture
                 'bio' => 'Lorem ipsum dolor sit amet',
                 'rating' => 1,
                 'verified' => 1,
-                'created_at' => 1541811766
+                'created_at' => 1541815385
             ],
         ];
         parent::init();

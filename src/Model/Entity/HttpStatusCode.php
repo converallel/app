@@ -5,14 +5,12 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * SearchType Entity
+ * HttpStatusCode Entity
  *
- * @property int $id
- * @property string $type
- *
- * @property \App\Model\Entity\SearchHistory[] $search_histories
+ * @property int $code
+ * @property string $definition
  */
-class SearchType extends Entity
+class HttpStatusCode extends Entity
 {
 
     /**

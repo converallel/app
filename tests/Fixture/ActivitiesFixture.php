@@ -66,8 +66,8 @@ class ActivitiesFixture extends TestFixture
             [
                 'id' => 1,
                 'title' => 'Lorem ipsum dolor sit amet',
-                'start_date' => '2018-11-05 02:35:38',
-                'end_date' => '2018-11-05 02:35:38',
+                'start_date' => '2018-11-10 02:03:04',
+                'end_date' => '2018-11-10 02:03:04',
                 'location_id' => 1,
                 'customized_location' => 'Lorem ipsum dolor sit amet',
                 'organizer_id' => 1,
@@ -81,8 +81,8 @@ class ActivitiesFixture extends TestFixture
                 'organizer_count' => 1,
                 'participant_count' => 1,
                 'review_count' => 1,
-                'created_at' => 1541385338,
-                'modified_at' => 1541385338
+                'created_at' => 1541815384,
+                'modified_at' => 1541815384
             ],
         ];
         parent::init();

@@ -55,8 +55,8 @@ class ApplicationsFixture extends TestFixture
                 'user_id' => 1,
                 'message' => 'Lorem ipsum dolor sit amet',
                 'status' => 'Lorem ipsum dolor sit amet',
-                'created_at' => 1541385338,
-                'modified_at' => 1541385338
+                'created_at' => 1541815384,
+                'modified_at' => 1541815384
             ],
         ];
         parent::init();

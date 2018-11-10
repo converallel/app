@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -52,6 +53,6 @@ class Location extends Entity
         'sub_locality' => true,
         'thoroughfare' => true,
         'sub_thoroughfare' => true,
-        'time_zone' => true,
+        'time_zone' => true
     ];
 }

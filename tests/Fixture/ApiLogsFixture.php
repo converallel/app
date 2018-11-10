@@ -20,7 +20,7 @@ class ApiLogsFixture extends TestFixture
         'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'user_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'ip_address' => ['type' => 'string', 'length' => 45, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'request_method' => ['type' => 'string', 'length' => 10, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'request_method' => ['type' => 'string', 'length' => null, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'request_url' => ['type' => 'string', 'length' => 45, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'request_headers' => ['type' => 'json', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'request_body' => ['type' => 'json', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
@@ -32,7 +32,8 @@ class ApiLogsFixture extends TestFixture
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'api_logs_ibfk_1' => ['type' => 'foreign', 'columns' => ['user_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'api_logs_ibfk_1' => ['type' => 'foreign', 'columns' => ['status_code'], 'references' => ['http_status_codes', 'code'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
+            'api_logs_ibfk_2' => ['type' => 'foreign', 'columns' => ['user_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -53,12 +54,12 @@ class ApiLogsFixture extends TestFixture
                 'id' => 1,
                 'user_id' => 1,
                 'ip_address' => 'Lorem ipsum dolor sit amet',
-                'request_method' => 'Lorem ip',
+                'request_method' => 'Lorem ipsum dolor sit amet',
                 'request_url' => 'Lorem ipsum dolor sit amet',
                 'request_headers' => '',
                 'request_body' => '',
                 'status_code' => 1,
-                'created_at' => 1541560030
+                'created_at' => 1541815384
             ],
         ];
         parent::init();

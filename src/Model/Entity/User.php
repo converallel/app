@@ -70,7 +70,7 @@ class User extends Entity
         'personality_id' => true,
         'education_id' => true,
         'bio' => true,
-        'rating' => true,
+        'rating' => true
     ];
 
     /**

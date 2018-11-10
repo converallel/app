@@ -50,7 +50,7 @@ class LocationSelectionHistoriesFixture extends TestFixture
                 'id' => 1,
                 'user_id' => 1,
                 'location_id' => 1,
-                'selected_at' => 1541385338
+                'selected_at' => 1541815385
             ],
         ];
         parent::init();
