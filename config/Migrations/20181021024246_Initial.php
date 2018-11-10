@@ -598,6 +598,59 @@ class Initial extends AbstractMigration
             )
             ->create();
 
+        $this->table('files')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addPrimaryKey(['id'])
+            ->addColumn('user_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addColumn('server', 'string', [
+                'default' => null,
+                'limit' => 20,
+                'null' => false,
+            ])
+            ->addColumn('directory', 'string', [
+                'default' => null,
+                'limit' => 50,
+                'null' => false,
+            ])
+            ->addColumn('name', 'string', [
+                'default' => null,
+                'limit' => 50,
+                'null' => false,
+            ])
+            ->addColumn('extension', 'string', [
+                'default' => null,
+                'limit' => 10,
+                'null' => false,
+            ])
+            ->addColumn('size', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addColumn('uploaded_at', 'timestamp', [
+                'default' => 'CURRENT_TIMESTAMP',
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addIndex(
+                [
+                    'user_id',
+                ]
+            )
+            ->create();
+
         $this->table('http_status_codes')
             ->addColumn('code', 'integer', [
                 'default' => null,
@@ -765,52 +818,52 @@ class Initial extends AbstractMigration
 
         $this->table('media')
             ->addColumn('id', 'integer', [
-                'autoIncrement' => true,
                 'default' => null,
                 'limit' => 11,
                 'null' => false,
                 'signed' => false,
             ])
             ->addPrimaryKey(['id'])
-            ->addColumn('owner_id', 'integer', [
+            ->addColumn('user_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => false,
                 'signed' => false,
             ])
+            ->addColumn('file_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addColumn('type', 'enum', [
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+                'values' => ['LivePhoto', 'Photo', 'Video']
+            ])
             ->addColumn('position', 'integer', [
-                'default' => '0',
+                'default' => null,
                 'limit' => MysqlAdapter::INT_TINY,
                 'null' => false,
                 'signed' => false,
             ])
-            ->addColumn('media_type', 'enum', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-                'values' => ['Photo', 'Video', 'LivePhoto'],
-            ])
-            ->addColumn('file_path', 'string', [
-                'default' => null,
-                'limit' => 100,
-                'null' => false,
-            ])
-            ->addColumn('uploaded_at', 'timestamp', [
-                'default' => 'CURRENT_TIMESTAMP',
-                'limit' => null,
-                'null' => false,
-            ])
             ->addColumn('caption', 'string', [
                 'default' => null,
-                'limit' => 300,
+                'limit' => 100,
                 'null' => true,
             ])
             ->addIndex(
                 [
-                    'owner_id',
+                    'user_id',
                     'position',
                 ],
                 ['unique' => true]
+            )
+            ->addIndex(
+                [
+                    'file_id',
+                ]
             )
             ->create();
 
@@ -1591,6 +1644,18 @@ class Initial extends AbstractMigration
             )
             ->update();
 
+        $this->table('files')
+            ->addForeignKey(
+                'user_id',
+                'users',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->update();
+
         $this->table('location_selection_histories')
             ->addForeignKey(
                 'location_id',
@@ -1614,7 +1679,16 @@ class Initial extends AbstractMigration
 
         $this->table('media')
             ->addForeignKey(
-                'owner_id',
+                'file_id',
+                'files',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->addForeignKey(
+                'user_id',
                 'users',
                 'id',
                 [
@@ -1745,6 +1819,15 @@ class Initial extends AbstractMigration
             ->addForeignKey(
                 'device_id',
                 'devices',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->addForeignKey(
+                'user_id',
+                'users',
                 'id',
                 [
                     'update' => 'CASCADE',
@@ -1957,9 +2040,17 @@ class Initial extends AbstractMigration
                 'blocker_id'
             )->save();
 
+        $this->table('files')
+            ->dropForeignKey(
+                'user_id'
+            )->save();
+
         $this->table('media')
             ->dropForeignKey(
-                'owner_id'
+                'file_id'
+            )
+            ->dropForeignKey(
+                'user_id'
             )->save();
 
         $this->table('personality_compatibility')
@@ -2010,7 +2101,11 @@ class Initial extends AbstractMigration
         $this->table('user_logins')
             ->dropForeignKey(
                 'device_id'
+            )
+            ->dropForeignKey(
+                'user_id'
             )->save();
+
 
         $this->table('users_tags')
             ->dropForeignKey(
@@ -2044,6 +2139,7 @@ class Initial extends AbstractMigration
         $this->table('blocked_users')->drop()->save();
         $this->table('devices')->drop()->save();
         $this->table('education')->drop()->save();
+        $this->table('files')->drop()->save();
         $this->table('http_status_codes')->drop()->save();
         $this->table('languages')->drop()->save();
         $this->table('location_selection_histories')->drop()->save();

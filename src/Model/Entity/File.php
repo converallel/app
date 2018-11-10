@@ -4,19 +4,21 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Media Entity
+ * File Entity
  *
  * @property int $id
  * @property int $user_id
- * @property int $file_id
- * @property string $type
- * @property int $position
- * @property string $caption
+ * @property string $server
+ * @property string $directory
+ * @property string $name
+ * @property string $extension
+ * @property int $size
+ * @property \Cake\I18n\FrozenTime $uploaded_at
  *
  * @property \App\Model\Entity\User $user
- * @property \App\Model\Entity\File $file
+ * @property \App\Model\Entity\Media[] $media
  */
-class Media extends Entity
+class File extends Entity
 {
 
     /**
@@ -30,9 +32,10 @@ class Media extends Entity
      */
     protected $_accessible = [
         'user_id' => true,
-        'file_id' => true,
-        'type' => true,
-        'position' => true,
-        'caption' => true
+        'server' => true,
+        'directory' => true,
+        'name' => true,
+        'extension' => true,
+        'size' => true
     ];
 }

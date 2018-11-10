@@ -1,7 +1,7 @@
 <?php
+
 namespace App\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -10,6 +10,7 @@ use Cake\Validation\Validator;
  * Media Model
  *
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
+ * @property \App\Model\Table\FilesTable|\Cake\ORM\Association\BelongsTo $Files
  *
  * @method \App\Model\Entity\Media get($primaryKey, $options = [])
  * @method \App\Model\Entity\Media newEntity($data = null, array $options = [])
@@ -38,7 +39,11 @@ class MediaTable extends Table
         $this->setPrimaryKey('id');
 
         $this->belongsTo('Users', [
-            'foreignKey' => 'owner_id',
+            'foreignKey' => 'user_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('Files', [
+            'foreignKey' => 'file_id',
             'joinType' => 'INNER'
         ]);
     }
@@ -56,28 +61,17 @@ class MediaTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
+            ->scalar('type')
+            ->requirePresence('type', 'create')
+            ->notEmpty('type');
+
+        $validator
             ->requirePresence('position', 'create')
             ->notEmpty('position');
 
         $validator
-            ->scalar('media_type')
-            ->requirePresence('media_type', 'create')
-            ->notEmpty('media_type');
-
-        $validator
-            ->scalar('file_path')
-            ->maxLength('file_path', 100)
-            ->requirePresence('file_path', 'create')
-            ->notEmpty('file_path');
-
-        $validator
-            ->dateTime('uploaded_at')
-            ->requirePresence('uploaded_at', 'create')
-            ->notEmpty('uploaded_at');
-
-        $validator
             ->scalar('caption')
-            ->maxLength('caption', 300)
+            ->maxLength('caption', 100)
             ->allowEmpty('caption');
 
         return $validator;
@@ -92,7 +86,8 @@ class MediaTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['owner_id'], 'Users'));
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
+        $rules->add($rules->existsIn(['file_id'], 'Files'));
 
         return $rules;
     }

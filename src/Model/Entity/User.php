@@ -32,7 +32,10 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\ActivityFilter[] $activity_filters
  * @property \App\Model\Entity\ApiLog[] $api_logs
  * @property \App\Model\Entity\Application[] $applications
+ * @property \App\Model\Entity\File[] $files
  * @property \App\Model\Entity\LocationSelectionHistory[] $location_selection_histories
+ * @property \App\Model\Entity\Media[] $media
+ * @property \App\Model\Entity\Review[] $reviews
  * @property \App\Model\Entity\SearchHistory[] $search_histories
  * @property \App\Model\Entity\UserContact[] $user_contacts
  * @property \App\Model\Entity\UserDevice[] $user_devices
@@ -68,7 +71,6 @@ class User extends Entity
         'education_id' => true,
         'bio' => true,
         'rating' => true,
-        'verified' => true
     ];
 
     /**
@@ -77,8 +79,6 @@ class User extends Entity
      * @var array
      */
     protected $_hidden = [
-        'password',
-        'rating',
-        '_joinData'
+        'password'
     ];
 }

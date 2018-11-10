@@ -25,7 +25,8 @@ class MediaTableTest extends TestCase
      */
     public $fixtures = [
         'app.media',
-        'app.users'
+        'app.users',
+        'app.files'
     ];
 
     /**

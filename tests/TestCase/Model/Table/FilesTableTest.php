@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\UsersTable;
+use App\Model\Table\FilesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\UsersTable Test Case
+ * App\Model\Table\FilesTable Test Case
  */
-class UsersTableTest extends TestCase
+class FilesTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\UsersTable
+     * @var \App\Model\Table\FilesTable
      */
-    public $Users;
+    public $Files;
 
     /**
      * Fixtures
@@ -24,24 +24,9 @@ class UsersTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.users',
-        'app.locations',
-        'app.personalities',
-        'app.education',
-        'app.activity_filter_education',
-        'app.activity_filters',
-        'app.api_logs',
-        'app.applications',
         'app.files',
-        'app.location_selection_histories',
-        'app.media',
-        'app.reviews',
-        'app.search_histories',
-        'app.user_contacts',
-        'app.user_devices',
-        'app.user_logins',
-        'app.activities',
-        'app.tags'
+        'app.users',
+        'app.media'
     ];
 
     /**
@@ -52,8 +37,8 @@ class UsersTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('Users') ? [] : ['className' => UsersTable::class];
-        $this->Users = TableRegistry::getTableLocator()->get('Users', $config);
+        $config = TableRegistry::getTableLocator()->exists('Files') ? [] : ['className' => FilesTable::class];
+        $this->Files = TableRegistry::getTableLocator()->get('Files', $config);
     }
 
     /**
@@ -63,7 +48,7 @@ class UsersTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->Users);
+        unset($this->Files);
 
         parent::tearDown();
     }

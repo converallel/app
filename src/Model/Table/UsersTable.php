@@ -16,7 +16,9 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\ActivityFiltersTable|\Cake\ORM\Association\HasMany $ActivityFilters
  * @property \App\Model\Table\ApiLogsTable|\Cake\ORM\Association\HasMany $ApiLogs
  * @property \App\Model\Table\ApplicationsTable|\Cake\ORM\Association\HasMany $Applications
+ * @property \App\Model\Table\FilesTable|\Cake\ORM\Association\HasMany $Files
  * @property \App\Model\Table\LocationSelectionHistoriesTable|\Cake\ORM\Association\HasMany $LocationSelectionHistories
+ * @property \App\Model\Table\MediaTable|\Cake\ORM\Association\HasMany $Media
  * @property \App\Model\Table\ReviewsTable|\Cake\ORM\Association\HasMany $Reviews
  * @property \App\Model\Table\SearchHistoriesTable|\Cake\ORM\Association\HasMany $SearchHistories
  * @property \App\Model\Table\UserContactsTable|\Cake\ORM\Association\HasMany $UserContacts
@@ -80,7 +82,13 @@ class UsersTable extends Table
         $this->hasMany('Applications', [
             'foreignKey' => 'user_id'
         ]);
+        $this->hasMany('Files', [
+            'foreignKey' => 'user_id'
+        ]);
         $this->hasMany('LocationSelectionHistories', [
+            'foreignKey' => 'user_id'
+        ]);
+        $this->hasMany('Media', [
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('Reviews', [

@@ -30,6 +30,7 @@ class UserLoginsFixture extends TestFixture
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
             'user_id' => ['type' => 'unique', 'columns' => ['user_id', 'device_id', 'logged_in_at'], 'length' => []],
             'user_logins_ibfk_1' => ['type' => 'foreign', 'columns' => ['device_id'], 'references' => ['devices', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'user_logins_ibfk_2' => ['type' => 'foreign', 'columns' => ['user_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -50,7 +51,7 @@ class UserLoginsFixture extends TestFixture
                 'id' => 1,
                 'user_id' => 1,
                 'device_id' => 1,
-                'logged_in_at' => 1541385338,
+                'logged_in_at' => 1541717146,
                 'latitude' => 1,
                 'longitude' => 1
             ],

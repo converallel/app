@@ -48,27 +48,25 @@ Router::defaultRouteClass(DashedRoute::class);
 Router::scope('/', function (RouteBuilder $routes) {
 
     Router::scope('/api', function (RouteBuilder $routes) {
-        \Cake\Core\Configure::write('using_api', true);
+        $routes->resources('Activities', function (RouteBuilder $routes) {
+            $routes->resources('Applications', ['only' => ['index']]);
+            $routes->resources('Reviews', ['only' => ['index']]);
+            $routes->resources('Users', ['prefix' => 'activities', 'only' => ['index', 'create', 'delete']]);
+        });
 
-    });
-    $routes->resources('Activities', function (RouteBuilder $routes) {
-        $routes->resources('Users', ['prefix' => 'activities', 'only' => ['index', 'create', 'delete']]);
-        $routes->resources('Applications', ['only' => ['index']]);
-        $routes->resources('Reviews', ['only' => ['index']]);
-    });
+        $routes->resources('Applications', ['only' => ['create', 'update', 'delete']]);
 
-    $routes->resources('Applications', ['only' => ['create', 'update', 'delete']]);
+        $routes->resources('Locations', ['only' => ['view', 'create']]);
 
-    $routes->resources('Reviews', ['only' => ['create', 'update', 'delete']]);
+        $routes->resources('Reviews', ['only' => ['create', 'update', 'delete']]);
 
-    $routes->resources('Locations', ['only' => ['view', 'create']]);
+        $routes->resources('Tags', ['only' => ['index', 'view']], function (RouteBuilder $routes) {
+            $routes->resources('Activities', ['only' => ['index']]);
+        });
 
-    $routes->resources('Users', ['only' => ['view', 'create', 'update', 'delete']], function (RouteBuilder $routes) {
-        $routes->resources('Locations', ['only' => ['update']]);
-    });
-
-    $routes->resources('Tags', ['only' => ['index', 'view']], function (RouteBuilder $routes) {
-        $routes->resources('Activities', ['only' => ['index']]);
+        $routes->resources('Users', ['only' => ['view', 'create', 'update', 'delete']], function (RouteBuilder $routes) {
+            $routes->resources('Locations', ['only' => ['update']]);
+        });
     });
 
     /**

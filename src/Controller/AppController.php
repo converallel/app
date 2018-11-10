@@ -18,10 +18,12 @@ namespace App\Controller;
 use Cake\Controller\Controller;
 use Cake\Controller\Exception\SecurityException;
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
-use Cake\Log\Log;
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Query;
 use Cake\Routing\Router;
+use Cake\Utility\Inflector;
 
 /**
  * Application Controller
@@ -30,11 +32,15 @@ use Cake\Routing\Router;
  * will inherit them.
  *
  * @link https://book.cakephp.org/3.0/en/controllers.html#the-app-controller
+ *
+ * @property \Cake\ORM\Table $Table
  */
 class AppController extends Controller
 {
 
     protected $user_id = 2;
+    protected $using_api;
+    protected $entity_name;
 
     /**
      * Initialization hook method.
@@ -50,30 +56,244 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        $this->loadComponent('Auth', [
-            'authenticate' => [
-                'Digest' => [
-                    'fields' => ['username' => ['email', 'phone_number'], 'password' => 'digest_hash'],
-                    'userModel' => 'Users'
-                ],
-            ],
-            'storage' => 'Memory',
-            'unauthorizedRedirect' => false
-        ]);
+        // load components
+//        $this->loadComponent('Auth', [
+//            'authenticate' => [
+//                'Digest' => [
+//                    'fields' => ['username' => ['email', 'phone_number'], 'password' => 'digest_hash'],
+//                    'userModel' => 'Users'
+//                ],
+//            ],
+//            'storage' => 'Memory',
+//            'unauthorizedRedirect' => false
+//        ]);
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
         ]);
 //        $this->loadComponent('Security', ['blackHoleCallback' => 'forceSSL']);
+        $this->loadComponent('Flash');
 
-        $this->user_id = $this->Auth->user('id');
+
+//        $this->user_id = $this->Auth->user('id');
         Configure::write('user_id', $this->user_id);
+        $this->using_api = substr($this->getRequest()->getRequestTarget(), 0, strlen('/api')) === '/api';
+        $this->entity_name = Inflector::singularize(strtolower($this->getName()));
+        $this->Table = $this->{$this->getName()};
     }
 
+    //======================================================================
+    // Default Functions
+    //======================================================================
 
     public function beforeFilter(Event $event)
     {
 //        $this->Security->requireSecure();
     }
+
+    /**
+     * Index method
+     *
+     * @return void
+     */
+    public function index()
+    {
+        $this->load();
+    }
+
+    /**
+     * View method
+     *
+     * @param string|null $id Entity id.
+     * @return void
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function view($id = null)
+    {
+        $this->get($id);
+    }
+
+    /**
+     * Add method
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function add()
+    {
+        $this->create();
+    }
+
+    /**
+     * Edit method
+     *
+     * @param string|null $id Entity id.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function edit($id = null)
+    {
+        $this->update($id);
+    }
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id Entity id.
+     * @return void Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function delete($id = null)
+    {
+        $this->remove($id);
+    }
+
+    //======================================================================
+    // CRUD Functions
+    //======================================================================
+
+    /**
+     * Index method
+     *
+     * @param array|Query $query
+     * @param array $options
+     * @return \Cake\Http\Response|void
+     */
+    public function load($query = [], $options = [])
+    {
+        if ($query instanceof \ArrayObject)
+            $query = $this->Table->find('all', $query);
+        $entities = $this->paginate($query, $options['pagination'] ?? []);
+        if ($this->using_api) {
+            $this->setSerialized($entities);
+            return;
+        }
+        $this->set(strtolower($this->getName()), $entities);
+    }
+
+    /**
+     * View method
+     *
+     * @param string|null $id Entity id.
+     * @param array|Query $query
+     * @param array $options
+     * @return \Cake\Http\Response|void
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function get($id = null, $query = [], $options = [])
+    {
+        if ($query instanceof Query) {
+            $entity = $query->where(["{$this->getName()}.id" => $id])->first();
+            if (is_null($entity))
+                throw new RecordNotFoundException("Record not found in table {$this->getName()}");
+        } else {
+            $entity = $this->Table->get($id, $query);
+        }
+
+        if ($this->using_api) {
+            $this->setSerialized($entity);
+            return;
+        }
+        $this->set($this->entity_name, $entity);
+    }
+
+    /**
+     * Add method
+     *
+     * @param array $options
+     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
+     */
+    public function create($options = [])
+    {
+        $entity = $this->Table->newEntity();
+        if ($this->request->is('post')) {
+            $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(), $options['objectHydration'] ?? []);
+            if ($this->Table->save($entity)) {
+                if ($this->using_api) {
+                    return $this->setSerialized(['id' => $entity->id]);
+                }
+                $this->Flash->success(__("The $this->entity_name has been saved."));
+                return $this->redirect(['action' => 'index']);
+            }
+            $error_message = "The $this->entity_name could not be saved. Please, try again.";
+            if ($this->using_api) {
+                return $this->setSerialized($error_message, 400);
+            }
+            $this->Flash->error(__($error_message));
+        }
+        $this->set($this->entity_name, $entity);
+        foreach ($options['viewVars'] ?? [] as $field => $varOptions) {
+            if (is_numeric($field)) {
+                $field = $varOptions;
+                $varOptions = ['limit' => 200];
+            }
+            $this->set(strtolower($field), $this->Table->{strtoupper($field)}->find('list', $varOptions));
+        }
+    }
+
+    /**
+     * Edit method
+     *
+     * @param string|null $id Entity id.
+     * @param array $options
+     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function update($id = null, $options = [])
+    {
+        $entity = $this->Table->get($id);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(), $options['ObjectHydration'] ?? []);
+            if ($this->Table->save($entity)) {
+                if ($this->using_api) {
+                    return $this->setSerialized(null, 204);
+                }
+                $this->Flash->success(__("The $this->entity_name has been saved."));
+                return $this->redirect(['action' => 'index']);
+            }
+            $error_message = "The $this->entity_name could not be saved. Please, try again.";
+            if ($this->using_api) {
+                return $this->setSerialized($error_message, 400);
+            }
+            $this->Flash->error(__($error_message));
+        }
+        $this->set($this->entity_name, $entity);
+        foreach ($options['viewVars'] ?? [] as $field => $varOptions) {
+            if (is_numeric($field)) {
+                $field = $varOptions;
+                $varOptions = ['limit' => 200];
+            }
+            $this->set(strtolower($field), $this->Table->{strtoupper($field)}->find('list', $varOptions));
+        }
+    }
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id Entity id.
+     * @return \Cake\Http\Response|null Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function remove($id = null, $options = [])
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $entity = $this->Table->get($id);
+        if ($this->Table->delete($entity)) {
+            if ($this->using_api) {
+                return $this->setSerialized();
+            }
+            $this->Flash->success(__("The $this->entity_name has been saved."));
+        } else {
+            $error_message = "The $this->entity_name could not be deleted. Please, try again.";
+            if ($this->using_api) {
+                return $this->setSerialized($error_message, 400);
+            }
+            $this->Flash->error(__($error_message));
+        }
+        return $this->redirect(['action' => 'index']);
+    }
+
+    //======================================================================
+    // Utility Functions
+    //======================================================================
 
     /**
      * @param string $error
@@ -89,30 +309,20 @@ class AppController extends Controller
         throw $exception;
     }
 
-    protected function setSerialized(array $data, $status = 200) {
-        if (is_string($data))
-            $data = ['message' => $data];
-
-        $this->getResponse()->withStatus($status);
-        $_serialize = $data;
-
-        $this->set(compact('data', '_serialize'));
-    }
-
     /**
-     * @param array|string $data
+     * @param array|string|EntityInterface $data
      * @param int $status
-     * @return \Cake\Http\Response
      */
-    protected function response($data = null, $status = 200)
+    protected function setSerialized($data = [], $status = 200)
     {
+        $this->setResponse($this->getResponse()->withStatus($status));
         if (is_string($data))
             $data = ['message' => $data];
-
-        if (is_null($data))
-            return $this->getResponse()->withStatus($status);
-        else
-            return $this->getResponse()->withStringBody(json_encode($data))->withStatus($status);
+        elseif ($data instanceof EntityInterface)
+            $data = $data->toArray();
+        elseif (!$data)
+            $data = [];
+        $this->set(array_merge($data, ['_serialize' => array_keys($data)]));
     }
 
     /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
