@@ -5,7 +5,7 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * ApiLog Entity
+ * Log Entity
  *
  * @property int $id
  * @property int $user_id
@@ -19,7 +19,7 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\User $user
  */
-class ApiLog extends Entity
+class Log extends Entity
 {
 
     /**

@@ -56,7 +56,10 @@ Router::scope('/', function (RouteBuilder $routes) {
 
         $routes->resources('Applications', ['only' => ['create', 'update', 'delete']]);
 
-        $routes->resources('Locations', ['only' => ['view', 'create']]);
+        $routes->resources('Locations', [
+            'only' => ['view', 'create', 'lookup'],
+            'map' => ['lookup' => ['action' => 'lookup', 'method' => 'GET']]
+        ]);
 
         $routes->resources('Reviews', ['only' => ['create', 'update', 'delete']]);
 

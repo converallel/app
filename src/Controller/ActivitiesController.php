@@ -21,13 +21,12 @@ class ActivitiesController extends AppController
 
         $this->loadModel('ActivityFilters');
 
-        $query = $this->Activities->find();
-        $query
+        $query = $this->Activities
             ->find('basicInformation')
             ->where([
                 'start_date BETWEEN :start_date AND :end_date',
                 'is_pair' => true,
-                'ActivityStatuses.status' => 'Active',
+                'status' => 'Active',
             ])
             ->order([
                 'Activities.start_date' => 'ASC',

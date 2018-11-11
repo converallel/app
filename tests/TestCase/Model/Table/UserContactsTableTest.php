@@ -24,7 +24,8 @@ class UserContactsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.user_contacts'
+        'app.user_contacts',
+        'app.users'
     ];
 
     /**
@@ -67,6 +68,16 @@ class UserContactsTableTest extends TestCase
      * @return void
      */
     public function testValidationDefault()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test buildRules method
+     *
+     * @return void
+     */
+    public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

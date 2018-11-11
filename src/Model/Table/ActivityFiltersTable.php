@@ -9,6 +9,7 @@ use Cake\Validation\Validator;
 /**
  * ActivityFilters Model
  *
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  * @property \App\Model\Table\LocationsTable|\Cake\ORM\Association\BelongsTo $Locations
  * @property \App\Model\Table\ActivityFilterDateTypesTable|\Cake\ORM\Association\BelongsTo $ActivityFilterDateTypes
  *
@@ -35,9 +36,13 @@ class ActivityFiltersTable extends Table
         parent::initialize($config);
 
         $this->setTable('activity_filters');
-        $this->setDisplayField('user_id');
-        $this->setPrimaryKey('user_id');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'INNER'
+        ]);
         $this->belongsTo('Locations', [
             'foreignKey' => 'location_id'
         ]);
@@ -56,12 +61,11 @@ class ActivityFiltersTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->nonNegativeInteger('user_id')
-            ->allowEmpty('user_id', 'create');
+            ->nonNegativeInteger('id')
+            ->allowEmpty('id', 'create');
 
         $validator
             ->boolean('using_current_location')
-            ->requirePresence('using_current_location', 'create')
             ->notEmpty('using_current_location');
 
         $validator
@@ -86,12 +90,10 @@ class ActivityFiltersTable extends Table
 
         $validator
             ->boolean('matching_personality')
-            ->requirePresence('matching_personality', 'create')
             ->notEmpty('matching_personality');
 
         $validator
             ->boolean('verified_user')
-            ->requirePresence('verified_user', 'create')
             ->notEmpty('verified_user');
 
         return $validator;
@@ -106,6 +108,7 @@ class ActivityFiltersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['location_id'], 'Locations'));
         $rules->add($rules->existsIn(['date_type_id'], 'ActivityFilterDateTypes'));
 

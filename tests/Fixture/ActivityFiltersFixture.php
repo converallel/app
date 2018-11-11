@@ -17,6 +17,7 @@ class ActivityFiltersFixture extends TestFixture
      */
     // @codingStandardsIgnoreStart
     public $fields = [
+        'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'user_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'using_current_location' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '1', 'comment' => '', 'precision' => null],
         'location_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
@@ -33,7 +34,8 @@ class ActivityFiltersFixture extends TestFixture
             'location_id' => ['type' => 'index', 'columns' => ['location_id'], 'length' => []],
         ],
         '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['user_id'], 'length' => []],
+            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
+            'user_id' => ['type' => 'unique', 'columns' => ['user_id'], 'length' => []],
             'activity_filters_ibfk_1' => ['type' => 'foreign', 'columns' => ['date_type_id'], 'references' => ['activity_filter_date_types', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
             'activity_filters_ibfk_2' => ['type' => 'foreign', 'columns' => ['location_id'], 'references' => ['locations', 'id'], 'update' => 'cascade', 'delete' => 'setNull', 'length' => []],
             'activity_filters_ibfk_3' => ['type' => 'foreign', 'columns' => ['user_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
@@ -54,13 +56,14 @@ class ActivityFiltersFixture extends TestFixture
     {
         $this->records = [
             [
+                'id' => 1,
                 'user_id' => 1,
                 'using_current_location' => 1,
                 'location_id' => 1,
                 'distance' => 1,
                 'date_type_id' => 1,
-                'start_date' => '2018-11-10',
-                'end_date' => '2018-11-10',
+                'start_date' => '2018-11-11',
+                'end_date' => '2018-11-11',
                 'from_age' => 1,
                 'to_age' => 1,
                 'matching_personality' => 1,

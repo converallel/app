@@ -2,11 +2,14 @@
 
 namespace App\Model\Table;
 
+use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
  * UserContacts Model
+ *
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  *
  * @method \App\Model\Entity\UserContact get($primaryKey, $options = [])
  * @method \App\Model\Entity\UserContact newEntity($data = null, array $options = [])
@@ -33,6 +36,11 @@ class UserContactsTable extends Table
         $this->setTable('user_contacts');
         $this->setDisplayField('user_id');
         $this->setPrimaryKey('user_id');
+
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'INNER'
+        ]);
     }
 
     /**
@@ -44,8 +52,8 @@ class UserContactsTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->nonNegativeInteger('user_id')
-            ->allowEmpty('user_id', 'create');
+            ->nonNegativeInteger('id')
+            ->allowEmpty('id', 'create');
 
         $validator
             ->scalar('type')
@@ -59,5 +67,19 @@ class UserContactsTable extends Table
             ->notEmpty('contact');
 
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
+
+        return $rules;
     }
 }

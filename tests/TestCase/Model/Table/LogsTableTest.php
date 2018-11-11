@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\ActivityStatusesTable;
+use App\Model\Table\LogsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\ActivityStatusesTable Test Case
+ * App\Model\Table\LogsTable Test Case
  */
-class ActivityStatusesTableTest extends TestCase
+class LogsTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\ActivityStatusesTable
+     * @var \App\Model\Table\LogsTable
      */
-    public $ActivityStatuses;
+    public $Logs;
 
     /**
      * Fixtures
@@ -24,7 +24,8 @@ class ActivityStatusesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.activity_statuses'
+        'app.logs',
+        'app.users'
     ];
 
     /**
@@ -35,8 +36,8 @@ class ActivityStatusesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('ActivityStatuses') ? [] : ['className' => ActivityStatusesTable::class];
-        $this->ActivityStatuses = TableRegistry::getTableLocator()->get('ActivityStatuses', $config);
+        $config = TableRegistry::getTableLocator()->exists('Logs') ? [] : ['className' => LogsTable::class];
+        $this->Logs = TableRegistry::getTableLocator()->get('Logs', $config);
     }
 
     /**
@@ -46,7 +47,7 @@ class ActivityStatusesTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->ActivityStatuses);
+        unset($this->Logs);
 
         parent::tearDown();
     }

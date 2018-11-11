@@ -9,12 +9,11 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $user_id
- * @property int $search_type_id
+ * @property string $search_type
  * @property string $search_string
  * @property \Cake\I18n\FrozenTime $searched_at
  *
  * @property \App\Model\Entity\User $user
- * @property \App\Model\Entity\SearchType $search_type
  */
 class SearchHistory extends Entity
 {
@@ -30,7 +29,7 @@ class SearchHistory extends Entity
      */
     protected $_accessible = [
         'user_id' => true,
-        'search_type_id' => true,
-        'search_string' => true,
+        'search_type' => true,
+        'search_string' => true
     ];
 }

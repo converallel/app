@@ -30,7 +30,7 @@ class UsersTableTest extends TestCase
         'app.education',
         'app.activity_filter_education',
         'app.activity_filters',
-        'app.api_logs',
+        'app.logs',
         'app.applications',
         'app.files',
         'app.location_selection_histories',

@@ -13,7 +13,6 @@ use Cake\Validation\Validator;
  *
  * @property \App\Model\Table\LocationsTable|\Cake\ORM\Association\BelongsTo $Locations
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Organizer
- * @property \App\Model\Table\ActivityStatusesTable|\Cake\ORM\Association\BelongsTo $ActivityStatuses
  * @property \App\Model\Table\ActivityItinerariesTable|\Cake\ORM\Association\HasMany $ActivityItineraries
  * @property \App\Model\Table\ApplicationsTable|\Cake\ORM\Association\HasMany $Applications
  * @property \App\Model\Table\ReviewsTable|\Cake\ORM\Association\HasMany $Reviews
@@ -55,10 +54,6 @@ class ActivitiesTable extends Table
         $this->belongsTo('Organizer', [
             'className' => 'Users',
             'foreignKey' => 'organizer_id',
-            'joinType' => 'INNER'
-        ]);
-        $this->belongsTo('ActivityStatuses', [
-            'foreignKey' => 'status_id',
             'joinType' => 'INNER'
         ]);
         $this->hasMany('ActivityItineraries', [
@@ -155,6 +150,10 @@ class ActivitiesTable extends Table
             ->allowEmpty('details');
 
         $validator
+            ->scalar('status')
+            ->notEmpty('status');
+
+        $validator
             ->range('group_size_limit', [3, 100])
             ->allowEmpty('group_size_limit');
 
@@ -175,7 +174,6 @@ class ActivitiesTable extends Table
     {
         $rules->add($rules->existsIn(['location_id'], 'Locations'));
         $rules->add($rules->existsIn(['organizer_id'], 'Organizer'));
-        $rules->add($rules->existsIn(['status_id'], 'ActivityStatuses'));
 
         return $rules;
     }
@@ -192,7 +190,7 @@ class ActivitiesTable extends Table
             $query
                 ->select([
                     'id', 'title', 'start_date', 'end_date', 'customized_location', 'is_pair', 'created_at',
-                    'modified_at', 'status' => 'ActivityStatuses.status', 'group_size_limit',
+                    'modified_at', 'status', 'group_size_limit',
                     'applied' => 'applications.user_id IS NOT NULL',
                     'following' => 'followers.user_id IS NOT NULL',
                     'participating' => 'participants.user_id IS NOT NULL',
@@ -200,7 +198,7 @@ class ActivitiesTable extends Table
                 ])
                 ->select($this->Locations)
                 ->contain([
-                    'ActivityStatuses', 'Locations', 'Tags',
+                    'Locations', 'Tags',
                     'Organizer' => ['finder' => 'basicInformation'],
                     'Organizers' => function (Query $query) use ($viewer_id) {
                         return $query->find('minimumInformation')->limit(5);

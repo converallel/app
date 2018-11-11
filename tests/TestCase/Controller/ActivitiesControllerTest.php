@@ -19,7 +19,7 @@ class ActivitiesControllerTest extends IntegrationTestCase
         'app.activities',
         'app.locations',
         'app.organizer',
-        'app.activity_statuses',
+        'app.statuses',
         'app.activity_itineraries',
         'app.applications',
         'app.reviews',

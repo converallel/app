@@ -4,10 +4,10 @@ namespace App\Test\Fixture;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
- * ApiLogsFixture
+ * LogsFixture
  *
  */
-class ApiLogsFixture extends TestFixture
+class LogsFixture extends TestFixture
 {
 
     /**
@@ -32,8 +32,8 @@ class ApiLogsFixture extends TestFixture
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'api_logs_ibfk_1' => ['type' => 'foreign', 'columns' => ['status_code'], 'references' => ['http_status_codes', 'code'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
-            'api_logs_ibfk_2' => ['type' => 'foreign', 'columns' => ['user_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'logs_ibfk_1' => ['type' => 'foreign', 'columns' => ['status_code'], 'references' => ['http_status_codes', 'code'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
+            'logs_ibfk_2' => ['type' => 'foreign', 'columns' => ['user_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',

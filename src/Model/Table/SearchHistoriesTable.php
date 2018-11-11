@@ -10,7 +10,6 @@ use Cake\Validation\Validator;
  * SearchHistories Model
  *
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
- * @property \App\Model\Table\SearchTypesTable|\Cake\ORM\Association\BelongsTo $SearchTypes
  *
  * @method \App\Model\Entity\SearchHistory get($primaryKey, $options = [])
  * @method \App\Model\Entity\SearchHistory newEntity($data = null, array $options = [])
@@ -42,10 +41,6 @@ class SearchHistoriesTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
-        $this->belongsTo('SearchTypes', [
-            'foreignKey' => 'search_type_id',
-            'joinType' => 'INNER'
-        ]);
     }
 
     /**
@@ -61,15 +56,15 @@ class SearchHistoriesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
+            ->scalar('search_type')
+            ->requirePresence('search_type', 'create')
+            ->notEmpty('search_type');
+
+        $validator
             ->scalar('search_string')
             ->maxLength('search_string', 100)
             ->requirePresence('search_string', 'create')
             ->notEmpty('search_string');
-
-        $validator
-            ->dateTime('searched_at')
-            ->requirePresence('searched_at', 'create')
-            ->notEmpty('searched_at');
 
         return $validator;
     }
@@ -84,7 +79,6 @@ class SearchHistoriesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
-        $rules->add($rules->existsIn(['search_type_id'], 'SearchTypes'));
 
         return $rules;
     }

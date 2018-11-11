@@ -28,7 +28,7 @@ class ActivitiesFixture extends TestFixture
         'exclusive' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
         'location_visibility' => ['type' => 'string', 'length' => null, 'null' => false, 'default' => 'Vicinity', 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'details' => ['type' => 'string', 'length' => 300, 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'status_id' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => '1', 'comment' => '', 'precision' => null],
+        'status' => ['type' => 'string', 'length' => null, 'null' => false, 'default' => 'Active', 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'group_size_limit' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'application_count' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
         'organizer_count' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
@@ -39,14 +39,12 @@ class ActivitiesFixture extends TestFixture
         '_indexes' => [
             'location_id' => ['type' => 'index', 'columns' => ['location_id'], 'length' => []],
             'organizer_id' => ['type' => 'index', 'columns' => ['organizer_id'], 'length' => []],
-            'status_id' => ['type' => 'index', 'columns' => ['status_id'], 'length' => []],
-            'start_date' => ['type' => 'index', 'columns' => ['start_date', 'is_pair', 'status_id'], 'length' => []],
+            'start_date' => ['type' => 'index', 'columns' => ['start_date', 'is_pair', 'status'], 'length' => []],
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
             'activities_ibfk_1' => ['type' => 'foreign', 'columns' => ['location_id'], 'references' => ['locations', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
             'activities_ibfk_2' => ['type' => 'foreign', 'columns' => ['organizer_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
-            'activities_ibfk_3' => ['type' => 'foreign', 'columns' => ['status_id'], 'references' => ['activity_statuses', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -66,8 +64,8 @@ class ActivitiesFixture extends TestFixture
             [
                 'id' => 1,
                 'title' => 'Lorem ipsum dolor sit amet',
-                'start_date' => '2018-11-10 02:03:04',
-                'end_date' => '2018-11-10 02:03:04',
+                'start_date' => '2018-11-11 05:37:49',
+                'end_date' => '2018-11-11 05:37:49',
                 'location_id' => 1,
                 'customized_location' => 'Lorem ipsum dolor sit amet',
                 'organizer_id' => 1,
@@ -75,14 +73,14 @@ class ActivitiesFixture extends TestFixture
                 'exclusive' => 1,
                 'location_visibility' => 'Lorem ipsum dolor sit amet',
                 'details' => 'Lorem ipsum dolor sit amet',
-                'status_id' => 1,
+                'status' => 'Lorem ipsum dolor sit amet',
                 'group_size_limit' => 1,
                 'application_count' => 1,
                 'organizer_count' => 1,
                 'participant_count' => 1,
                 'review_count' => 1,
-                'created_at' => 1541815384,
-                'modified_at' => 1541815384
+                'created_at' => 1541914669,
+                'modified_at' => 1541914669
             ],
         ];
         parent::init();

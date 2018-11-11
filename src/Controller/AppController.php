@@ -20,6 +20,7 @@ use Cake\Controller\Exception\SecurityException;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\Routing\Router;
@@ -310,15 +311,16 @@ class AppController extends Controller
     }
 
     /**
-     * @param array|string|EntityInterface $data
+     * @param array|string|EntityInterface|ResultSetInterface $data
      * @param int $status
      */
     protected function setSerialized($data = [], $status = 200)
     {
-        $this->setResponse($this->getResponse()->withStatus($status));
+        $this->setResponse($this->getResponse()->withStatus($status)->withType('application/json'));
+
         if (is_string($data))
             $data = ['message' => $data];
-        elseif ($data instanceof EntityInterface)
+        elseif ($data instanceof EntityInterface || $data instanceof ResultSetInterface)
             $data = $data->toArray();
         elseif (!$data)
             $data = [];

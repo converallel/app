@@ -7,20 +7,20 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * ApiLogs Model
+ * Logs Model
  *
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  *
- * @method \App\Model\Entity\ApiLog get($primaryKey, $options = [])
- * @method \App\Model\Entity\ApiLog newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\ApiLog[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\ApiLog|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\ApiLog|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\ApiLog patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\ApiLog[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\ApiLog findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\Log get($primaryKey, $options = [])
+ * @method \App\Model\Entity\Log newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\Log[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\Log|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Log|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Log patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\Log[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\Log findOrCreate($search, callable $callback = null, $options = [])
  */
-class ApiLogsTable extends Table
+class LogsTable extends Table
 {
 
     /**
@@ -33,7 +33,7 @@ class ApiLogsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('api_logs');
+        $this->setTable('logs');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 

@@ -11,7 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * ApiLogging middleware
  */
-class ApiLoggingMiddleware
+class LoggingMiddleware
 {
 
     /**
@@ -26,23 +26,23 @@ class ApiLoggingMiddleware
     {
         $response = $next($request, $response);
 
-        $response_body = $request->getParsedBody() ?: null;
+        $request_body = $request->getParsedBody();
         $data = [
             'user_id' => Configure::read('user_id'),
             'ip_address' => $request->clientIp(),
             'request_method' => $request->getMethod(),
             'request_url' => $request->getRequestTarget(),
             'request_headers' => json_encode($request->getHeaders()),
-            'request_body' => is_null($response_body) ? null : json_encode($response_body),
+            'request_body' => $request_body ? json_encode($request_body) : null,
             'status_code' => $response->getStatusCode()
         ];
         $tableLocator = TableRegistry::getTableLocator();
-        $apiLogs = $tableLocator->get('ApiLogs');
-        $apiLog = $apiLogs->newEntity();
-        $apiLog = $apiLogs->patchEntity($apiLog, $data);
-        if (!$apiLogs->save($apiLog))
-            Log::error('Log could not be saved', $apiLog->getErrors());
+        $logs = $tableLocator->get('Logs');
+        $log = $logs->newEntity();
+        $log = $logs->patchEntity($log, $data);
+        if (!$logs->save($log))
+            Log::error('Log could not be saved', $log->getErrors());
 
-        return $response->withType('application/json');
+        return $response;
     }
 }

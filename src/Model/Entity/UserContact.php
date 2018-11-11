@@ -7,9 +7,12 @@ use Cake\ORM\Entity;
 /**
  * UserContact Entity
  *
+ * @property int $id
  * @property int $user_id
  * @property string $type
  * @property string $contact
+ *
+ * @property \App\Model\Entity\User $user
  */
 class UserContact extends Entity
 {
@@ -24,6 +27,7 @@ class UserContact extends Entity
      * @var array
      */
     protected $_accessible = [
+        'user_id' => true,
         'type' => true,
         'contact' => true
     ];

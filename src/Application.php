@@ -15,7 +15,7 @@
 
 namespace App;
 
-use App\Middleware\ApiLoggingMiddleware;
+use App\Middleware\LoggingMiddleware;
 use Cake\Core\Configure;
 use Cake\Core\Exception\MissingPluginException;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
@@ -70,8 +70,8 @@ class Application extends BaseApplication
     public function middleware($middlewareQueue)
     {
         $middlewareQueue
-            // Log the http request & response in the database
-            ->add(new ApiLoggingMiddleware())
+            // Log the http request & response to the database
+            ->add(new LoggingMiddleware())
             // Catch any exceptions in the lower layers,
             // and make an error page/response
             ->add(ErrorHandlerMiddleware::class)

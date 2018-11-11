@@ -75,11 +75,11 @@ class Initial extends AbstractMigration
                 'limit' => 300,
                 'null' => true,
             ])
-            ->addColumn('status_id', 'integer', [
-                'default' => '1',
-                'limit' => MysqlAdapter::INT_TINY,
+            ->addColumn('status', 'enum', [
+                'default' => 'Active',
+                'limit' => null,
                 'null' => false,
-                'signed' => false,
+                'values' => ['Active', 'Cancelled', 'Completed'],
             ])
             ->addColumn('group_size_limit', 'integer', [
                 'default' => null,
@@ -134,14 +134,9 @@ class Initial extends AbstractMigration
             )
             ->addIndex(
                 [
-                    'status_id',
-                ]
-            )
-            ->addIndex(
-                [
                     'start_date',
                     'is_pair',
-                    'status_id',
+                    'status',
                 ]
             )
             ->create();
@@ -257,13 +252,20 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('activity_filters')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('user_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => false,
                 'signed' => false,
             ])
-            ->addPrimaryKey(['user_id'])
             ->addColumn('using_current_location', 'boolean', [
                 'default' => true,
                 'limit' => null,
@@ -324,6 +326,12 @@ class Initial extends AbstractMigration
             ])
             ->addIndex(
                 [
+                    'user_id',
+                ],
+                ['unique' => true]
+            )
+            ->addIndex(
+                [
                     'date_type_id',
                 ]
             )
@@ -378,91 +386,6 @@ class Initial extends AbstractMigration
             ->addIndex(
                 [
                     'transportation_mode_id',
-                ]
-            )
-            ->create();
-
-        $this->table('activity_statuses')
-            ->addColumn('id', 'integer', [
-                'default' => null,
-                'limit' => MysqlAdapter::INT_TINY,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['id'])
-            ->addColumn('status', 'string', [
-                'default' => null,
-                'limit' => 15,
-                'null' => false,
-            ])
-            ->addIndex(
-                [
-                    'status',
-                ],
-                ['unique' => true]
-            )
-            ->create();
-
-        $this->table('api_logs')
-            ->addColumn('id', 'integer', [
-                'autoIncrement' => true,
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['id'])
-            ->addColumn('user_id', 'integer', [
-                'default' => null,
-                'limit' => 11,
-                'null' => true,
-                'signed' => false,
-            ])
-            ->addColumn('ip_address', 'string', [
-                'default' => null,
-                'limit' => 45,
-                'null' => false,
-            ])
-            ->addColumn('request_method', 'enum', [
-                'default' => null,
-                'limit' => 10,
-                'null' => false,
-                'values' => ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH']
-            ])
-            ->addColumn('request_url', 'string', [
-                'default' => null,
-                'limit' => 45,
-                'null' => false,
-            ])
-            ->addColumn('request_headers', 'json', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addColumn('request_body', 'json', [
-                'default' => null,
-                'limit' => null,
-                'null' => true,
-            ])
-            ->addColumn('status_code', 'integer', [
-                'default' => null,
-                'limit' => MysqlAdapter::INT_SMALL,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addColumn('created_at', 'timestamp', [
-                'default' => 'CURRENT_TIMESTAMP',
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addIndex(
-                [
-                    'user_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'status_code',
                 ]
             )
             ->create();
@@ -666,27 +589,6 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('languages')
-            ->addColumn('id', 'integer', [
-                'default' => null,
-                'limit' => MysqlAdapter::INT_TINY,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['id'])
-            ->addColumn('language', 'string', [
-                'default' => null,
-                'limit' => 30,
-                'null' => false,
-            ])
-            ->addIndex(
-                [
-                    'language',
-                ],
-                ['unique' => true]
-            )
-            ->create();
-
         $this->table('location_selection_histories')
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
@@ -813,6 +715,70 @@ class Initial extends AbstractMigration
                     'longitude',
                 ],
                 ['unique' => true]
+            )
+            ->create();
+
+        $this->table('logs')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addPrimaryKey(['id'])
+            ->addColumn('user_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => true,
+                'signed' => false,
+            ])
+            ->addColumn('ip_address', 'string', [
+                'default' => null,
+                'limit' => 45,
+                'null' => false,
+            ])
+            ->addColumn('request_method', 'enum', [
+                'default' => null,
+                'limit' => 10,
+                'null' => false,
+                'values' => ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH']
+            ])
+            ->addColumn('request_url', 'string', [
+                'default' => null,
+                'limit' => 45,
+                'null' => false,
+            ])
+            ->addColumn('request_headers', 'json', [
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addColumn('request_body', 'json', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('status_code', 'integer', [
+                'default' => null,
+                'limit' => MysqlAdapter::INT_SMALL,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addColumn('created_at', 'timestamp', [
+                'default' => 'CURRENT_TIMESTAMP',
+                'limit' => null,
+                'null' => false,
+            ])
+            ->addIndex(
+                [
+                    'user_id',
+                ]
+            )
+            ->addIndex(
+                [
+                    'status_code',
+                ]
             )
             ->create();
 
@@ -1031,11 +997,11 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
-            ->addColumn('search_type_id', 'integer', [
+            ->addColumn('search_type', 'enum', [
                 'default' => null,
-                'limit' => MysqlAdapter::INT_TINY,
+                'limit' => null,
                 'null' => false,
-                'signed' => false,
+                'values' => ['Activity', 'Event', 'Location', 'User']
             ])
             ->addColumn('search_string', 'string', [
                 'default' => null,
@@ -1055,34 +1021,8 @@ class Initial extends AbstractMigration
             )
             ->addIndex(
                 [
-                    'search_type_id',
-                ]
-            )
-            ->addIndex(
-                [
                     'searched_at',
                 ]
-            )
-            ->create();
-
-        $this->table('search_types')
-            ->addColumn('id', 'integer', [
-                'default' => null,
-                'limit' => MysqlAdapter::INT_TINY,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['id'])
-            ->addColumn('type', 'string', [
-                'default' => null,
-                'limit' => 45,
-                'null' => false,
-            ])
-            ->addIndex(
-                [
-                    'type',
-                ],
-                ['unique' => true]
             )
             ->create();
 
@@ -1168,13 +1108,20 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('user_contacts')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('user_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => false,
                 'signed' => false,
             ])
-            ->addPrimaryKey(['user_id'])
             ->addColumn('type', 'enum', [
                 'default' => null,
                 'limit' => null,
@@ -1447,15 +1394,6 @@ class Initial extends AbstractMigration
                     'delete' => 'CASCADE'
                 ]
             )
-            ->addForeignKey(
-                'status_id',
-                'activity_statuses',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'NO_ACTION'
-                ]
-            )
             ->update();
 
         $this->table('activities_tags')
@@ -1581,27 +1519,6 @@ class Initial extends AbstractMigration
             )
             ->update();
 
-        $this->table('api_logs')
-            ->addForeignKey(
-                'status_code',
-                'http_status_codes',
-                'code',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'NO_ACTION'
-                ]
-            )
-            ->addForeignKey(
-                'user_id',
-                'users',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
-            ->update();
-
         $this->table('applications')
             ->addForeignKey(
                 'activity_id',
@@ -1664,6 +1581,27 @@ class Initial extends AbstractMigration
                 [
                     'update' => 'CASCADE',
                     'delete' => 'CASCADE'
+                ]
+            )
+            ->addForeignKey(
+                'user_id',
+                'users',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->update();
+
+        $this->table('logs')
+            ->addForeignKey(
+                'status_code',
+                'http_status_codes',
+                'code',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'NO_ACTION'
                 ]
             )
             ->addForeignKey(
@@ -1750,15 +1688,6 @@ class Initial extends AbstractMigration
             ->update();
 
         $this->table('search_histories')
-            ->addForeignKey(
-                'search_type_id',
-                'search_types',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'NO_ACTION'
-                ]
-            )
             ->addForeignKey(
                 'user_id',
                 'users',
@@ -1958,9 +1887,7 @@ class Initial extends AbstractMigration
             ->dropForeignKey(
                 'organizer_id'
             )
-            ->dropForeignKey(
-                'status_id'
-            )->save();
+            ->save();
 
         $this->table('activities_users')
             ->dropForeignKey(
@@ -2016,14 +1943,6 @@ class Initial extends AbstractMigration
                 'transportation_mode_id'
             )->save();
 
-        $this->table('api_logs')
-            ->dropForeignKey(
-                'status_code'
-            )
-            ->dropForeignKey(
-                'user_id'
-            )->save();
-
         $this->table('applications')
             ->dropForeignKey(
                 'activity_id'
@@ -2041,6 +1960,14 @@ class Initial extends AbstractMigration
             )->save();
 
         $this->table('files')
+            ->dropForeignKey(
+                'user_id'
+            )->save();
+
+        $this->table('logs')
+            ->dropForeignKey(
+                'status_code'
+            )
             ->dropForeignKey(
                 'user_id'
             )->save();
@@ -2073,9 +2000,6 @@ class Initial extends AbstractMigration
             )->save();
 
         $this->table('search_histories')
-            ->dropForeignKey(
-                'search_type_id'
-            )
             ->dropForeignKey(
                 'user_id'
             )->save();
@@ -2133,23 +2057,20 @@ class Initial extends AbstractMigration
         $this->table('activity_filter_education')->drop()->save();
         $this->table('activity_filters')->drop()->save();
         $this->table('activity_itineraries')->drop()->save();
-        $this->table('activity_statuses')->drop()->save();
-        $this->table('api_logs')->drop()->save();
         $this->table('applications')->drop()->save();
         $this->table('blocked_users')->drop()->save();
         $this->table('devices')->drop()->save();
         $this->table('education')->drop()->save();
         $this->table('files')->drop()->save();
         $this->table('http_status_codes')->drop()->save();
-        $this->table('languages')->drop()->save();
         $this->table('location_selection_histories')->drop()->save();
         $this->table('locations')->drop()->save();
+        $this->table('logs')->drop()->save();
         $this->table('media')->drop()->save();
         $this->table('personalities')->drop()->save();
         $this->table('personality_compatibility')->drop()->save();
         $this->table('personality_compatibility_levels')->drop()->save();
         $this->table('search_histories')->drop()->save();
-        $this->table('search_types')->drop()->save();
         $this->table('reviews')->drop()->save();
         $this->table('tags')->drop()->save();
         $this->table('time_zones')->drop()->save();

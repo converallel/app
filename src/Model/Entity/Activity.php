@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -18,7 +17,7 @@ use Cake\ORM\Entity;
  * @property bool $exclusive
  * @property string $location_visibility
  * @property string $details
- * @property int $status_id
+ * @property string $status
  * @property int $group_size_limit
  * @property int $application_count
  * @property int $organizer_count
@@ -29,7 +28,6 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\Location $location
  * @property \App\Model\Entity\User[] $users
- * @property \App\Model\Entity\ActivityStatus $activity_status
  * @property \App\Model\Entity\ActivityItinerary[] $activity_itineraries
  * @property \App\Model\Entity\Application[] $applications
  * @property \App\Model\Entity\Review[] $reviews
@@ -58,8 +56,19 @@ class Activity extends Entity
         'exclusive' => true,
         'location_visibility' => true,
         'details' => true,
-        'status_id' => true,
+        'status' => true,
         'group_size_limit' => true,
+        'application_count' => true,
+        'organizer_count' => true,
+        'participant_count' => true,
+        'review_count' => true,
+        'created_at' => true,
+        'modified_at' => true,
+        'location' => true,
+        'users' => true,
+        'activity_itineraries' => true,
+        'applications' => true,
+        'reviews' => true,
         'tags' => true
     ];
 }
