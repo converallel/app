@@ -31,10 +31,10 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Education $education
  * @property \App\Model\Entity\ActivityFilterEducation[] $activity_filter_education
  * @property \App\Model\Entity\ActivityFilter[] $activity_filters
- * @property \App\Model\Entity\Log[] $logs
  * @property \App\Model\Entity\Application[] $applications
  * @property \App\Model\Entity\File[] $files
  * @property \App\Model\Entity\LocationSelectionHistory[] $location_selection_histories
+ * @property \App\Model\Entity\Log[] $logs
  * @property \App\Model\Entity\Media[] $media
  * @property \App\Model\Entity\Review[] $reviews
  * @property \App\Model\Entity\SearchHistory[] $search_histories

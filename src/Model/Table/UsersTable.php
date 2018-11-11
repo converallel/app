@@ -15,10 +15,10 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\EducationTable|\Cake\ORM\Association\BelongsTo $Education
  * @property \App\Model\Table\ActivityFilterEducationTable|\Cake\ORM\Association\HasMany $ActivityFilterEducation
  * @property \App\Model\Table\ActivityFiltersTable|\Cake\ORM\Association\HasMany $ActivityFilters
- * @property \App\Model\Table\LogsTable|\Cake\ORM\Association\HasMany $Logs
  * @property \App\Model\Table\ApplicationsTable|\Cake\ORM\Association\HasMany $Applications
  * @property \App\Model\Table\FilesTable|\Cake\ORM\Association\HasMany $Files
  * @property \App\Model\Table\LocationSelectionHistoriesTable|\Cake\ORM\Association\HasMany $LocationSelectionHistories
+ * @property \App\Model\Table\LogsTable|\Cake\ORM\Association\HasMany $Logs
  * @property \App\Model\Table\MediaTable|\Cake\ORM\Association\HasMany $Media
  * @property \App\Model\Table\ReviewsTable|\Cake\ORM\Association\HasMany $Reviews
  * @property \App\Model\Table\SearchHistoriesTable|\Cake\ORM\Association\HasMany $SearchHistories
@@ -77,9 +77,6 @@ class UsersTable extends Table
         $this->hasMany('ActivityFilters', [
             'foreignKey' => 'user_id'
         ]);
-        $this->hasMany('Logs', [
-            'foreignKey' => 'user_id'
-        ]);
         $this->hasMany('Applications', [
             'foreignKey' => 'user_id'
         ]);
@@ -87,6 +84,9 @@ class UsersTable extends Table
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('LocationSelectionHistories', [
+            'foreignKey' => 'user_id'
+        ]);
+        $this->hasMany('Logs', [
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('Media', [
