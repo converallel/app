@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -46,9 +47,6 @@ class ActivityFilter extends Entity
         'from_age' => true,
         'to_age' => true,
         'matching_personality' => true,
-        'verified_user' => true,
-        'user' => true,
-        'location' => true,
-        'activity_filter_date_type' => true
+        'verified_user' => true
     ];
 }
