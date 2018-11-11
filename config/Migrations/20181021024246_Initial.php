@@ -1066,6 +1066,14 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('time_zones')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('latitude', 'float', [
                 'default' => null,
                 'null' => false,
@@ -1078,12 +1086,18 @@ class Initial extends AbstractMigration
                 'precision' => 10,
                 'scale' => 7,
             ])
-            ->addPrimaryKey(['latitude', 'longitude'])
-            ->addColumn('timezone', 'string', [
+            ->addColumn('identifier', 'string', [
                 'default' => null,
                 'limit' => 50,
                 'null' => false,
             ])
+            ->addIndex(
+                [
+                    'latitude',
+                    'longitude',
+                ],
+                ['unique' => true]
+            )
             ->create();
 
         $this->table('transportation')

@@ -7,9 +7,10 @@ use Cake\ORM\Entity;
 /**
  * TimeZone Entity
  *
+ * @property int $id
  * @property float $latitude
  * @property float $longitude
- * @property string $timezone
+ * @property string $identifier
  */
 class TimeZone extends Entity
 {

@@ -31,8 +31,8 @@ class TimeZonesTable extends Table
         parent::initialize($config);
 
         $this->setTable('time_zones');
-        $this->setDisplayField('latitude');
-        $this->setPrimaryKey(['latitude', 'longitude']);
+        $this->setDisplayField('identifier');
+        $this->setPrimaryKey('id');
     }
 
     /**
@@ -44,18 +44,24 @@ class TimeZonesTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
+            ->nonNegativeInteger('id')
+            ->allowEmpty('id', 'create');
+
+        $validator
             ->numeric('latitude')
-            ->allowEmpty('latitude', 'create');
+            ->requirePresence('latitude', 'create')
+            ->notEmpty('latitude');
 
         $validator
             ->numeric('longitude')
-            ->allowEmpty('longitude', 'create');
+            ->requirePresence('longitude', 'create')
+            ->notEmpty('longitude');
 
         $validator
-            ->scalar('timezone')
-            ->maxLength('timezone', 50)
-            ->requirePresence('timezone', 'create')
-            ->notEmpty('timezone');
+            ->scalar('identifier')
+            ->maxLength('identifier', 50)
+            ->requirePresence('identifier', 'create')
+            ->notEmpty('identifier');
 
         return $validator;
     }
