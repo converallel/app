@@ -1,4 +1,4 @@
-# SCC - [Project Title]
+# [Project Title]
 
 [Insert one Paragraph of project description]
 

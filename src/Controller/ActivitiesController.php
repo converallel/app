@@ -26,7 +26,7 @@ class ActivitiesController extends AppController
             ->where([
                 'start_date BETWEEN :start_date AND :end_date',
                 'is_pair' => true,
-                'status' => 'Active',
+                'Activities.status' => 'Active',
             ])
             ->order([
                 'Activities.start_date' => 'ASC',
