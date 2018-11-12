@@ -2,6 +2,7 @@
 
 namespace App\Model\Table;
 
+use Cake\Auth\DefaultPasswordHasher;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -138,7 +139,7 @@ class UsersTable extends Table
 
         $validator
             ->scalar('phone_number')
-            ->maxLength('phone_number', 20)
+            ->lengthBetween('phone_number', [6, 20])
             ->requirePresence('phone_number', function ($context) {
                 return $context['newRecord'] && !isset($context['data']['email']);
             }, "Email and phone number can't both be empty")
@@ -146,7 +147,7 @@ class UsersTable extends Table
 
         $validator
             ->scalar('password')
-            ->maxLength('password', 255)
+            ->lengthBetween('password', [6, 255])
             ->requirePresence('password', 'create')
             ->notEmpty('password');
 
@@ -218,6 +219,11 @@ class UsersTable extends Table
         $rules->add($rules->existsIn(['education_id'], 'Education'));
 
         return $rules;
+    }
+
+    protected function _setPassword($password)
+    {
+        return (new DefaultPasswordHasher)->hash($password);
     }
 
     /**

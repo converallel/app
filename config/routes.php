@@ -57,8 +57,8 @@ Router::scope('/', function (RouteBuilder $routes) {
         $routes->resources('Applications', ['only' => ['create', 'update', 'delete']]);
 
         $routes->resources('Locations', [
-            'only' => ['view', 'create', 'lookup'],
-            'map' => ['lookup' => ['action' => 'lookup', 'method' => 'GET']]
+            'only' => ['view', 'create'],
+            'actions' => ['view' => 'lookup'],
         ]);
 
         $routes->resources('Reviews', ['only' => ['create', 'update', 'delete']]);
@@ -70,6 +70,11 @@ Router::scope('/', function (RouteBuilder $routes) {
         $routes->resources('Users', ['only' => ['view', 'create', 'update', 'delete']], function (RouteBuilder $routes) {
             $routes->resources('Locations', ['only' => ['update']]);
         });
+
+        $routes->resources('UserContacts', [
+            'only' => ['index', 'create', 'update', 'delete'],
+            'path' => '/contacts'
+        ]);
     });
 
     /**

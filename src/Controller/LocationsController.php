@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use Cake\Datasource\Exception\RecordNotFoundException;
+
 /**
  * Locations Controller
  *
@@ -21,12 +23,17 @@ class LocationsController extends AppController
         $lat_deviation = rad2deg($distance / 3959);
         $lng_deviation = rad2deg(asin($distance / 3959) / cos(deg2rad($latitude)));
 
-        $this->Locations->find()
+        $location = $this->Locations->find()
             ->where([
                 'latitude' => $latitude,
                 'longitude' => $longitude
             ])
 //            ->order($this->greatCircleDistance($latitude, $longitude, ))
             ->first();
+
+        if (is_null($location))
+            throw new RecordNotFoundException("Record not found in table {$this->getName()}");
+
+        $this->setSerialized($location);
     }
 }

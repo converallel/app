@@ -22,6 +22,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\Query;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
@@ -57,7 +58,12 @@ class AppController extends Controller
     {
         parent::initialize();
 
+        $this->using_api = substr($this->getRequest()->getRequestTarget(), 0, strlen('/api')) === '/api';
+        $this->entity_name = Inflector::singularize(strtolower($this->getName()));
+        $this->Table = $this->{$this->getName()};
+
         // load components
+        if ($this->using_api) {
 //        $this->loadComponent('Auth', [
 //            'authenticate' => [
 //                'Digest' => [
@@ -68,6 +74,14 @@ class AppController extends Controller
 //            'storage' => 'Memory',
 //            'unauthorizedRedirect' => false
 //        ]);
+        } else {
+            $this->loadComponent('Auth', [
+                'authenticate' => [
+                    'Form'
+                ]
+            ]);
+        }
+
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
         ]);
@@ -77,9 +91,6 @@ class AppController extends Controller
 
 //        $this->user_id = $this->Auth->user('id');
         Configure::write('user_id', $this->user_id);
-        $this->using_api = substr($this->getRequest()->getRequestTarget(), 0, strlen('/api')) === '/api';
-        $this->entity_name = Inflector::singularize(strtolower($this->getName()));
-        $this->Table = $this->{$this->getName()};
     }
 
     //======================================================================
@@ -189,6 +200,9 @@ class AppController extends Controller
             $entity = $this->Table->get($id, $query);
         }
 
+        if (!$entity->isOwnedBy($this->Auth->user()))
+            throw new UnauthorizedException();
+
         if ($this->using_api) {
             $this->setSerialized($entity);
             return;
@@ -204,9 +218,13 @@ class AppController extends Controller
      */
     public function create($options = [])
     {
+        $data = $this->getRequest()->getData();
+        if (isset($data['user_id']))
+            $data['user_id'] = $this->user_id;
+
         $entity = $this->Table->newEntity();
         if ($this->request->is('post')) {
-            $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(), $options['objectHydration'] ?? []);
+            $entity = $this->Table->patchEntity($entity, $data, $options['objectHydration'] ?? []);
             if ($this->Table->save($entity)) {
                 if ($this->using_api) {
                     return $this->setSerialized(['id' => $entity->id]);
@@ -240,9 +258,13 @@ class AppController extends Controller
      */
     public function update($id = null, $options = [])
     {
+        $data = $this->getRequest()->getData();
+        if (isset($data['user_id']))
+            $data['user_id'] = $this->user_id;
+
         $entity = $this->Table->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(), $options['ObjectHydration'] ?? []);
+            $entity = $this->Table->patchEntity($entity, $data, $options['ObjectHydration'] ?? []);
             if ($this->Table->save($entity)) {
                 if ($this->using_api) {
                     return $this->setSerialized(null, 204);

@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
+use Owner\Model\Entity\OwnerTrait;
 
 /**
  * Activity Entity
@@ -35,6 +37,7 @@ use Cake\ORM\Entity;
  */
 class Activity extends Entity
 {
+    use OwnerTrait;
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -71,4 +74,9 @@ class Activity extends Entity
         'reviews' => true,
         'tags' => true
     ];
+
+    function isOwnedBy($user)
+    {
+        return $this->get('organizer_id') === $user->id;
+    }
 }

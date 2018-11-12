@@ -482,6 +482,12 @@ class Initial extends AbstractMigration
                 'signed' => false,
             ])
             ->addPrimaryKey(['id'])
+            ->addColumn('user_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
             ->addColumn('uuid', 'uuid', [
                 'default' => null,
                 'limit' => null,
@@ -492,6 +498,11 @@ class Initial extends AbstractMigration
                 'limit' => 45,
                 'null' => false,
             ])
+            ->addIndex(
+                [
+                    'user_id',
+                ]
+            )
             ->addIndex(
                 [
                     'uuid',
@@ -1149,27 +1160,6 @@ class Initial extends AbstractMigration
             ])
             ->create();
 
-        $this->table('user_devices')
-            ->addColumn('user_id', 'integer', [
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addColumn('device_id', 'integer', [
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['user_id', 'device_id'])
-            ->addIndex(
-                [
-                    'device_id',
-                ]
-            )
-            ->create();
-
         $this->table('user_logins')
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
@@ -1575,6 +1565,18 @@ class Initial extends AbstractMigration
             )
             ->update();
 
+        $this->table('devices')
+            ->addForeignKey(
+                'user_id',
+                'users',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->update();
+
         $this->table('files')
             ->addForeignKey(
                 'user_id',
@@ -1726,27 +1728,6 @@ class Initial extends AbstractMigration
             ->update();
 
         $this->table('user_contacts')
-            ->addForeignKey(
-                'user_id',
-                'users',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
-            ->update();
-
-        $this->table('user_devices')
-            ->addForeignKey(
-                'device_id',
-                'devices',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
             ->addForeignKey(
                 'user_id',
                 'users',
@@ -1973,6 +1954,11 @@ class Initial extends AbstractMigration
                 'blocker_id'
             )->save();
 
+        $this->table('devices')
+            ->dropForeignKey(
+                'user_id'
+            )->save();
+
         $this->table('files')
             ->dropForeignKey(
                 'user_id'
@@ -2024,14 +2010,6 @@ class Initial extends AbstractMigration
             )->save();
 
         $this->table('user_contacts')
-            ->dropForeignKey(
-                'user_id'
-            )->save();
-
-        $this->table('user_devices')
-            ->dropForeignKey(
-                'device_id'
-            )
             ->dropForeignKey(
                 'user_id'
             )->save();
@@ -2090,7 +2068,6 @@ class Initial extends AbstractMigration
         $this->table('time_zones')->drop()->save();
         $this->table('transportation')->drop()->save();
         $this->table('user_contacts')->drop()->save();
-        $this->table('user_devices')->drop()->save();
         $this->table('user_logins')->drop()->save();
         $this->table('users_tags')->drop()->save();
         $this->table('users')->drop()->save();
