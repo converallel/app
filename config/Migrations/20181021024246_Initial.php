@@ -343,6 +343,14 @@ class Initial extends AbstractMigration
             ->create();
 
         $this->table('activity_itineraries')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('activity_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
@@ -355,24 +363,23 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
-            ->addPrimaryKey(['activity_id', 'stop'])
             ->addColumn('location_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => true,
                 'signed' => false,
             ])
-            ->addColumn('arrive_on', 'datetime', [
+            ->addColumn('arrive_at', 'datetime', [
                 'default' => null,
                 'limit' => null,
                 'null' => true,
             ])
-            ->addColumn('depart_on', 'datetime', [
+            ->addColumn('depart_at', 'datetime', [
                 'default' => null,
                 'limit' => null,
                 'null' => true,
             ])
-            ->addColumn('transportation_mode_id', 'integer', [
+            ->addColumn('transportation_id', 'integer', [
                 'default' => null,
                 'limit' => MysqlAdapter::INT_TINY,
                 'null' => true,
@@ -380,12 +387,19 @@ class Initial extends AbstractMigration
             ])
             ->addIndex(
                 [
+                    'activity_id',
+                    'stop',
+                ],
+                ['unique' => true]
+            )
+            ->addIndex(
+                [
                     'location_id',
                 ]
             )
             ->addIndex(
                 [
-                    'transportation_mode_id',
+                    'transportation_id',
                 ]
             )
             ->create();
@@ -1513,7 +1527,7 @@ class Initial extends AbstractMigration
                 ]
             )
             ->addForeignKey(
-                'transportation_mode_id',
+                'transportation_id',
                 'transportation',
                 'id',
                 [
@@ -1935,7 +1949,7 @@ class Initial extends AbstractMigration
                 'location_id'
             )
             ->dropForeignKey(
-                'transportation_mode_id'
+                'transportation_id'
             )->save();
 
         $this->table('applications')

@@ -3,7 +3,6 @@
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
-use Owner\Model\Entity\OwnerTrait;
 
 /**
  * Activity Entity
@@ -29,6 +28,10 @@ use Owner\Model\Entity\OwnerTrait;
  * @property \Cake\I18n\FrozenTime $modified_at
  *
  * @property \App\Model\Entity\Location $location
+ * @property \App\Model\Entity\User $organizer
+ * @property \App\Model\Entity\User[] $organizers
+ * @property \App\Model\Entity\User[] $followers
+ * @property \App\Model\Entity\User[] $participants
  * @property \App\Model\Entity\User[] $users
  * @property \App\Model\Entity\ActivityItinerary[] $activity_itineraries
  * @property \App\Model\Entity\Application[] $applications
@@ -37,7 +40,7 @@ use Owner\Model\Entity\OwnerTrait;
  */
 class Activity extends Entity
 {
-    use OwnerTrait;
+    use AuthorizationTrait;
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -75,8 +78,32 @@ class Activity extends Entity
         'tags' => true
     ];
 
-    function isOwnedBy($user)
+    public function isViewableBy(User $user)
     {
-        return $this->get('organizer_id') === $user->id;
+        if (!$user->verified)
+            return !$this->organizer->verified;
+
+        return true;
+    }
+
+    public function isCreatableBy(User $user)
+    {
+        return !is_null($user->profile_image_path);
+    }
+
+    public function isEditableBy(User $user)
+    {
+        if ($this->organizer->id === $user->id)
+            return true;
+
+        $organizer_ids = array_map(function ($organizer) {
+            return $organizer->id;
+        }, $this->organizers);
+        return in_array($user->id, $organizer_ids);
+    }
+
+    public function isDeletableBy(User $user)
+    {
+        return $this->organizer->id === $user->id;
     }
 }

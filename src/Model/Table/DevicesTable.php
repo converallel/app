@@ -9,7 +9,7 @@ use Cake\Validation\Validator;
 /**
  * Devices Model
  *
- * @property \App\Model\Table\UserDevicesTable|\Cake\ORM\Association\HasMany $UserDevices
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  * @property \App\Model\Table\UserLoginsTable|\Cake\ORM\Association\HasMany $UserLogins
  *
  * @method \App\Model\Entity\Device get($primaryKey, $options = [])
@@ -38,8 +38,9 @@ class DevicesTable extends Table
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 
-        $this->hasMany('UserDevices', [
-            'foreignKey' => 'device_id'
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'INNER'
         ]);
         $this->hasMany('UserLogins', [
             'foreignKey' => 'device_id'
@@ -83,6 +84,7 @@ class DevicesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->isUnique(['uuid']));
+        $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
     }

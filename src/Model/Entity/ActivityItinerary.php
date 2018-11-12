@@ -7,12 +7,13 @@ use Cake\ORM\Entity;
 /**
  * ActivityItinerary Entity
  *
+ * @property int $id
  * @property int $activity_id
  * @property int $stop
  * @property int $location_id
- * @property \Cake\I18n\FrozenTime $arrive_on
- * @property \Cake\I18n\FrozenTime $depart_on
- * @property int $transportation_mode_id
+ * @property \Cake\I18n\FrozenTime $arrive_at
+ * @property \Cake\I18n\FrozenTime $depart_at
+ * @property int $transportation_id
  *
  * @property \App\Model\Entity\Activity $activity
  * @property \App\Model\Entity\Location $location
@@ -31,9 +32,11 @@ class ActivityItinerary extends Entity
      * @var array
      */
     protected $_accessible = [
+        'activity_id' => true,
+        'stop' => true,
         'location_id' => true,
-        'arrive_on' => true,
-        'depart_on' => true,
-        'transportation_mode_id' => true,
+        'arrive_at' => true,
+        'depart_at' => true,
+        'transportation_id' => true,
     ];
 }

@@ -15,7 +15,6 @@ class ActivitiesController extends AppController
 
     public function index()
     {
-        $user_id = $this->user_id;
         $start_date = date("Y-m-d h:i:s");
         $end_date = date("Y-m-d h:i:s", strtotime("+10 year"));
 

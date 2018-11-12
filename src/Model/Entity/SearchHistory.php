@@ -17,6 +17,7 @@ use Cake\ORM\Entity;
  */
 class SearchHistory extends Entity
 {
+    use AuthorizationTrait;
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().

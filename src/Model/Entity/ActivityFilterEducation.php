@@ -3,7 +3,6 @@
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
-use Owner\Model\Entity\OwnerTrait;
 
 /**
  * ActivityFilterEducation Entity
@@ -16,7 +15,6 @@ use Owner\Model\Entity\OwnerTrait;
  */
 class ActivityFilterEducation extends Entity
 {
-    use OwnerTrait;
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().

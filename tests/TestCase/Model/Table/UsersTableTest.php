@@ -31,6 +31,7 @@ class UsersTableTest extends TestCase
         'app.activity_filter_education',
         'app.activity_filters',
         'app.applications',
+        'app.devices',
         'app.files',
         'app.location_selection_histories',
         'app.logs',
@@ -38,7 +39,6 @@ class UsersTableTest extends TestCase
         'app.reviews',
         'app.search_histories',
         'app.user_contacts',
-        'app.user_devices',
         'app.user_logins',
         'app.activities',
         'app.tags'

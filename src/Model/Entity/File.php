@@ -3,7 +3,6 @@
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
-use Owner\Model\Entity\OwnerTrait;
 
 /**
  * File Entity
@@ -22,7 +21,7 @@ use Owner\Model\Entity\OwnerTrait;
  */
 class File extends Entity
 {
-    use OwnerTrait;
+    use AuthorizationTrait;
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().

@@ -73,7 +73,7 @@ class UsersFixture extends TestFixture
                 'failed_login_attempts' => 1,
                 'given_name' => 'Lorem ipsum dolor sit amet',
                 'family_name' => 'Lorem ipsum dolor sit amet',
-                'birthdate' => '2018-11-11',
+                'birthdate' => '2018-11-12',
                 'gender' => 'Lorem ipsum dolor sit amet',
                 'sexual_orientation' => 'Lorem ipsum dolor sit amet',
                 'location_id' => 1,
@@ -83,7 +83,7 @@ class UsersFixture extends TestFixture
                 'bio' => 'Lorem ipsum dolor sit amet',
                 'rating' => 1,
                 'verified' => 1,
-                'created_at' => 1541915108
+                'created_at' => 1541991360
             ],
         ];
         parent::init();

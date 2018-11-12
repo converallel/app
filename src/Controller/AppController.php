@@ -24,6 +24,7 @@ use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\Query;
+use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 
@@ -40,7 +41,7 @@ use Cake\Utility\Inflector;
 class AppController extends Controller
 {
 
-    protected $user_id = 2;
+    protected $user;
     protected $using_api;
     protected $entity_name;
 
@@ -75,11 +76,11 @@ class AppController extends Controller
 //            'unauthorizedRedirect' => false
 //        ]);
         } else {
-            $this->loadComponent('Auth', [
-                'authenticate' => [
-                    'Form'
-                ]
-            ]);
+//            $this->loadComponent('Auth', [
+//                'authenticate' => [
+//                    'Form'
+//                ]
+//            ]);
         }
 
         $this->loadComponent('RequestHandler', [
@@ -88,9 +89,11 @@ class AppController extends Controller
 //        $this->loadComponent('Security', ['blackHoleCallback' => 'forceSSL']);
         $this->loadComponent('Flash');
 
-
-//        $this->user_id = $this->Auth->user('id');
-        Configure::write('user_id', $this->user_id);
+        $users = TableRegistry::getTableLocator()->get('Users');
+        $user = $users->get(1);
+//        $this->user = $this->Auth->user();
+        $this->user = $user;
+        Configure::write('user_id', $this->user->id);
     }
 
     //======================================================================
@@ -188,6 +191,7 @@ class AppController extends Controller
      * @param array|Query $query
      * @param array $options
      * @return \Cake\Http\Response|void
+     * @throws \Cake\Http\Exception\UnauthorizedException When the user is not the owner of the entity.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function get($id = null, $query = [], $options = [])
@@ -200,7 +204,7 @@ class AppController extends Controller
             $entity = $this->Table->get($id, $query);
         }
 
-        if (!$entity->isOwnedBy($this->Auth->user()))
+        if (!$entity->isViewableBy($this->user))
             throw new UnauthorizedException();
 
         if ($this->using_api) {
@@ -218,13 +222,13 @@ class AppController extends Controller
      */
     public function create($options = [])
     {
-        $data = $this->getRequest()->getData();
-        if (isset($data['user_id']))
-            $data['user_id'] = $this->user_id;
-
         $entity = $this->Table->newEntity();
         if ($this->request->is('post')) {
-            $entity = $this->Table->patchEntity($entity, $data, $options['objectHydration'] ?? []);
+            $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(), $options['objectHydration'] ?? []);
+
+            if (!$entity->isCreatableBy($this->user))
+                throw new UnauthorizedException();
+
             if ($this->Table->save($entity)) {
                 if ($this->using_api) {
                     return $this->setSerialized(['id' => $entity->id]);
@@ -232,12 +236,14 @@ class AppController extends Controller
                 $this->Flash->success(__("The $this->entity_name has been saved."));
                 return $this->redirect(['action' => 'index']);
             }
+
             $error_message = "The $this->entity_name could not be saved. Please, try again.";
             if ($this->using_api) {
                 return $this->setSerialized($error_message, 400);
             }
             $this->Flash->error(__($error_message));
         }
+
         $this->set($this->entity_name, $entity);
         foreach ($options['viewVars'] ?? [] as $field => $varOptions) {
             if (is_numeric($field)) {
@@ -254,17 +260,19 @@ class AppController extends Controller
      * @param string|null $id Entity id.
      * @param array $options
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\UnauthorizedException When the user is not the owner of the entity.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
     public function update($id = null, $options = [])
     {
-        $data = $this->getRequest()->getData();
-        if (isset($data['user_id']))
-            $data['user_id'] = $this->user_id;
-
         $entity = $this->Table->get($id);
+
+        if (!$entity->isEditable($this->user))
+            throw new UnauthorizedException();
+
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $entity = $this->Table->patchEntity($entity, $data, $options['ObjectHydration'] ?? []);
+            $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(), $options['ObjectHydration'] ?? []);
+
             if ($this->Table->save($entity)) {
                 if ($this->using_api) {
                     return $this->setSerialized(null, 204);
@@ -272,12 +280,14 @@ class AppController extends Controller
                 $this->Flash->success(__("The $this->entity_name has been saved."));
                 return $this->redirect(['action' => 'index']);
             }
+
             $error_message = "The $this->entity_name could not be saved. Please, try again.";
             if ($this->using_api) {
                 return $this->setSerialized($error_message, 400);
             }
             $this->Flash->error(__($error_message));
         }
+
         $this->set($this->entity_name, $entity);
         foreach ($options['viewVars'] ?? [] as $field => $varOptions) {
             if (is_numeric($field)) {
@@ -299,6 +309,10 @@ class AppController extends Controller
     {
         $this->request->allowMethod(['post', 'delete']);
         $entity = $this->Table->get($id);
+
+        if (!$entity->isDeletableBy($this->user))
+            throw new UnauthorizedException();
+
         if ($this->Table->delete($entity)) {
             if ($this->using_api) {
                 return $this->setSerialized();
@@ -311,6 +325,7 @@ class AppController extends Controller
             }
             $this->Flash->error(__($error_message));
         }
+
         return $this->redirect(['action' => 'index']);
     }
 
@@ -346,6 +361,7 @@ class AppController extends Controller
             $data = $data->toArray();
         elseif (!$data)
             $data = [];
+
         $this->set(array_merge($data, ['_serialize' => array_keys($data)]));
     }
 

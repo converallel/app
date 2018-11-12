@@ -20,6 +20,7 @@ use Cake\ORM\Entity;
  */
 class Application extends Entity
 {
+    use AuthorizationTrait;
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().

@@ -36,8 +36,8 @@ class ActivityItinerariesTable extends Table
         parent::initialize($config);
 
         $this->setTable('activity_itineraries');
-        $this->setDisplayField('activity_id');
-        $this->setPrimaryKey(['activity_id', 'stop']);
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Activities', [
             'foreignKey' => 'activity_id',
@@ -47,7 +47,7 @@ class ActivityItinerariesTable extends Table
             'foreignKey' => 'location_id'
         ]);
         $this->belongsTo('Transportation', [
-            'foreignKey' => 'transportation_mode_id'
+            'foreignKey' => 'transportation_id'
         ]);
     }
 
@@ -60,15 +60,20 @@ class ActivityItinerariesTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->allowEmpty('stop', 'create');
+            ->nonNegativeInteger('id')
+            ->allowEmpty('id', 'create');
 
         $validator
-            ->dateTime('arrive_on')
-            ->allowEmpty('arrive_on');
+            ->requirePresence('stop', 'create')
+            ->notEmpty('stop');
 
         $validator
-            ->dateTime('depart_on')
-            ->allowEmpty('depart_on');
+            ->dateTime('arrive_at')
+            ->allowEmpty('arrive_at');
+
+        $validator
+            ->dateTime('depart_at')
+            ->allowEmpty('depart_at');
 
         return $validator;
     }
@@ -84,7 +89,7 @@ class ActivityItinerariesTable extends Table
     {
         $rules->add($rules->existsIn(['activity_id'], 'Activities'));
         $rules->add($rules->existsIn(['location_id'], 'Locations'));
-        $rules->add($rules->existsIn(['transportation_mode_id'], 'Transportation'));
+        $rules->add($rules->existsIn(['transportation_id'], 'Transportation'));
 
         return $rules;
     }
