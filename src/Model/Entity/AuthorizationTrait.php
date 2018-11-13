@@ -19,7 +19,7 @@ trait AuthorizationTrait
      * @return bool
      */
     public function isCreatableBy(User $user) {
-        return true;
+        return $this->user_id === $user->id;
     }
 
     /**

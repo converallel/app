@@ -47,7 +47,9 @@ Router::defaultRouteClass(DashedRoute::class);
 
 Router::scope('/', function (RouteBuilder $routes) {
 
-    Router::scope('/api', function (RouteBuilder $routes) {
+    $routes->connect('/', ['controller' => 'Activities']);
+
+    $routes->scope('/api', function (RouteBuilder $routes) {
         $routes->resources('Activities', function (RouteBuilder $routes) {
             $routes->resources('Applications', ['only' => ['index']]);
             $routes->resources('Reviews', ['only' => ['index']]);
@@ -55,6 +57,8 @@ Router::scope('/', function (RouteBuilder $routes) {
         });
 
         $routes->resources('Applications', ['only' => ['create', 'update', 'delete']]);
+
+        $routes->resources('Contacts', ['only' => ['create', 'update', 'delete']]);
 
         $routes->resources('Locations', [
             'only' => ['view', 'create'],
@@ -68,13 +72,9 @@ Router::scope('/', function (RouteBuilder $routes) {
         });
 
         $routes->resources('Users', ['only' => ['view', 'create', 'update', 'delete']], function (RouteBuilder $routes) {
+            $routes->resources('Contacts', ['only' => ['index']]);
             $routes->resources('Locations', ['only' => ['update']]);
         });
-
-        $routes->resources('UserContacts', [
-            'only' => ['index', 'create', 'update', 'delete'],
-            'path' => '/contacts'
-        ]);
     });
 
     /**

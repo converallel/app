@@ -487,6 +487,40 @@ class Initial extends AbstractMigration
             )
             ->create();
 
+        $this->table('contacts')
+            ->addColumn('id', 'integer', [
+                'autoIncrement' => true,
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addPrimaryKey(['id'])
+            ->addColumn('user_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addColumn('type', 'enum', [
+                'default' => null,
+                'limit' => null,
+                'null' => false,
+                'values' => ['Email', 'Phone Number']
+            ])
+            ->addColumn('contact', 'string', [
+                'default' => null,
+                'limit' => 60,
+                'null' => false,
+            ])
+            ->addIndex(
+                [
+                    'contact',
+                ],
+                ['unique' => true]
+            )
+            ->create();
+
         $this->table('devices')
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
@@ -1146,34 +1180,6 @@ class Initial extends AbstractMigration
             )
             ->create();
 
-        $this->table('user_contacts')
-            ->addColumn('id', 'integer', [
-                'autoIncrement' => true,
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['id'])
-            ->addColumn('user_id', 'integer', [
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addColumn('type', 'enum', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-                'values' => ['Email', 'Phone Number']
-            ])
-            ->addColumn('contact', 'string', [
-                'default' => null,
-                'limit' => 60,
-                'null' => false,
-            ])
-            ->create();
-
         $this->table('user_logins')
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
@@ -1579,6 +1585,18 @@ class Initial extends AbstractMigration
             )
             ->update();
 
+        $this->table('contacts')
+            ->addForeignKey(
+                'user_id',
+                'users',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->update();
+
         $this->table('devices')
             ->addForeignKey(
                 'user_id',
@@ -1733,18 +1751,6 @@ class Initial extends AbstractMigration
             ->addForeignKey(
                 'parent_id',
                 'tags',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
-            ->update();
-
-        $this->table('user_contacts')
-            ->addForeignKey(
-                'user_id',
-                'users',
                 'id',
                 [
                     'update' => 'CASCADE',
@@ -1968,6 +1974,11 @@ class Initial extends AbstractMigration
                 'blocker_id'
             )->save();
 
+        $this->table('contacts')
+            ->dropForeignKey(
+                'user_id'
+            )->save();
+
         $this->table('devices')
             ->dropForeignKey(
                 'user_id'
@@ -2023,11 +2034,6 @@ class Initial extends AbstractMigration
                 'parent_id'
             )->save();
 
-        $this->table('user_contacts')
-            ->dropForeignKey(
-                'user_id'
-            )->save();
-
         $this->table('user_logins')
             ->dropForeignKey(
                 'device_id'
@@ -2065,6 +2071,7 @@ class Initial extends AbstractMigration
         $this->table('activity_itineraries')->drop()->save();
         $this->table('applications')->drop()->save();
         $this->table('blocked_users')->drop()->save();
+        $this->table('contacts')->drop()->save();
         $this->table('devices')->drop()->save();
         $this->table('education')->drop()->save();
         $this->table('files')->drop()->save();
@@ -2081,7 +2088,6 @@ class Initial extends AbstractMigration
         $this->table('tags')->drop()->save();
         $this->table('time_zones')->drop()->save();
         $this->table('transportation')->drop()->save();
-        $this->table('user_contacts')->drop()->save();
         $this->table('user_logins')->drop()->save();
         $this->table('users_tags')->drop()->save();
         $this->table('users')->drop()->save();

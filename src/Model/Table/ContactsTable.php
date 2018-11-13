@@ -7,20 +7,20 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * UserContacts Model
+ * Contacts Model
  *
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  *
- * @method \App\Model\Entity\UserContact get($primaryKey, $options = [])
- * @method \App\Model\Entity\UserContact newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\UserContact[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\UserContact|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\UserContact|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\UserContact patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\UserContact[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\UserContact findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\Contact get($primaryKey, $options = [])
+ * @method \App\Model\Entity\Contact newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\Contact[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\Contact|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Contact|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Contact patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\Contact[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\Contact findOrCreate($search, callable $callback = null, $options = [])
  */
-class UserContactsTable extends Table
+class ContactsTable extends Table
 {
 
     /**
@@ -33,9 +33,9 @@ class UserContactsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('user_contacts');
-        $this->setDisplayField('user_id');
-        $this->setPrimaryKey('user_id');
+        $this->setTable('contacts');
+        $this->setDisplayField('contact');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
@@ -64,7 +64,8 @@ class UserContactsTable extends Table
             ->scalar('contact')
             ->maxLength('contact', 60)
             ->requirePresence('contact', 'create')
-            ->notEmpty('contact');
+            ->notEmpty('contact')
+            ->add('contact', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         return $validator;
     }
@@ -78,6 +79,7 @@ class UserContactsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
+        $rules->add($rules->isUnique(['contact']));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;

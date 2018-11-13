@@ -88,7 +88,7 @@ class Activity extends Entity
 
     public function isCreatableBy(User $user)
     {
-        return !is_null($user->profile_image_path);
+        return $this->organizer_id === $user->id && !is_null($user->profile_image_path);
     }
 
     public function isEditableBy(User $user)

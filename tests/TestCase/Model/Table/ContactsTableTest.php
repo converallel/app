@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\UserContactsTable;
+use App\Model\Table\ContactsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\UserContactsTable Test Case
+ * App\Model\Table\ContactsTable Test Case
  */
-class UserContactsTableTest extends TestCase
+class ContactsTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\UserContactsTable
+     * @var \App\Model\Table\ContactsTable
      */
-    public $UserContacts;
+    public $Contacts;
 
     /**
      * Fixtures
@@ -24,7 +24,7 @@ class UserContactsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.user_contacts',
+        'app.contacts',
         'app.users'
     ];
 
@@ -36,8 +36,8 @@ class UserContactsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::getTableLocator()->exists('UserContacts') ? [] : ['className' => UserContactsTable::class];
-        $this->UserContacts = TableRegistry::getTableLocator()->get('UserContacts', $config);
+        $config = TableRegistry::getTableLocator()->exists('Contacts') ? [] : ['className' => ContactsTable::class];
+        $this->Contacts = TableRegistry::getTableLocator()->get('Contacts', $config);
     }
 
     /**
@@ -47,7 +47,7 @@ class UserContactsTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->UserContacts);
+        unset($this->Contacts);
 
         parent::tearDown();
     }

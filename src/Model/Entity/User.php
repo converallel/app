@@ -32,6 +32,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\ActivityFilterEducation[] $activity_filter_education
  * @property \App\Model\Entity\ActivityFilter[] $activity_filters
  * @property \App\Model\Entity\Application[] $applications
+ * @property \App\Model\Entity\Contact[] $contacts
  * @property \App\Model\Entity\Device[] $devices
  * @property \App\Model\Entity\File[] $files
  * @property \App\Model\Entity\LocationSelectionHistory[] $location_selection_histories
@@ -39,7 +40,6 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Media[] $media
  * @property \App\Model\Entity\Review[] $reviews
  * @property \App\Model\Entity\SearchHistory[] $search_histories
- * @property \App\Model\Entity\UserContact[] $user_contacts
  * @property \App\Model\Entity\UserLogin[] $user_logins
  * @property \App\Model\Entity\Activity[] $activities
  * @property \App\Model\Entity\Tag[] $tags

@@ -37,11 +37,11 @@ use Cake\Utility\Inflector;
  * @link https://book.cakephp.org/3.0/en/controllers.html#the-app-controller
  *
  * @property \Cake\ORM\Table $Table
+ * @property \App\Model\Entity\User $current_user
  */
 class AppController extends Controller
 {
 
-    protected $user;
     protected $using_api;
     protected $entity_name;
 
@@ -60,7 +60,7 @@ class AppController extends Controller
         parent::initialize();
 
         $this->using_api = substr($this->getRequest()->getRequestTarget(), 0, strlen('/api')) === '/api';
-        $this->entity_name = Inflector::singularize(strtolower($this->getName()));
+        $this->entity_name = Inflector::singularize(lcfirst($this->getName()));
         $this->Table = $this->{$this->getName()};
 
         // load components
@@ -92,8 +92,8 @@ class AppController extends Controller
         $users = TableRegistry::getTableLocator()->get('Users');
         $user = $users->get(1);
 //        $this->user = $this->Auth->user();
-        $this->user = $user;
-        Configure::write('user_id', $this->user->id);
+        $this->current_user = $user;
+        Configure::write('user_id', $this->current_user->id);
     }
 
     //======================================================================
@@ -204,7 +204,7 @@ class AppController extends Controller
             $entity = $this->Table->get($id, $query);
         }
 
-        if (!$entity->isViewableBy($this->user))
+        if (!$entity->isViewableBy($this->current_user))
             throw new UnauthorizedException();
 
         if ($this->using_api) {
@@ -226,7 +226,7 @@ class AppController extends Controller
         if ($this->request->is('post')) {
             $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(), $options['objectHydration'] ?? []);
 
-            if (!$entity->isCreatableBy($this->user))
+            if (!$entity->isCreatableBy($this->current_user))
                 throw new UnauthorizedException();
 
             if ($this->Table->save($entity)) {
@@ -267,7 +267,7 @@ class AppController extends Controller
     {
         $entity = $this->Table->get($id);
 
-        if (!$entity->isEditable($this->user))
+        if (!$entity->isEditableBy($this->current_user))
             throw new UnauthorizedException();
 
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -275,7 +275,7 @@ class AppController extends Controller
 
             if ($this->Table->save($entity)) {
                 if ($this->using_api) {
-                    return $this->setSerialized(null, 204);
+                    return $this->setSerialized(204);
                 }
                 $this->Flash->success(__("The $this->entity_name has been saved."));
                 return $this->redirect(['action' => 'index']);
@@ -310,12 +310,12 @@ class AppController extends Controller
         $this->request->allowMethod(['post', 'delete']);
         $entity = $this->Table->get($id);
 
-        if (!$entity->isDeletableBy($this->user))
+        if (!$entity->isDeletableBy($this->current_user))
             throw new UnauthorizedException();
 
         if ($this->Table->delete($entity)) {
             if ($this->using_api) {
-                return $this->setSerialized();
+                return $this->setSerialized(204);
             }
             $this->Flash->success(__("The $this->entity_name has been saved."));
         } else {
@@ -348,20 +348,23 @@ class AppController extends Controller
     }
 
     /**
-     * @param array|string|EntityInterface|ResultSetInterface $data
+     * @param array|int|string|EntityInterface|ResultSetInterface $data
      * @param int $status
      */
     protected function setSerialized($data = [], $status = 200)
     {
-        $this->setResponse($this->getResponse()->withStatus($status)->withType('application/json'));
-
-        if (is_string($data))
+        if (is_numeric($data) && 100 <= $data && $data < 600) {
+            $status = $data;
+            $data = [];
+        }
+        elseif (is_string($data))
             $data = ['message' => $data];
         elseif ($data instanceof EntityInterface || $data instanceof ResultSetInterface)
             $data = $data->toArray();
         elseif (!$data)
             $data = [];
 
+        $this->setResponse($this->getResponse()->withStatus($status)->withType('application/json'));
         $this->set(array_merge($data, ['_serialize' => array_keys($data)]));
     }
 

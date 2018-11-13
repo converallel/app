@@ -5,7 +5,7 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * UserContact Entity
+ * Contact Entity
  *
  * @property int $id
  * @property int $user_id
@@ -14,7 +14,7 @@ use Cake\ORM\Entity;
  *
  * @property \App\Model\Entity\User $user
  */
-class UserContact extends Entity
+class Contact extends Entity
 {
     use AuthorizationTrait;
 

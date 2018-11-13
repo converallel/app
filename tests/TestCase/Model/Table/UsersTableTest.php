@@ -31,6 +31,7 @@ class UsersTableTest extends TestCase
         'app.activity_filter_education',
         'app.activity_filters',
         'app.applications',
+        'app.contacts',
         'app.devices',
         'app.files',
         'app.location_selection_histories',
@@ -38,7 +39,6 @@ class UsersTableTest extends TestCase
         'app.media',
         'app.reviews',
         'app.search_histories',
-        'app.user_contacts',
         'app.user_logins',
         'app.activities',
         'app.tags'
@@ -94,6 +94,26 @@ class UsersTableTest extends TestCase
      * @return void
      */
     public function testBuildRules()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test findMinimumInformation method
+     *
+     * @return void
+     */
+    public function testFindMinimumInformation()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test findBasicInformation method
+     *
+     * @return void
+     */
+    public function testFindBasicInformation()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
