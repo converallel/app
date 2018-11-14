@@ -20,11 +20,12 @@ class LocationsController extends AppController
         $longitude = $params['longitude'];
 
         $distance = 0.31; // mile(s) ≈ 0.5km
-        $lat_deviation = rad2deg($distance / 3959);
-        $lng_deviation = rad2deg(asin($distance / 3959) / cos(deg2rad($latitude)));
+        $lat_delta = rad2deg($distance / 3959);
+        $lng_delta = rad2deg(asin($distance / 3959) / cos(deg2rad($latitude)));
 
         $location = $this->Locations->find()
             ->where([
+                'latitude BETWEEN :start_date AND :end_date',
                 'latitude' => $latitude,
                 'longitude' => $longitude
             ])

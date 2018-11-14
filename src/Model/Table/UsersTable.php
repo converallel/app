@@ -2,6 +2,7 @@
 
 namespace App\Model\Table;
 
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -53,13 +54,6 @@ class UsersTable extends Table
         $this->setTable('users');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
-
-//        $this->addBehavior('CounterCache', [
-//            'Activities' => [
-//                'organizer_count' => ['finder' => 'organizers'],
-//                'participant_count' => ['finder' => 'participants'],
-//            ]
-//        ]);
 
         $this->belongsTo('Locations', [
             'foreignKey' => 'location_id',
@@ -119,6 +113,13 @@ class UsersTable extends Table
         ]);
     }
 
+    public function beforeMarshal(Event $event, \ArrayObject $data, \ArrayObject $options)
+    {
+        if (isset($data['password'])) {
+            $data['password'] = (string)$data['password'];
+        }
+    }
+
     /**
      * Default validation rules.
      *
@@ -146,9 +147,8 @@ class UsersTable extends Table
 
         $validator
             ->scalar('password')
-            ->lengthBetween('password', [6, 255])
-            ->requirePresence('password', 'create')
-            ->notEmpty('password');
+            ->minLength('password', 6)
+            ->requirePresence('password', 'create');
 
         $validator
             ->range('failed_login_attempts', [0, 5])
@@ -218,11 +218,6 @@ class UsersTable extends Table
         $rules->add($rules->existsIn(['education_id'], 'Education'));
 
         return $rules;
-    }
-
-    protected function _setPassword($password)
-    {
-        return (new DefaultPasswordHasher)->hash($password);
     }
 
     /**

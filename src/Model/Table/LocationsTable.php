@@ -70,12 +70,12 @@ class LocationsTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->numeric('latitude')
+            ->latitude('latitude')
             ->requirePresence('latitude', 'create')
             ->notEmpty('latitude');
 
         $validator
-            ->numeric('longitude')
+            ->longitude('longitude')
             ->requirePresence('longitude', 'create')
             ->notEmpty('longitude');
 

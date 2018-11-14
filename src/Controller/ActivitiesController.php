@@ -15,10 +15,15 @@ class ActivitiesController extends AppController
 
     public function index()
     {
+        $user_id = $this->current_user->id;
+
         $start_date = date("Y-m-d h:i:s");
         $end_date = date("Y-m-d h:i:s", strtotime("+10 year"));
 
         $this->loadModel('ActivityFilters');
+        $this->ActivityFilters->find()
+            ->contain(['Locations' => ['fields' => ['latitude', 'longitude', 'time_zone']]])
+            ->where(['user_id' => $user_id]);
 
         $query = $this->Activities
             ->find('basicInformation')

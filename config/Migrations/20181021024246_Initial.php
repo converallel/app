@@ -506,7 +506,7 @@ class Initial extends AbstractMigration
                 'default' => null,
                 'limit' => null,
                 'null' => false,
-                'values' => ['Email', 'Phone Number']
+                'values' => ['Email', 'Phone']
             ])
             ->addColumn('contact', 'string', [
                 'default' => null,
@@ -1274,9 +1274,9 @@ class Initial extends AbstractMigration
                 'limit' => 20,
                 'null' => true,
             ])
-            ->addColumn('password', 'string', [
+            ->addColumn('password', 'char', [
                 'default' => null,
-                'limit' => 255,
+                'limit' => 60,
                 'null' => false,
             ])
             ->addColumn('failed_login_attempts', 'integer', [

@@ -216,30 +216,4 @@ class ActivitiesTable extends Table
                     ['activities.id = participants.activity_id', "participants.user_id = $viewer_id",
                         "participants.type = 'Participating'"]);
     }
-
-    /**
-     * @param Query $query
-     * @param array $options
-     * @return Query
-     */
-    public function findOrganizers(Query $query, array $options)
-    {
-        $activity_id = $options['activity_id'];
-        return $query->innerJoinWith('ActivitiesUsers', function (Query $query) use ($activity_id) {
-            return $query->where(['activity_id' => $activity_id, 'type' => 'Organizing']);
-        });
-    }
-
-    /**
-     * @param Query $query
-     * @param array $options
-     * @return Query
-     */
-    public function findParticipants(Query $query, array $options)
-    {
-        $activity_id = $options['activity_id'];
-        return $query->innerJoinWith('ActivitiesUsers', function (Query $query) use ($activity_id) {
-            return $query->where(['activity_id' => $activity_id, 'type' => 'Participating']);
-        });
-    }
 }

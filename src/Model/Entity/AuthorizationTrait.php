@@ -15,10 +15,10 @@ trait AuthorizationTrait
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @return bool
      */
-    public function isCreatableBy(User $user) {
+    public function isCreatableBy($user) {
         return $this->user_id === $user->id;
     }
 

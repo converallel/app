@@ -59,9 +59,8 @@ class PersonalitiesTable extends Table
 
         $validator
             ->scalar('type')
-            ->maxLength('type', 4)
+            ->lengthBetween('type', [4, 4])
             ->requirePresence('type', 'create')
-            ->notEmpty('type')
             ->add('type', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         return $validator;

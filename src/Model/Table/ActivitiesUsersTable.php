@@ -2,6 +2,7 @@
 
 namespace App\Model\Table;
 
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -38,6 +39,13 @@ class ActivitiesUsersTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
+        $this->addBehavior('CounterCache', [
+            'Activities' => [
+                'organizer_count' => ['finder' => 'organizers'],
+                'participant_count' => ['finder' => 'participants']
+            ]
+        ]);
+
         $this->belongsTo('Activities', [
             'foreignKey' => 'activity_id',
             'joinType' => 'INNER'
@@ -65,11 +73,6 @@ class ActivitiesUsersTable extends Table
             ->requirePresence('type', 'create')
             ->notEmpty('type');
 
-        $validator
-            ->dateTime('created_at')
-            ->requirePresence('created_at', 'create')
-            ->notEmpty('created_at');
-
         return $validator;
     }
 
@@ -86,5 +89,25 @@ class ActivitiesUsersTable extends Table
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
+    }
+
+    /**
+     * @param Query $query
+     * @param array $options
+     * @return Query
+     */
+    public function findOrganizers(Query $query, array $options)
+    {
+        return $query->where(['type' => 'Organizing']);
+    }
+
+    /**
+     * @param Query $query
+     * @param array $options
+     * @return Query
+     */
+    public function findParticipants(Query $query, array $options)
+    {
+        return $query->where(['type' => 'Participating']);
     }
 }

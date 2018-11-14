@@ -13,17 +13,6 @@ use Cake\ORM\Query;
  */
 class UsersController extends AppController
 {
-    public function index()
-    {
-        if ($activity_id = $this->getRequest()->getParam('activity_id')) {
-
-        }
-
-        $this->load([
-            'contain' => ['Locations', 'Personalities', 'Education']
-        ]);
-    }
-
     public function view($id = null)
     {
         $query = $this->Users->find('basicInformation')
@@ -38,7 +27,8 @@ class UsersController extends AppController
         $this->get($id, $query);
     }
 
-    public function login() {
+    public function login()
+    {
         if ($this->request->is('post')) {
             $user = $this->Auth->identify();
             if ($user) {

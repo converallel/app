@@ -37,7 +37,7 @@ use Cake\Utility\Inflector;
  * @link https://book.cakephp.org/3.0/en/controllers.html#the-app-controller
  *
  * @property \Cake\ORM\Table $Table
- * @property \App\Model\Entity\User $current_user
+ * @property \App\Model\Entity\User|null $current_user
  */
 class AppController extends Controller
 {
@@ -174,7 +174,7 @@ class AppController extends Controller
      */
     public function load($query = [], $options = [])
     {
-        if ($query instanceof \ArrayObject)
+        if (is_array($query))
             $query = $this->Table->find('all', $query);
         $entities = $this->paginate($query, $options['pagination'] ?? []);
         if ($this->using_api) {
@@ -191,7 +191,7 @@ class AppController extends Controller
      * @param array|Query $query
      * @param array $options
      * @return \Cake\Http\Response|void
-     * @throws \Cake\Http\Exception\UnauthorizedException When the user is not the owner of the entity.
+     * @throws \Cake\Http\Exception\UnauthorizedException When the user is not the authorized to view this entity.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function get($id = null, $query = [], $options = [])
@@ -219,6 +219,7 @@ class AppController extends Controller
      *
      * @param array $options
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
+     * @throws \Cake\Http\Exception\UnauthorizedException When the user is not the authorized to create this entity.
      */
     public function create($options = [])
     {
@@ -260,7 +261,7 @@ class AppController extends Controller
      * @param string|null $id Entity id.
      * @param array $options
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Http\Exception\UnauthorizedException When the user is not the owner of the entity.
+     * @throws \Cake\Http\Exception\UnauthorizedException When the user is not the authorized to edit this entity.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
     public function update($id = null, $options = [])
@@ -301,14 +302,21 @@ class AppController extends Controller
     /**
      * Delete method
      *
-     * @param string|null $id Entity id.
+     * @param array|string|null $id Entity id.
      * @return \Cake\Http\Response|null Redirects to index.
+     * @throws \Cake\Http\Exception\UnauthorizedException When the user is not the authorized to delete this entity.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function remove($id = null, $options = [])
     {
         $this->request->allowMethod(['post', 'delete']);
-        $entity = $this->Table->get($id);
+
+        if (is_array($id)) {
+            $entity = $this->Table->find()->where($id)->first();
+            if (is_null($entity))
+                throw new RecordNotFoundException("Record not found in table {$this->getName()}");
+        } else
+            $entity = $this->Table->get($id);
 
         if (!$entity->isDeletableBy($this->current_user))
             throw new UnauthorizedException();
@@ -351,13 +359,12 @@ class AppController extends Controller
      * @param array|int|string|EntityInterface|ResultSetInterface $data
      * @param int $status
      */
-    protected function setSerialized($data = [], $status = 200)
+    public function setSerialized($data = [], $status = 200)
     {
         if (is_numeric($data) && 100 <= $data && $data < 600) {
             $status = $data;
             $data = [];
-        }
-        elseif (is_string($data))
+        } elseif (is_string($data))
             $data = ['message' => $data];
         elseif ($data instanceof EntityInterface || $data instanceof ResultSetInterface)
             $data = $data->toArray();
@@ -368,32 +375,32 @@ class AppController extends Controller
         $this->set(array_merge($data, ['_serialize' => array_keys($data)]));
     }
 
-    /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    /*::                                                                         :*/
-    /*::  This routine calculates the distance between two points (given the     :*/
-    /*::  latitude/longitude of those points). It is being used to calculate     :*/
-    /*::  the distance between two locations using GeoDataSource(TM) Products    :*/
-    /*::                                                                         :*/
-    /*::  Definitions:                                                           :*/
-    /*::    South latitudes are negative, east longitudes are positive           :*/
-    /*::                                                                         :*/
-    /*::  Passed to function:                                                    :*/
-    /*::    lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  :*/
-    /*::    lat2, lon2 = Latitude and Longitude of point 2 (in decimal degrees)  :*/
-    /*::    unit = the unit you desire for results                               :*/
-    /*::           where: 'M' is statute miles (default)                         :*/
-    /*::                  'K' is kilometers                                      :*/
-    /*::                  'N' is nautical miles                                  :*/
-    /*::  Worldwide cities and other features databases with latitude longitude  :*/
-    /*::  are available at https://www.geodatasource.com                          :*/
-    /*::                                                                         :*/
-    /*::  For enquiries, please contact sales@geodatasource.com                  :*/
-    /*::                                                                         :*/
-    /*::  Official Web site: https://www.geodatasource.com                        :*/
-    /*::                                                                         :*/
-    /*::         GeoDataSource.com (C) All Rights Reserved 2017		   		     :*/
-    /*::                                                                         :*/
-    /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+
+    /**
+     * Incorporates the params into the request body if they exist
+     * @param array|string $params
+     */
+    public function incorporateRoutingParams(...$params)
+    {
+        $body = $this->getRequest()->getParsedBody();
+        foreach ($params as $param) {
+            if ($value = $this->getRequest()->getParam($param))
+                $body[$param] = $value;
+        }
+        $this->setRequest($this->getRequest()->withParsedBody($body));
+    }
+
+    /**
+     * This routine calculates the distance between two points (given the latitude/longitude of those points).
+     * South latitudes are negative, east longitudes are positive
+     *
+     * @param float $lat1 Latitude of point 1 (in decimal degrees)
+     * @param float $lng1 Longitude of point 1 (in decimal degrees)
+     * @param float $lat2 Latitude of point 2 (in decimal degrees)
+     * @param float $lng2 Longitude of point 2 (in decimal degrees)
+     * @param string $unit 'M' - statute miles, 'K' - kilometers, 'N' - nautical miles
+     * @return float
+     */
     function greatCircleDistance($lat1, $lng1, $lat2, $lng2, $unit = 'M')
     {
         $theta = $lng1 - $lng2;
