@@ -40,10 +40,6 @@ use Cake\Validation\Validator;
  */
 class UsersTable extends Table
 {
-    protected function _getFullName()
-    {
-        return $this->_properties['given_name'] . ' ' . $this->_properties['family_name'];
-    }
 
     /**
      * Initialize method

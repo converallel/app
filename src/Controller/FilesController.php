@@ -21,10 +21,18 @@ class FilesController extends AppController
     {
         $query = $this->Files->find()
             ->where(['user_id' => $this->current_user->id])
-            ->orderDesc('created_at');
+            ->orderDesc('created_at')
+            ->formatResults(function (\Cake\Collection\CollectionInterface $results) {
+                return $results->map(function ($row) {
+                    return ['id' => $row->id, 'url' => $row->url, 'size' => $row->size, 'created_at' => $row->created_at];
+                });
+            });
         $this->load($query);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function add()
     {
         $body = $this->getRequest()->getData();
@@ -37,25 +45,23 @@ class FilesController extends AppController
             $error_message = 'Failed to save the file, please try again.';
             if (!$file->write(base64_decode($body['data'])))
                 throw new \RuntimeException($error_message);
-//            if (!chown($file->path, $this->current_user->id))
-//                throw new \RuntimeException($error_message);
-        } catch (\RuntimeException $e) {
+            if (!chown($file->path, $this->current_user->id))
+                throw new \RuntimeException($error_message);
+
+            $body = [];
+            $body['user_id'] = $this->current_user->id;
+            $body['server'] = $_SERVER['HTTP_HOST'];
+            $body['directory'] = $file->Folder->path;
+            $body['name'] = $file->name();
+            $body['extension'] = $file->ext();
+            $body['size'] = $file->size();
+            $this->setRequest($this->getRequest()->withParsedBody($body));
+
+            $this->create();
+        } catch (\Exception $e) {
             $file->delete();
             throw $e;
         }
-
-        $body = [];
-        $body['user_id'] = $this->current_user->id;
-        $body['server'] = $_SERVER['HTTP_HOST'];
-        $body['directory'] = $file->Folder->path;
-        $body['name'] = $file->name();
-        $body['extension'] = $file->ext();
-        $body['size'] = $file->size();
-        var_export($body);
-        exit;
-        $this->setRequest($this->getRequest()->withParsedBody($body));
-
-        $this->create();
     }
 
     public function delete($id = null)

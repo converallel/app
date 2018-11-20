@@ -85,6 +85,11 @@ class User extends Entity
         'password'
     ];
 
+    protected function _getFullName()
+    {
+        return $this->given_name . ' ' . $this->family_name;
+    }
+
     protected function _setPassword($password)
     {
         return (new DefaultPasswordHasher())->hash($password);

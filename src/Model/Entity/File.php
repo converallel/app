@@ -40,4 +40,14 @@ class File extends Entity
         'extension' => true,
         'size' => true
     ];
+
+    protected function _getFullPath()
+    {
+        return $this->directory . DS . $this->name . '.' . $this->extension;
+    }
+
+    protected function _getUrl()
+    {
+        return 'http://' . $this->server . $this->_getFullPath();
+    }
 }

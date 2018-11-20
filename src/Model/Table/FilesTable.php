@@ -23,18 +23,6 @@ use Cake\Validation\Validator;
  */
 class FilesTable extends Table
 {
-    protected $_virtual = ['url'];
-
-    protected function _getFullPath()
-    {
-        $properties = $this->_properties;
-        return $properties['directory'] . DS . $properties['name'] . DS . '.' . $properties['extension'];
-    }
-
-    protected function _getUrl()
-    {
-        return 'http://' . $this->_properties['server'] . $this->_getFullPath();
-    }
 
     /**
      * Initialize method
@@ -73,13 +61,13 @@ class FilesTable extends Table
 
         $validator
             ->scalar('server')
-            ->maxLength('server', 20)
+            ->maxLength('server', 30)
             ->requirePresence('server', 'create')
             ->notEmpty('server');
 
         $validator
             ->scalar('directory')
-            ->maxLength('directory', 50)
+            ->maxLength('directory', 60)
             ->requirePresence('directory', 'create')
             ->notEmpty('directory');
 
