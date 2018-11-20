@@ -14,7 +14,7 @@ use Cake\ORM\Entity;
  * @property string $name
  * @property string $extension
  * @property int $size
- * @property \Cake\I18n\FrozenTime $uploaded_at
+ * @property \Cake\I18n\FrozenTime $created_at
  *
  * @property \App\Model\Entity\User $user
  * @property \App\Model\Entity\Media[] $media

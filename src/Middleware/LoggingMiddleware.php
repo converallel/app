@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * ApiLogging middleware
+ * Logging middleware
  */
 class LoggingMiddleware
 {
@@ -26,7 +26,7 @@ class LoggingMiddleware
     {
         $response = $next($request, $response);
 
-        $request_body = $request->getParsedBody();
+        $request_body = json_decode($request->getBody()->getContents(), true);
         $data = [
             'user_id' => Configure::read('user_id'),
             'ip_address' => $request->clientIp(),

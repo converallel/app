@@ -597,12 +597,12 @@ class Initial extends AbstractMigration
             ])
             ->addColumn('server', 'string', [
                 'default' => null,
-                'limit' => 20,
+                'limit' => 30,
                 'null' => false,
             ])
             ->addColumn('directory', 'string', [
                 'default' => null,
-                'limit' => 50,
+                'limit' => 60,
                 'null' => false,
             ])
             ->addColumn('name', 'string', [
@@ -621,7 +621,7 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
-            ->addColumn('uploaded_at', 'timestamp', [
+            ->addColumn('created_at', 'timestamp', [
                 'default' => 'CURRENT_TIMESTAMP',
                 'limit' => null,
                 'null' => false,

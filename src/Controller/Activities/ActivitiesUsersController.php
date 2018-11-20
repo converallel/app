@@ -19,12 +19,15 @@ class ActivitiesUsersController extends AppController
         $type = $this->getRequest()->getQueryParams()['type'] ?? null;
 
         $query = $this->ActivitiesUsers->find()
-            ->select('id')
             ->contain(['Users' => ['finder' => 'basicInformation']])
             ->where([
                 'activity_id' => $activity_id,
                 'type' => $type
-            ]);
+            ])->formatResults(function (\Cake\Collection\CollectionInterface $results) {
+                return $results->map(function ($row) {
+                    return $row['user'];
+                });
+            });
         $this->load($query);
     }
 

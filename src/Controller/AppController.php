@@ -91,7 +91,7 @@ class AppController extends Controller
 
         $users = TableRegistry::getTableLocator()->get('Users');
         $user = $users->get(1);
-//        $this->user = $this->Auth->user();
+//        $this->current_user = $this->Auth->user();
         $this->current_user = $user;
         Configure::write('user_id', $this->current_user->id);
     }
@@ -377,7 +377,7 @@ class AppController extends Controller
 
 
     /**
-     * Incorporates the params into the request body if they exist
+     * Incorporates the routing parameters into the request body if they exist
      * @param array|string $params
      */
     public function incorporateRoutingParams(...$params)

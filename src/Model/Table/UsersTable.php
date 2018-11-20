@@ -40,6 +40,10 @@ use Cake\Validation\Validator;
  */
 class UsersTable extends Table
 {
+    protected function _getFullName()
+    {
+        return $this->_properties['given_name'] . ' ' . $this->_properties['family_name'];
+    }
 
     /**
      * Initialize method
@@ -52,7 +56,7 @@ class UsersTable extends Table
         parent::initialize($config);
 
         $this->setTable('users');
-        $this->setDisplayField('id');
+        $this->setDisplayField('full_name');
         $this->setPrimaryKey('id');
 
         $this->belongsTo('Locations', [
@@ -237,6 +241,6 @@ class UsersTable extends Table
      */
     public function findBasicInformation(Query $query, array $options)
     {
-        return $query->select(['id', 'given_name', 'family_name', 'birthdate', 'gender', 'profile_image_path', 'verified']);
+        return $query->select(['id', 'given_name', 'birthdate', 'gender', 'profile_image_path', 'verified']);
     }
 }
