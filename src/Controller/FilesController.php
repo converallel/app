@@ -5,7 +5,6 @@ namespace App\Controller;
 use Cake\Filesystem\File;
 use Cake\Filesystem\Folder;
 use Cake\Http\Exception\UnauthorizedException;
-use Elastica\Exception\NotFoundException;
 
 /**
  * Files Controller
@@ -81,7 +80,7 @@ class FilesController extends AppController
         $file = new File($fileEntity->full_path, false, 0644);
 
         if (!$file->exists())
-            throw new NotFoundException();
+            throw new \Cake\Http\Exception\NotFoundException();
         if (!$fileEntity->isDeletableBy($this->current_user))
             throw new UnauthorizedException();
         if (!$file->delete())

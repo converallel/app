@@ -361,7 +361,7 @@ class AppController extends Controller
      */
     public function setSerialized($data = [], $status = 200)
     {
-        if (is_numeric($data) && 100 <= $data && $data < 600) {
+        if (is_int($data) && 100 <= $data && $data < 600) {
             $status = $data;
             $data = [];
         } elseif (is_string($data))
