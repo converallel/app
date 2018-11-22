@@ -64,7 +64,7 @@ Router::scope('/', function (RouteBuilder $routes) {
 
         $routes->resources('Contacts', ['only' => ['create', 'update', 'delete']]);
 
-        $routes->resources('Files', ['only' => ['index', 'create', 'delete']]);
+        $routes->resources('Files', ['only' => ['index', 'view', 'create', 'delete']]);
 
         $routes->resources('Locations', [
             'only' => ['view', 'create'],

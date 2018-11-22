@@ -5,7 +5,7 @@ namespace App\Controller;
 use Cake\Filesystem\File;
 use Cake\Filesystem\Folder;
 use Cake\Http\Exception\UnauthorizedException;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use Elastica\Exception\NotFoundException;
 
 /**
  * Files Controller
@@ -30,23 +30,34 @@ class FilesController extends AppController
         $this->load($query);
     }
 
+    public function view($id = null)
+    {
+        $download = (bool)$this->getRequest()->getQueryParams()['download'] ?? false;
+        $file = $this->Files->get($id);
+        if (!$file->isViewableBy($this->current_user))
+            throw new UnauthorizedException();
+        return $this->getResponse()->withFile($file->full_path, [
+            'download' => $download,
+            'name' => substr($file->name, strpos($file->name, '-') + 1) . '.' . $file->extension
+        ]);
+    }
+
     /**
      * @throws \Exception
      */
     public function add()
     {
-        $body = $this->getRequest()->getData();
-        $extension = pathinfo($body['filename'], PATHINFO_EXTENSION);
-        $filename = uniqid(time()) . '-' . $body['filename'];
+        $uploadedFile = $this->getRequest()->getUploadedFile('file');
+        if (!$uploadedFile)
+            throw new \Cake\Http\Exception\BadRequestException();
+        $filename = uniqid(time()) . '-' . $uploadedFile->getClientFilename();
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
         $folder = new Folder(Files . $extension . DS, true, 0755);
         $file = new File($folder->path . $filename, true, 0644);
 
         try {
-            $error_message = 'Failed to save the file, please try again.';
-            if (!$file->write(base64_decode($body['data'])))
-                throw new \RuntimeException($error_message);
-            if (!chown($file->path, $this->current_user->id))
-                throw new \RuntimeException($error_message);
+            if (!$file->write($uploadedFile->getStream()))
+                throw new \RuntimeException('Failed to save the file, please try again.');
 
             $body = [];
             $body['user_id'] = $this->current_user->id;
@@ -66,13 +77,12 @@ class FilesController extends AppController
 
     public function delete($id = null)
     {
-        $file = $this->Files->get($id);
-        $file = new File($file->full_path, false, 0644);
+        $fileEntity = $this->Files->get($id);
+        $file = new File($fileEntity->full_path, false, 0644);
 
-        $owner = $file->owner();
-        if (!$owner)
-            throw new FileNotFoundException();
-        if ($owner !== $this->current_user->id)
+        if (!$file->exists())
+            throw new NotFoundException();
+        if (!$fileEntity->isDeletableBy($this->current_user))
             throw new UnauthorizedException();
         if (!$file->delete())
             throw new \RuntimeException('Failed to delete the file, please try again.');

@@ -5,6 +5,7 @@
 /config/Migrations/schema-dump-default.lock
 /logs/*
 /tmp/*
+/webroot/files/*
 /vendor/*
 
 # OS generated files #
