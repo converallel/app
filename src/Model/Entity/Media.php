@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -8,18 +7,16 @@ use Cake\ORM\Entity;
  * Media Entity
  *
  * @property int $id
- * @property int $user_id
  * @property int $file_id
  * @property string $type
  * @property int $position
- * @property string $caption
+ * @property string|null $caption
  *
- * @property \App\Model\Entity\User $user
  * @property \App\Model\Entity\File $file
+ * @property \App\Model\Entity\Activity[] $activities
  */
 class Media extends Entity
 {
-    use AuthorizationTrait;
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -31,10 +28,29 @@ class Media extends Entity
      * @var array
      */
     protected $_accessible = [
-        'user_id' => true,
         'file_id' => true,
         'type' => true,
         'position' => true,
         'caption' => true
     ];
+
+    public function isViewableBy(User $user)
+    {
+        return $this->file->isViewableBy($user);
+    }
+
+    public function isCreatableBy($user)
+    {
+        return $this->file->isCreatableBy($user);
+    }
+
+    public function isEditableBy(User $user)
+    {
+        return $this->file->isEditableBy($user);
+    }
+
+    public function isDeletableBy(User $user)
+    {
+        return $this->file->isDeletableBy($user);
+    }
 }

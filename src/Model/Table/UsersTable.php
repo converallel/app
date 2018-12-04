@@ -22,7 +22,6 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\FilesTable|\Cake\ORM\Association\HasMany $Files
  * @property \App\Model\Table\LocationSelectionHistoriesTable|\Cake\ORM\Association\HasMany $LocationSelectionHistories
  * @property \App\Model\Table\LogsTable|\Cake\ORM\Association\HasMany $Logs
- * @property \App\Model\Table\MediaTable|\Cake\ORM\Association\HasMany $Media
  * @property \App\Model\Table\ReviewsTable|\Cake\ORM\Association\HasMany $Reviews
  * @property \App\Model\Table\SearchHistoriesTable|\Cake\ORM\Association\HasMany $SearchHistories
  * @property \App\Model\Table\UserLoginsTable|\Cake\ORM\Association\HasMany $UserLogins
@@ -54,6 +53,8 @@ class UsersTable extends Table
         $this->setTable('users');
         $this->setDisplayField('full_name');
         $this->setPrimaryKey('id');
+
+        $this->addBehavior('FileOwner');
 
         $this->belongsTo('Locations', [
             'foreignKey' => 'location_id',
@@ -87,9 +88,6 @@ class UsersTable extends Table
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('Logs', [
-            'foreignKey' => 'user_id'
-        ]);
-        $this->hasMany('Media', [
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('Reviews', [

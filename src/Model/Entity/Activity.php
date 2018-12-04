@@ -10,16 +10,16 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property string $title
  * @property \Cake\I18n\FrozenTime $start_date
- * @property \Cake\I18n\FrozenTime $end_date
+ * @property \Cake\I18n\FrozenTime|null $end_date
  * @property int $location_id
- * @property string $customized_location
+ * @property string|null $customized_location
  * @property int $organizer_id
  * @property bool $is_pair
  * @property bool $exclusive
  * @property string $location_visibility
- * @property string $details
+ * @property string|null $details
  * @property string $status
- * @property int $group_size_limit
+ * @property int|null $group_size_limit
  * @property int $application_count
  * @property int $organizer_count
  * @property int $participant_count
@@ -28,14 +28,11 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $modified_at
  *
  * @property \App\Model\Entity\Location $location
- * @property \App\Model\Entity\User $organizer
- * @property \App\Model\Entity\User[] $organizers
- * @property \App\Model\Entity\User[] $followers
- * @property \App\Model\Entity\User[] $participants
  * @property \App\Model\Entity\User[] $users
  * @property \App\Model\Entity\ActivityItinerary[] $activity_itineraries
  * @property \App\Model\Entity\Application[] $applications
  * @property \App\Model\Entity\Review[] $reviews
+ * @property \App\Model\Entity\Media[] $media
  * @property \App\Model\Entity\Tag[] $tags
  */
 class Activity extends Entity
@@ -75,6 +72,7 @@ class Activity extends Entity
         'activity_itineraries' => true,
         'applications' => true,
         'reviews' => true,
+        'media' => true,
         'tags' => true
     ];
 

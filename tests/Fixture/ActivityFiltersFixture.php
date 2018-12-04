@@ -42,7 +42,7 @@ class ActivityFiltersFixture extends TestFixture
         ],
         '_options' => [
             'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci'
+            'collation' => 'utf8mb4_general_ci'
         ],
     ];
     // @codingStandardsIgnoreEnd
@@ -62,8 +62,8 @@ class ActivityFiltersFixture extends TestFixture
                 'location_id' => 1,
                 'distance' => 1,
                 'date_type_id' => 1,
-                'start_date' => '2018-11-11',
-                'end_date' => '2018-11-11',
+                'start_date' => '2018-12-01',
+                'end_date' => '2018-12-01',
                 'from_age' => 1,
                 'to_age' => 1,
                 'matching_personality' => 1,

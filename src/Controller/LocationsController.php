@@ -29,7 +29,7 @@ class LocationsController extends AppController
                 'latitude' => $latitude,
                 'longitude' => $longitude
             ])
-//            ->order($this->greatCircleDistance($latitude, $longitude, ))
+//            ->order(greatCircleDistance($latitude, $longitude, ))
             ->first();
 
         if (is_null($location))

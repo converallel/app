@@ -8,7 +8,8 @@ trait AuthorizationTrait
      * @param User $user
      * @return bool
      */
-    public function isViewableBy(User $user) {
+    public function isViewableBy(User $user)
+    {
         if ($this->user)
             return $this->user->id === $user->id;
         return $this->user_id === $user->id;
@@ -18,7 +19,8 @@ trait AuthorizationTrait
      * @param User|null $user
      * @return bool
      */
-    public function isCreatableBy($user) {
+    public function isCreatableBy($user)
+    {
         return $this->user_id === $user->id;
     }
 
@@ -26,7 +28,8 @@ trait AuthorizationTrait
      * @param User $user
      * @return bool
      */
-    public function isEditableBy(User $user) {
+    public function isEditableBy(User $user)
+    {
         if ($this->user)
             return $this->user->id === $user->id;
         return $this->user_id === $user->id;
@@ -36,7 +39,8 @@ trait AuthorizationTrait
      * @param User $user
      * @return bool
      */
-    public function isDeletableBy(User $user) {
+    public function isDeletableBy(User $user)
+    {
         if ($this->user)
             return $this->user->id === $user->id;
         return $this->user_id === $user->id;

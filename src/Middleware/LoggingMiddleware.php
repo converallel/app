@@ -26,6 +26,9 @@ class LoggingMiddleware
     {
         $response = $next($request, $response);
 
+        if (startsWith($request->getRequestTarget(), '/logs'))
+            return $response;
+
         $request_body = json_decode($request->getBody()->getContents(), true);
         $data = [
             'user_id' => Configure::read('user_id'),

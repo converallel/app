@@ -33,7 +33,7 @@ class LocationSelectionHistoriesFixture extends TestFixture
         ],
         '_options' => [
             'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci'
+            'collation' => 'utf8mb4_general_ci'
         ],
     ];
     // @codingStandardsIgnoreEnd
@@ -50,7 +50,7 @@ class LocationSelectionHistoriesFixture extends TestFixture
                 'id' => 1,
                 'user_id' => 1,
                 'location_id' => 1,
-                'selected_at' => 1541815385
+                'selected_at' => 1543686963
             ],
         ];
         parent::init();

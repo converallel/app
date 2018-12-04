@@ -29,9 +29,13 @@ require __DIR__ . '/paths.php';
  */
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
 
+/*
+ * Add custom global functions.
+ */
+require CONFIG . 'functions.php';
+
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
-use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\Plugin;
@@ -41,7 +45,6 @@ use Cake\Error\ErrorHandler;
 use Cake\Http\ServerRequest;
 use Cake\Log\Log;
 use Cake\Mailer\Email;
-use Cake\Utility\Inflector;
 use Cake\Utility\Security;
 
 /**
@@ -67,6 +70,7 @@ if (!env('APP_NAME') && file_exists(CONFIG . '.env')) {
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
+    Configure::load('custom', 'default', true);
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }

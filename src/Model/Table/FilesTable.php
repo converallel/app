@@ -67,13 +67,13 @@ class FilesTable extends Table
 
         $validator
             ->scalar('directory')
-            ->maxLength('directory', 60)
+            ->maxLength('directory', 50)
             ->requirePresence('directory', 'create')
             ->notEmpty('directory');
 
         $validator
             ->scalar('name')
-            ->maxLength('name', 50)
+            ->maxLength('name', 30)
             ->requirePresence('name', 'create')
             ->notEmpty('name');
 

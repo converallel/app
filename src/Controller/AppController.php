@@ -22,9 +22,8 @@ use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
-use Cake\Http\Exception\UnauthorizedException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Query;
-use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 
@@ -36,13 +35,13 @@ use Cake\Utility\Inflector;
  *
  * @link https://book.cakephp.org/3.0/en/controllers.html#the-app-controller
  *
- * @property \Cake\ORM\Table $Table
  * @property \App\Model\Entity\User|null $current_user
+ * @property \Cake\ORM\Table $Table
+ * @property boolean $using_api
  */
 class AppController extends Controller
 {
 
-    protected $using_api;
     protected $entity_name;
 
     /**
@@ -59,29 +58,39 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        $this->using_api = substr($this->getRequest()->getRequestTarget(), 0, strlen('/api')) === '/api';
+        $this->using_api = $this->getRequest()->accepts('application/json');
         $this->entity_name = Inflector::singularize(lcfirst($this->getName()));
         $this->Table = $this->{$this->getName()};
 
         // load components
         if ($this->using_api) {
-//        $this->loadComponent('Auth', [
-//            'authenticate' => [
-//                'Digest' => [
-//                    'fields' => ['username' => ['email', 'phone_number'], 'password' => 'digest_hash'],
-//                    'userModel' => 'Users'
-//                ],
-//            ],
-//            'storage' => 'Memory',
-//            'unauthorizedRedirect' => false
-//        ]);
-        } else {
 //            $this->loadComponent('Auth', [
-//                'authenticate' => [
-//                    'Form'
-//                ]
+//                'authenticate' => ['JWT'],
+//                'storage' => 'Memory',
+//                'unauthorizedRedirect' => false,
 //            ]);
         }
+
+//        $this->loadComponent('Auth', [
+//            'authenticate' => [
+//                'OAuth2' => [
+//                    'providers' => [
+//                        'Native' => [
+//                            'className' => '\Native\OAuth2\Client\Provider\Native',
+//                            // all options defined here are passed to the provider's constructor
+//                            'options' => [
+//                                'clientId' => 'foo',
+//                                'clientSecret' => 'bar',
+//                            ],
+//                            'mapFields' => [
+//                                'username' => 'login', // maps the app's username to github's login
+//                            ],
+//                            // ... add here the usual AuthComponent configuration if needed like fields, etc.
+//                        ],
+//                    ]
+//                ]
+//            ]
+//        ]);
 
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
@@ -89,10 +98,10 @@ class AppController extends Controller
 //        $this->loadComponent('Security', ['blackHoleCallback' => 'forceSSL']);
         $this->loadComponent('Flash');
 
-        $users = TableRegistry::getTableLocator()->get('Users');
+        $users = \Cake\ORM\TableRegistry::getTableLocator()->get('Users');
         $user = $users->get(1);
-//        $this->current_user = $this->Auth->user();
         $this->current_user = $user;
+//        $this->current_user = $this->Auth->user();
         Configure::write('user_id', $this->current_user->id);
     }
 
@@ -191,7 +200,7 @@ class AppController extends Controller
      * @param array|Query $query
      * @param array $options
      * @return \Cake\Http\Response|void
-     * @throws \Cake\Http\Exception\UnauthorizedException When the user is not the authorized to view this entity.
+     * @throws \Cake\Http\Exception\ForbiddenException When the user is not the authorized to view this entity.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function get($id = null, $query = [], $options = [])
@@ -205,7 +214,7 @@ class AppController extends Controller
         }
 
         if (!$entity->isViewableBy($this->current_user))
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
 
         if ($this->using_api) {
             $this->setSerialized($entity);
@@ -219,16 +228,16 @@ class AppController extends Controller
      *
      * @param array $options
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     * @throws \Cake\Http\Exception\UnauthorizedException When the user is not the authorized to create this entity.
+     * @throws \Cake\Http\Exception\ForbiddenException When the user is not the authorized to create this entity.
      */
     public function create($options = [])
     {
         $entity = $this->Table->newEntity();
-        if ($this->request->is('post')) {
+        if ($this->getRequest()->is('post')) {
             $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(), $options['objectHydration'] ?? []);
 
             if (!$entity->isCreatableBy($this->current_user))
-                throw new UnauthorizedException();
+                throw new ForbiddenException();
 
             if ($this->Table->save($entity)) {
                 if ($this->using_api) {
@@ -261,7 +270,7 @@ class AppController extends Controller
      * @param string|null $id Entity id.
      * @param array $options
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Http\Exception\UnauthorizedException When the user is not the authorized to edit this entity.
+     * @throws \Cake\Http\Exception\ForbiddenException When the user is not the authorized to edit this entity.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
     public function update($id = null, $options = [])
@@ -269,7 +278,7 @@ class AppController extends Controller
         $entity = $this->Table->get($id);
 
         if (!$entity->isEditableBy($this->current_user))
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(), $options['ObjectHydration'] ?? []);
@@ -303,23 +312,27 @@ class AppController extends Controller
      * Delete method
      *
      * @param array|string|null $id Entity id.
+     * @param array $options options accepted by `Table::find()`.
      * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Http\Exception\UnauthorizedException When the user is not the authorized to delete this entity.
+     * @throws \Cake\Http\Exception\ForbiddenException When the user is not the authorized to delete this entity.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function remove($id = null, $options = [])
     {
         $this->request->allowMethod(['post', 'delete']);
 
+        if ($this->Table->hasBehavior('FileOwner'))
+            $options = $this->Table->addContainFiles($options);
+
         if (is_array($id)) {
-            $entity = $this->Table->find()->where($id)->first();
+            $entity = $this->Table->find('all', $options)->where($id)->first();
             if (is_null($entity))
                 throw new RecordNotFoundException("Record not found in table {$this->getName()}");
         } else
-            $entity = $this->Table->get($id);
+            $entity = $this->Table->get($id, $options);
 
         if (!$entity->isDeletableBy($this->current_user))
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
 
         if ($this->Table->delete($entity)) {
             if ($this->using_api) {
@@ -388,34 +401,5 @@ class AppController extends Controller
                 $body[$param] = $value;
         }
         $this->setRequest($this->getRequest()->withParsedBody($body));
-    }
-
-    /**
-     * This routine calculates the distance between two points (given the latitude/longitude of those points).
-     * South latitudes are negative, east longitudes are positive
-     *
-     * @param float $lat1 Latitude of point 1 (in decimal degrees)
-     * @param float $lng1 Longitude of point 1 (in decimal degrees)
-     * @param float $lat2 Latitude of point 2 (in decimal degrees)
-     * @param float $lng2 Longitude of point 2 (in decimal degrees)
-     * @param string $unit 'M' - statute miles, 'K' - kilometers, 'N' - nautical miles
-     * @return float
-     */
-    function greatCircleDistance($lat1, $lng1, $lat2, $lng2, $unit = 'M')
-    {
-        $theta = $lng1 - $lng2;
-        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
-        $dist = acos($dist);
-        $dist = rad2deg($dist);
-        $miles = $dist * 60 * 1.1515;
-        $unit = strtoupper($unit);
-
-        if ($unit == 'K') {
-            return ($miles * 1.609344);
-        } else if ($unit == 'N') {
-            return ($miles * 0.8684);
-        } else {
-            return $miles;
-        }
     }
 }

@@ -49,41 +49,41 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     $routes->connect('/', ['controller' => 'Activities']);
 
-    $routes->scope('/api', function (RouteBuilder $routes) {
-        $routes->resources('Activities', function (RouteBuilder $routes) {
-            $routes->resources('ActivitiesUsers', [
-                'prefix' => 'activities',
-                'only' => ['index', 'create', 'delete'],
-                'path' => 'users'
-            ]);
-            $routes->resources('Applications', ['only' => ['index']]);
-            $routes->resources('Reviews', ['only' => ['index']]);
-        });
-
-        $routes->resources('Applications', ['only' => ['create', 'update', 'delete']]);
-
-        $routes->resources('Contacts', ['only' => ['create', 'update', 'delete']]);
-
-        $routes->resources('Files', ['only' => ['index', 'view', 'create', 'delete']]);
-
-        $routes->resources('Locations', [
-            'only' => ['view', 'create'],
-            'actions' => ['view' => 'lookup'],
+    $routes->resources('Activities', function (RouteBuilder $routes) {
+        $routes->resources('ActivitiesUsers', [
+            'prefix' => 'activities',
+            'only' => ['index', 'create', 'delete'],
+            'path' => 'users'
         ]);
+        $routes->resources('Applications', ['only' => ['index']]);
+        $routes->resources('Reviews', ['only' => ['index']]);
+    });
 
-        $routes->resources('Media', ['only' => ['create', 'update', 'delete']]);
+    $routes->resources('Applications', ['only' => ['create', 'update', 'delete']]);
 
-        $routes->resources('Reviews', ['only' => ['create', 'update', 'delete']]);
+    $routes->resources('Contacts', ['only' => ['create', 'update', 'delete']]);
 
-        $routes->resources('Tags', ['only' => ['index', 'view']], function (RouteBuilder $routes) {
-            $routes->resources('Activities', ['only' => ['index']]);
-        });
+    $routes->resources('Files', ['only' => ['index', 'create', 'delete']]);
 
-        $routes->resources('Users', ['only' => ['view', 'create', 'update', 'delete']], function (RouteBuilder $routes) {
-            $routes->resources('Contacts', ['only' => ['index']]);
-            $routes->resources('Locations', ['only' => ['update']]);
-            $routes->resources('Media', ['only' => ['index']]);
-        });
+    $routes->resources('Locations', [
+        'only' => ['view', 'create'],
+        'actions' => ['view' => 'lookup'],
+    ]);
+
+    $routes->resources('Media', ['only' => ['create', 'update', 'delete']]);
+
+    $routes->resources('Reviews', ['only' => ['create', 'update', 'delete']]);
+
+//    $routes->resources('Settings');
+
+    $routes->resources('Tags', ['only' => ['index', 'view']], function (RouteBuilder $routes) {
+        $routes->resources('Activities', ['only' => ['index']]);
+    });
+
+    $routes->resources('Users', ['only' => ['view', 'create', 'update', 'delete']], function (RouteBuilder $routes) {
+        $routes->resources('Contacts', ['only' => ['index']]);
+        $routes->resources('Locations', ['only' => ['update']]);
+        $routes->resources('Media', ['only' => ['index']]);
     });
 
     /**

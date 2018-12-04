@@ -11,13 +11,6 @@ class ActivityFilterEducationFixture extends TestFixture
 {
 
     /**
-     * Table name
-     *
-     * @var string
-     */
-    public $table = 'activity_filter_education';
-
-    /**
      * Fields
      *
      * @var array
@@ -36,7 +29,7 @@ class ActivityFilterEducationFixture extends TestFixture
         ],
         '_options' => [
             'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci'
+            'collation' => 'utf8mb4_general_ci'
         ],
     ];
     // @codingStandardsIgnoreEnd

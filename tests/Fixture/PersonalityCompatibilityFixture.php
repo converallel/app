@@ -11,13 +11,6 @@ class PersonalityCompatibilityFixture extends TestFixture
 {
 
     /**
-     * Table name
-     *
-     * @var string
-     */
-    public $table = 'personality_compatibility';
-
-    /**
      * Fields
      *
      * @var array
@@ -39,7 +32,7 @@ class PersonalityCompatibilityFixture extends TestFixture
         ],
         '_options' => [
             'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci'
+            'collation' => 'utf8mb4_general_ci'
         ],
     ];
     // @codingStandardsIgnoreEnd

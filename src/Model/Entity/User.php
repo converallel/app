@@ -9,8 +9,8 @@ use Cake\ORM\Entity;
  * User Entity
  *
  * @property int $id
- * @property string $email
- * @property string $phone_number
+ * @property string|null $email
+ * @property string|null $phone_number
  * @property string $password
  * @property int $failed_login_attempts
  * @property string $given_name
@@ -19,10 +19,10 @@ use Cake\ORM\Entity;
  * @property string $gender
  * @property string $sexual_orientation
  * @property int $location_id
- * @property string $profile_image_path
- * @property int $personality_id
- * @property int $education_id
- * @property string $bio
+ * @property string|null $profile_image_path
+ * @property int|null $personality_id
+ * @property int|null $education_id
+ * @property string|null $bio
  * @property int $rating
  * @property bool $verified
  * @property \Cake\I18n\FrozenTime $created_at
@@ -38,7 +38,6 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\File[] $files
  * @property \App\Model\Entity\LocationSelectionHistory[] $location_selection_histories
  * @property \App\Model\Entity\Log[] $logs
- * @property \App\Model\Entity\Media[] $media
  * @property \App\Model\Entity\Review[] $reviews
  * @property \App\Model\Entity\SearchHistory[] $search_histories
  * @property \App\Model\Entity\UserLogin[] $user_logins
@@ -95,8 +94,23 @@ class User extends Entity
         return (new DefaultPasswordHasher())->hash($password);
     }
 
+    public function isViewableBy(User $user)
+    {
+        return true;
+    }
+
     public function isCreatableBy($user)
     {
         return true;
+    }
+
+    public function isEditableBy(User $user)
+    {
+        return $this->id === $user->id;
+    }
+
+    public function isDeletableBy(User $user)
+    {
+        return $this->id === $user->id;
     }
 }

@@ -1,7 +1,7 @@
 <?php
-
 namespace App\Model\Table;
 
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -9,8 +9,8 @@ use Cake\Validation\Validator;
 /**
  * Media Model
  *
- * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  * @property \App\Model\Table\FilesTable|\Cake\ORM\Association\BelongsTo $Files
+ * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\BelongsToMany $Activities
  *
  * @method \App\Model\Entity\Media get($primaryKey, $options = [])
  * @method \App\Model\Entity\Media newEntity($data = null, array $options = [])
@@ -38,13 +38,14 @@ class MediaTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
-        $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
-            'joinType' => 'INNER'
-        ]);
         $this->belongsTo('Files', [
             'foreignKey' => 'file_id',
             'joinType' => 'INNER'
+        ]);
+        $this->belongsToMany('Activities', [
+            'foreignKey' => 'media_id',
+            'targetForeignKey' => 'activity_id',
+            'joinTable' => 'activities_media'
         ]);
     }
 
@@ -86,7 +87,6 @@ class MediaTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['file_id'], 'Files'));
 
         return $rules;

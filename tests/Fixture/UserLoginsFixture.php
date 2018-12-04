@@ -34,7 +34,7 @@ class UserLoginsFixture extends TestFixture
         ],
         '_options' => [
             'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci'
+            'collation' => 'utf8mb4_general_ci'
         ],
     ];
     // @codingStandardsIgnoreEnd
@@ -51,7 +51,7 @@ class UserLoginsFixture extends TestFixture
                 'id' => 1,
                 'user_id' => 1,
                 'device_id' => 1,
-                'logged_in_at' => 1541815385,
+                'logged_in_at' => 1543686963,
                 'latitude' => 1,
                 'longitude' => 1
             ],

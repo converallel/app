@@ -36,7 +36,6 @@ class UsersTableTest extends TestCase
         'app.files',
         'app.location_selection_histories',
         'app.logs',
-        'app.media',
         'app.reviews',
         'app.search_histories',
         'app.user_logins',
@@ -79,16 +78,6 @@ class UsersTableTest extends TestCase
     }
 
     /**
-     * Test beforeMarshal method
-     *
-     * @return void
-     */
-    public function testBeforeMarshal()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
      * Test validationDefault method
      *
      * @return void
@@ -104,26 +93,6 @@ class UsersTableTest extends TestCase
      * @return void
      */
     public function testBuildRules()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test findMinimumInformation method
-     *
-     * @return void
-     */
-    public function testFindMinimumInformation()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test findBasicInformation method
-     *
-     * @return void
-     */
-    public function testFindBasicInformation()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

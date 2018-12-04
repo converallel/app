@@ -141,6 +141,27 @@ class Initial extends AbstractMigration
             )
             ->create();
 
+        $this->table('activities_media')
+            ->addColumn('activity_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addColumn('media_id', 'integer', [
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->addPrimaryKey(['activity_id', 'media_id'])
+            ->addIndex(
+                [
+                    'media_id',
+                ]
+            )
+            ->create();
+
         $this->table('activities_tags')
             ->addColumn('activity_id', 'integer', [
                 'default' => null,
@@ -602,12 +623,12 @@ class Initial extends AbstractMigration
             ])
             ->addColumn('directory', 'string', [
                 'default' => null,
-                'limit' => 60,
+                'limit' => 50,
                 'null' => false,
             ])
             ->addColumn('name', 'string', [
                 'default' => null,
-                'limit' => 50,
+                'limit' => 30,
                 'null' => false,
             ])
             ->addColumn('extension', 'string', [
@@ -849,12 +870,6 @@ class Initial extends AbstractMigration
                 'signed' => false,
             ])
             ->addPrimaryKey(['id'])
-            ->addColumn('user_id', 'integer', [
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
             ->addColumn('file_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
@@ -865,7 +880,7 @@ class Initial extends AbstractMigration
                 'default' => null,
                 'limit' => null,
                 'null' => false,
-                'values' => ['LivePhoto', 'Photo', 'Video']
+                'values' => ['Image', 'Video']
             ])
             ->addColumn('position', 'integer', [
                 'default' => null,
@@ -878,13 +893,6 @@ class Initial extends AbstractMigration
                 'limit' => 100,
                 'null' => true,
             ])
-            ->addIndex(
-                [
-                    'user_id',
-                    'position',
-                ],
-                ['unique' => true]
-            )
             ->addIndex(
                 [
                     'file_id',
@@ -1420,6 +1428,27 @@ class Initial extends AbstractMigration
             )
             ->update();
 
+        $this->table('activities_media')
+            ->addForeignKey(
+                'activity_id',
+                'activities',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->addForeignKey(
+                'media_id',
+                'media',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->update();
+
         $this->table('activities_tags')
             ->addForeignKey(
                 'activity_id',
@@ -1673,15 +1702,6 @@ class Initial extends AbstractMigration
                     'delete' => 'CASCADE'
                 ]
             )
-            ->addForeignKey(
-                'user_id',
-                'users',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
             ->update();
 
         $this->table('personality_compatibility')
@@ -1904,6 +1924,14 @@ class Initial extends AbstractMigration
             )
             ->save();
 
+        $this->table('activities_media')
+            ->dropForeignKey(
+                'activity_id'
+            )
+            ->dropForeignKey(
+                'media_id'
+            )->save();
+
         $this->table('activities_users')
             ->dropForeignKey(
                 'activity_id'
@@ -2001,9 +2029,7 @@ class Initial extends AbstractMigration
             ->dropForeignKey(
                 'file_id'
             )
-            ->dropForeignKey(
-                'user_id'
-            )->save();
+            ->save();
 
         $this->table('personality_compatibility')
             ->dropForeignKey(
@@ -2063,6 +2089,7 @@ class Initial extends AbstractMigration
             )->save();
 
         $this->table('activities')->drop()->save();
+        $this->table('activities_media')->drop()->save();
         $this->table('activities_tags')->drop()->save();
         $this->table('activities_users')->drop()->save();
         $this->table('activity_filter_date_types')->drop()->save();

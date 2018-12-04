@@ -37,7 +37,7 @@ class ActivityItinerariesFixture extends TestFixture
         ],
         '_options' => [
             'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci'
+            'collation' => 'utf8mb4_general_ci'
         ],
     ];
     // @codingStandardsIgnoreEnd
@@ -55,8 +55,8 @@ class ActivityItinerariesFixture extends TestFixture
                 'activity_id' => 1,
                 'stop' => 1,
                 'location_id' => 1,
-                'arrive_at' => '2018-11-12 23:22:18',
-                'depart_at' => '2018-11-12 23:22:18',
+                'arrive_at' => '2018-12-01 17:56:03',
+                'depart_at' => '2018-12-01 17:56:03',
                 'transportation_id' => 1
             ],
         ];

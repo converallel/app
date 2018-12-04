@@ -16,6 +16,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\ActivityItinerariesTable|\Cake\ORM\Association\HasMany $ActivityItineraries
  * @property \App\Model\Table\ApplicationsTable|\Cake\ORM\Association\HasMany $Applications
  * @property \App\Model\Table\ReviewsTable|\Cake\ORM\Association\HasMany $Reviews
+ * @property \App\Model\Table\MediaTable|\Cake\ORM\Association\BelongsToMany $Media
  * @property \App\Model\Table\TagsTable|\Cake\ORM\Association\BelongsToMany $Tags
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Followers
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Organizers
@@ -64,6 +65,11 @@ class ActivitiesTable extends Table
         ]);
         $this->hasMany('Reviews', [
             'foreignKey' => 'activity_id'
+        ]);
+        $this->belongsToMany('Media', [
+            'foreignKey' => 'activity_id',
+            'targetForeignKey' => 'media_id',
+            'joinTable' => 'activities_media'
         ]);
         $this->belongsToMany('Tags', [
             'foreignKey' => 'activity_id',

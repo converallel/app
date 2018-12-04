@@ -41,13 +41,24 @@ class File extends Entity
         'size' => true
     ];
 
+    /**
+     * @return string Full path to the file's directory
+     */
+    protected function _getFullDirectory()
+    {
+        return $this->directory . DS;
+    }
+
+    /**
+     * @return string Full path to the file (with file name)
+     */
     protected function _getFullPath()
     {
-        return $this->directory . DS . $this->name . '.' . $this->extension;
+        return $this->_getFullDirectory() . $this->name . '.' . $this->extension;
     }
 
     protected function _getUrl()
     {
-        return 'http://' . $this->server . $this->_getFullPath();
+        return 'http://' . $this->server . DS . $this->_getFullPath();
     }
 }
