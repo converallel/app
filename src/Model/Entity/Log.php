@@ -8,16 +8,17 @@ use Cake\ORM\Entity;
  * Log Entity
  *
  * @property int $id
- * @property int $user_id
+ * @property int|null $user_id
  * @property string $ip_address
  * @property string $request_method
  * @property string $request_url
  * @property array $request_headers
- * @property array $request_body
+ * @property array|null $request_body
  * @property int $status_code
  * @property \Cake\I18n\FrozenTime $created_at
  *
  * @property \App\Model\Entity\User $user
+ * @property \App\Model\Entity\HttpStatusCode $http_status_code
  */
 class Log extends Entity
 {
@@ -38,6 +39,6 @@ class Log extends Entity
         'request_url' => true,
         'request_headers' => true,
         'request_body' => true,
-        'status_code' => true,
+        'status_code' => true
     ];
 }

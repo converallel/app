@@ -10,8 +10,10 @@ trait AuthorizationTrait
      */
     public function isViewableBy(User $user)
     {
-        if ($this->user)
+        if (isset($this->user)) {
             return $this->user->id === $user->id;
+        }
+
         return $this->user_id === $user->id;
     }
 
@@ -30,8 +32,10 @@ trait AuthorizationTrait
      */
     public function isEditableBy(User $user)
     {
-        if ($this->user)
+        if (isset($this->user)) {
             return $this->user->id === $user->id;
+        }
+
         return $this->user_id === $user->id;
     }
 
@@ -41,8 +45,10 @@ trait AuthorizationTrait
      */
     public function isDeletableBy(User $user)
     {
-        if ($this->user)
+        if (isset($this->user)) {
             return $this->user->id === $user->id;
+        }
+
         return $this->user_id === $user->id;
     }
 }

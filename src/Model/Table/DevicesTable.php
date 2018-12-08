@@ -23,6 +23,7 @@ use Cake\Validation\Validator;
  */
 class DevicesTable extends Table
 {
+    use SoftDeleteTrait;
 
     /**
      * Initialize method

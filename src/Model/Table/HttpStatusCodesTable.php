@@ -8,6 +8,8 @@ use Cake\Validation\Validator;
 /**
  * HttpStatusCodes Model
  *
+ * @property \App\Model\Table\LogsTable|\Cake\ORM\Association\HasMany $Logs
+ *
  * @method \App\Model\Entity\HttpStatusCode get($primaryKey, $options = [])
  * @method \App\Model\Entity\HttpStatusCode newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\HttpStatusCode[] newEntities(array $data, array $options = [])
@@ -31,8 +33,12 @@ class HttpStatusCodesTable extends Table
         parent::initialize($config);
 
         $this->setTable('http_status_codes');
-        $this->setDisplayField('code');
+        $this->setDisplayField('definition');
         $this->setPrimaryKey('code');
+
+        $this->hasMany('Logs', [
+            'foreignKey' => 'status_code'
+        ]);
     }
 
     /**

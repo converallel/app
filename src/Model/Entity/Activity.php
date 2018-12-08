@@ -13,7 +13,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime|null $end_date
  * @property int $location_id
  * @property string|null $customized_location
- * @property int $organizer_id
+ * @property int $admin_id
  * @property bool $is_pair
  * @property bool $exclusive
  * @property string $location_visibility
@@ -26,6 +26,7 @@ use Cake\ORM\Entity;
  * @property int $review_count
  * @property \Cake\I18n\FrozenTime $created_at
  * @property \Cake\I18n\FrozenTime $modified_at
+ * @property \Cake\I18n\FrozenTime|null $deleted_at
  *
  * @property \App\Model\Entity\Location $location
  * @property \App\Model\Entity\User[] $users
@@ -54,7 +55,7 @@ class Activity extends Entity
         'end_date' => true,
         'location_id' => true,
         'customized_location' => true,
-        'organizer_id' => true,
+        'admin_id' => true,
         'is_pair' => true,
         'exclusive' => true,
         'location_visibility' => true,
@@ -76,32 +77,36 @@ class Activity extends Entity
         'tags' => true
     ];
 
+    protected $_hidden = ['deleted_at'];
+
     public function isViewableBy(User $user)
     {
-        if (!$user->verified)
-            return !$this->organizer->verified;
+        if (!$user->verified) {
+            return !$this->admin->verified;
+        }
 
         return true;
     }
 
     public function isCreatableBy(User $user)
     {
-        return $this->organizer_id === $user->id && !is_null($user->profile_image_path);
+        return $this->admin_id === $user->id && !is_null($user->profile_image_path);
     }
 
     public function isEditableBy(User $user)
     {
-        if ($this->organizer->id === $user->id)
+        if ($this->admin->id === $user->id) {
             return true;
+        }
 
-        $organizer_ids = array_map(function ($organizer) {
-            return $organizer->id;
+        $organizer_ids = array_map(function ($admin) {
+            return $admin->id;
         }, $this->organizers);
         return in_array($user->id, $organizer_ids);
     }
 
     public function isDeletableBy(User $user)
     {
-        return $this->organizer->id === $user->id;
+        return $this->admin_id === $user->id;
     }
 }

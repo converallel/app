@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use Cake\ORM\Query;
+use Cake\ORM\TableRegistry;
 
 /**
  * Users Controller
@@ -13,17 +13,38 @@ use Cake\ORM\Query;
  */
 class UsersController extends AppController
 {
+    public function initialize()
+    {
+        parent::initialize();
+//        $this->Auth->allow(['add', 'login']);
+    }
+
     public function view($id = null)
     {
-        $query = $this->Users->find('basicInformation')
-            ->select(['sexual_orientation', 'bio', 'education' => 'Education.degree', 'personality' => 'Personalities.type'])
+        $activities = TableRegistry::getTableLocator()->get('Activities')
+            ->find('relatedToUser', ['user_id' => $id]);
+
+        $query = $this->Users->find('basicInfo')
+            ->select([
+                'bio',
+                'education' => 'Education.degree',
+                'personality' => 'Personalities.type',
+                'sexual_orientation',
+            ])
             ->select($this->Users->Locations)
             ->contain([
-                'Locations', 'Personalities', 'Education', 'Tags',
-                'Activities' => function (Query $query) {
-                    return $query->find('basicInformation')->limit(5);
-                },
-            ]);
+                'Education',
+                'Locations',
+                'Personalities',
+                'Tags',
+            ])
+            ->formatResults(function (\Cake\Collection\CollectionInterface $results) use ($activities) {
+                return $results->map(function ($row) use ($activities) {
+                    $row['activities'] = $activities;
+                    return $row;
+                });
+            });
+
         $this->get($id, $query);
     }
 

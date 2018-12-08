@@ -2,7 +2,9 @@
 
 namespace App\Model\Entity;
 
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Entity;
+use Cake\ORM\TableRegistry;
 
 /**
  * Review Entity
@@ -14,6 +16,7 @@ use Cake\ORM\Entity;
  * @property string $message
  * @property \Cake\I18n\FrozenTime $created_at
  * @property \Cake\I18n\FrozenTime $modified_at
+ * @property \Cake\I18n\FrozenTime|null $deleted_at
  * @property int $helpful
  * @property int $not_helpful
  *
@@ -41,4 +44,26 @@ class Review extends Entity
         'helpful' => true,
         'not_helpful' => true,
     ];
+
+    public function isCreatableBy($user)
+    {
+        $activity = TableRegistry::getTableLocator()->get('Activities')->get($this->activity_id, [
+            'fields' => 'start_date',
+            'contain' => ['Participants', 'Reviews']
+        ]);
+        if ($activity->start_date->timestamp > time()) {
+            throw new BadRequestException("This activity can't be reviewed now.");
+        }
+        foreach ($activity->reviews as $review) {
+            if ($review->user_id === $user->id) {
+                throw new BadRequestException('You have reviewed this activity.');
+            }
+        }
+        foreach ($activity->participants as $participant) {
+            if ($participant->id === $user->id) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

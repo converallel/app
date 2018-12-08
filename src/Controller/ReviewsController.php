@@ -16,7 +16,7 @@ class ReviewsController extends AppController
         $activity_id = $this->getRequest()->getParam('activity_id');
         $query = $this->Reviews->find()
             ->selectAllExcept($this->Reviews, ['activity_id', 'user_id'])
-            ->contain(['Users' => ['finder' => 'basicInformation']])
+            ->contain(['Users' => ['finder' => 'basicInfo']])
             ->where(['activity_id' => $activity_id])
             ->limit(5);
 

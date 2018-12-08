@@ -23,6 +23,7 @@ use Cake\Validation\Validator;
  */
 class FilesTable extends Table
 {
+    use SoftDeleteTrait;
 
     /**
      * Initialize method

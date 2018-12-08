@@ -2,9 +2,6 @@
 
 namespace App\Controller;
 
-use Cake\Http\Exception\ForbiddenException;
-use Cake\Http\Response;
-
 /**
  * Files Controller
  *
@@ -22,33 +19,19 @@ class FilesController extends AppController
             ->orderDesc('created_at')
             ->formatResults(function (\Cake\Collection\CollectionInterface $results) {
                 return $results->map(function ($row) {
-                    return ['id' => $row->id, 'url' => $row->url, 'size' => $row->size, 'created_at' => $row->created_at];
+                    return [
+                        'id' => $row->id,
+                        'url' => $row->url,
+                        'size' => $row->size,
+                        'created_at' => $row->created_at
+                    ];
                 });
             });
         $this->load($query);
     }
 
-    public function delete($id = null)
+    public function add()
     {
-        $file = $this->Files->get($id);
-        if (!$file->isDeletableBy($this->current_user))
-            throw new ForbiddenException();
-
-        $accessToken = '123';
-        $headers = array_intersect_key($this->getRequest()->getHeaders(), array_flip([
-            'X-Csrf-Token', 'Cookie', 'Connection'
-        ]));
-        $headers['Authorization'] = 'Bearer ' . $accessToken;
-        $http = new \Cake\Http\Client();
-        $response = $http->delete($file->url, [], ['headers' => $headers]);
-        if (!$response->isOk()) {
-            $headers = $response->getHeaders();
-            unset($headers['Host'], $headers['Date'], $headers['Connection'], $headers['X-Powered-By']);
-            foreach ($headers as $key => $value)
-                $response = $response->withHeader($key, $value);
-            return new Response(['body' => $response->getBody()]);
-        }
-
-        $this->remove($id);
+        $this->addMany();
     }
 }

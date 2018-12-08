@@ -32,7 +32,7 @@ class LogsFixture extends TestFixture
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'logs_ibfk_1' => ['type' => 'foreign', 'columns' => ['status_code'], 'references' => ['http_status_codes', 'code'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
+            'logs_ibfk_1' => ['type' => 'foreign', 'columns' => ['status_code'], 'references' => ['http_status_codes', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
             'logs_ibfk_2' => ['type' => 'foreign', 'columns' => ['user_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
         ],
         '_options' => [
@@ -59,7 +59,7 @@ class LogsFixture extends TestFixture
                 'request_headers' => '',
                 'request_body' => '',
                 'status_code' => 1,
-                'created_at' => 1543686963
+                'created_at' => 1543943423
             ],
         ];
         parent::init();

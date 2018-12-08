@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property int $user_id
  * @property string $uuid
  * @property string $name
+ * @property \Cake\I18n\FrozenTime|null $deleted_at
  *
  * @property \App\Model\Entity\User $user
  * @property \App\Model\Entity\UserLogin[] $user_logins

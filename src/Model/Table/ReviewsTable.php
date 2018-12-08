@@ -25,6 +25,7 @@ use Cake\Validation\Validator;
  */
 class ReviewsTable extends Table
 {
+    use SoftDeleteTrait;
 
     /**
      * Initialize method

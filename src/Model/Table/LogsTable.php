@@ -10,6 +10,7 @@ use Cake\Validation\Validator;
  * Logs Model
  *
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
+ * @property \App\Model\Table\HttpStatusCodesTable|\Cake\ORM\Association\BelongsTo $HttpStatusCodes
  *
  * @method \App\Model\Entity\Log get($primaryKey, $options = [])
  * @method \App\Model\Entity\Log newEntity($data = null, array $options = [])
@@ -39,6 +40,10 @@ class LogsTable extends Table
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id'
+        ]);
+
+        $this->belongsTo('HttpStatusCodes', [
+            'foreignKey' => 'status_code'
         ]);
     }
 

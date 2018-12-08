@@ -19,7 +19,7 @@ class ActivitiesUsersController extends AppController
         $type = $this->getRequest()->getQueryParams()['type'] ?? null;
 
         $query = $this->ActivitiesUsers->find()
-            ->contain(['Users' => ['finder' => 'basicInformation']])
+            ->contain(['Users' => ['finder' => 'basicInfo']])
             ->where([
                 'activity_id' => $activity_id,
                 'type' => $type
@@ -43,10 +43,11 @@ class ActivitiesUsersController extends AppController
         $data = $this->getRequest()->getData();
         $type = $this->getRequest()->getQueryParams()['type'] ?? null;
 
-        $this->remove([
-            'activity_id' => $data['activity_id'],
-            'user_id' => $data['id'],
-            'type' => $type
-        ]);
+        $this->remove(null,
+            ['conditions' => [
+                'activity_id' => $data['activity_id'],
+                'user_id' => $data['id'],
+                'type' => $type
+            ]]);
     }
 }

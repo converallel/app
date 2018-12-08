@@ -26,6 +26,7 @@ use Cake\ORM\Entity;
  * @property int $rating
  * @property bool $verified
  * @property \Cake\I18n\FrozenTime $created_at
+ * @property \Cake\I18n\FrozenTime|null $deleted_at
  *
  * @property \App\Model\Entity\Location $location
  * @property \App\Model\Entity\Personality $personality

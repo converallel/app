@@ -19,10 +19,10 @@ use Cake\Controller\Controller;
 use Cake\Controller\Exception\SecurityException;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
 use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Query;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
@@ -58,7 +58,7 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        $this->using_api = $this->getRequest()->accepts('application/json');
+        $this->using_api = !empty(array_intersect(['application/json', 'application/xml'], $this->getRequest()->accepts()));
         $this->entity_name = Inflector::singularize(lcfirst($this->getName()));
         $this->Table = $this->{$this->getName()};
 
@@ -179,18 +179,18 @@ class AppController extends Controller
      *
      * @param array|Query $query
      * @param array $options
-     * @return \Cake\Http\Response|void
+     * @return \Cake\Http\Response|null
      */
     public function load($query = [], $options = [])
     {
-        if (is_array($query))
+        if (is_array($query)) {
             $query = $this->Table->find('all', $query);
+        }
         $entities = $this->paginate($query, $options['pagination'] ?? []);
         if ($this->using_api) {
-            $this->setSerialized($entities);
-            return;
+            return $this->setSerialized($entities);
         }
-        $this->set(strtolower($this->getName()), $entities);
+        $this->set(lcfirst($this->getName()), $entities);
     }
 
     /**
@@ -199,7 +199,7 @@ class AppController extends Controller
      * @param string|null $id Entity id.
      * @param array|Query $query
      * @param array $options
-     * @return \Cake\Http\Response|void
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Http\Exception\ForbiddenException When the user is not the authorized to view this entity.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
@@ -207,19 +207,21 @@ class AppController extends Controller
     {
         if ($query instanceof Query) {
             $entity = $query->where(["{$this->getName()}.id" => $id])->first();
-            if (is_null($entity))
-                throw new RecordNotFoundException("Record not found in table {$this->getName()}");
+            if (is_null($entity)) {
+                throw new NotFoundException();
+            }
         } else {
             $entity = $this->Table->get($id, $query);
         }
 
-        if (!$entity->isViewableBy($this->current_user))
+        if (!$entity->isViewableBy($this->current_user)) {
             throw new ForbiddenException();
+        }
 
         if ($this->using_api) {
-            $this->setSerialized($entity);
-            return;
+            return $this->setSerialized($entity);
         }
+
         $this->set($this->entity_name, $entity);
     }
 
@@ -234,16 +236,19 @@ class AppController extends Controller
     {
         $entity = $this->Table->newEntity();
         if ($this->getRequest()->is('post')) {
-            $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(), $options['objectHydration'] ?? []);
+            $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(),
+                $options['objectHydration'] ?? []);
 
-            if (!$entity->isCreatableBy($this->current_user))
+            if (!$entity->isCreatableBy($this->current_user)) {
                 throw new ForbiddenException();
+            }
 
             if ($this->Table->save($entity)) {
                 if ($this->using_api) {
                     return $this->setSerialized(['id' => $entity->id]);
                 }
                 $this->Flash->success(__("The $this->entity_name has been saved."));
+
                 return $this->redirect(['action' => 'index']);
             }
 
@@ -255,13 +260,42 @@ class AppController extends Controller
         }
 
         $this->set($this->entity_name, $entity);
-        foreach ($options['viewVars'] ?? [] as $field => $varOptions) {
-            if (is_numeric($field)) {
-                $field = $varOptions;
-                $varOptions = ['limit' => 200];
+        $this->setExtraViews($options['viewVars']);
+    }
+
+    public function addMany($options = [])
+    {
+        $entities = $this->Table->newEntities($this->getRequest()->getData());
+        if ($this->getRequest()->is('post')) {
+            foreach ($entities as $entity) {
+                if (!$entity->isCreatableBy($this->current_user)) {
+                    throw new ForbiddenException();
+                }
             }
-            $this->set(strtolower($field), $this->Table->{strtoupper($field)}->find('list', $varOptions));
+
+            if ($this->Table->saveMany($entities)) {
+                $ids = array_map(function ($entity) {
+                    return ['id' => $entity->id];
+                }, $entities);
+
+                if ($this->using_api) {
+                    return $this->setSerialized($ids);
+                }
+                $this->Flash->success(__("The {$this->getName()} has been saved."));
+
+                return $this->redirect(['action' => 'index']);
+            }
+
+            $error_message = "The {$this->getName()} could not be saved. Please, try again.";
+            if ($this->using_api) {
+                return $this->setSerialized($error_message, 400);
+            }
+
+            $this->Flash->error(__($error_message));
         }
+
+        $this->set($this->entity_name, $entity);
+        $this->setExtraViews($options['viewVars']);
     }
 
     /**
@@ -277,17 +311,20 @@ class AppController extends Controller
     {
         $entity = $this->Table->get($id);
 
-        if (!$entity->isEditableBy($this->current_user))
+        if (!$entity->isEditableBy($this->current_user)) {
             throw new ForbiddenException();
+        }
 
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(), $options['ObjectHydration'] ?? []);
+            $entity = $this->Table->patchEntity($entity, $this->getRequest()->getData(),
+                $options['ObjectHydration'] ?? []);
 
             if ($this->Table->save($entity)) {
                 if ($this->using_api) {
                     return $this->setSerialized(204);
                 }
                 $this->Flash->success(__("The $this->entity_name has been saved."));
+
                 return $this->redirect(['action' => 'index']);
             }
 
@@ -299,13 +336,7 @@ class AppController extends Controller
         }
 
         $this->set($this->entity_name, $entity);
-        foreach ($options['viewVars'] ?? [] as $field => $varOptions) {
-            if (is_numeric($field)) {
-                $field = $varOptions;
-                $varOptions = ['limit' => 200];
-            }
-            $this->set(strtolower($field), $this->Table->{strtoupper($field)}->find('list', $varOptions));
-        }
+        $this->setExtraViews($options['viewVars']);
     }
 
     /**
@@ -321,24 +352,24 @@ class AppController extends Controller
     {
         $this->request->allowMethod(['post', 'delete']);
 
-        if ($this->Table->hasBehavior('FileOwner'))
-            $options = $this->Table->addContainFiles($options);
-
         if (is_array($id)) {
             $entity = $this->Table->find('all', $options)->where($id)->first();
-            if (is_null($entity))
-                throw new RecordNotFoundException("Record not found in table {$this->getName()}");
-        } else
+            if (is_null($entity)) {
+                throw new NotFoundException();
+            }
+        } else {
             $entity = $this->Table->get($id, $options);
+        }
 
-        if (!$entity->isDeletableBy($this->current_user))
+        if (!$entity->isDeletableBy($this->current_user)) {
             throw new ForbiddenException();
+        }
 
         if ($this->Table->delete($entity)) {
             if ($this->using_api) {
                 return $this->setSerialized(204);
             }
-            $this->Flash->success(__("The $this->entity_name has been saved."));
+            $this->Flash->success(__("The $this->entity_name has been deleted."));
         } else {
             $error_message = "The $this->entity_name could not be deleted. Please, try again.";
             if ($this->using_api) {
@@ -377,17 +408,32 @@ class AppController extends Controller
         if (is_int($data) && 100 <= $data && $data < 600) {
             $status = $data;
             $data = [];
-        } elseif (is_string($data))
+        } elseif (is_string($data)) {
             $data = ['message' => $data];
-        elseif ($data instanceof EntityInterface || $data instanceof ResultSetInterface)
+        } elseif ($data instanceof EntityInterface || $data instanceof ResultSetInterface) {
             $data = $data->toArray();
-        elseif (!$data)
+        } elseif (!$data) {
             $data = [];
+        }
 
-        $this->setResponse($this->getResponse()->withStatus($status)->withType('application/json'));
+        $this->setResponse($this->getResponse()->withStatus($status));
         $this->set(array_merge($data, ['_serialize' => array_keys($data)]));
     }
 
+    /**
+     * `find()` the fields of the table and `set()` them .
+     * @param array $viewVars e.g. ['tags', 'files' => ['contain' => 'Users'], ...]
+     */
+    public function setExtraViews($viewVars = [])
+    {
+        foreach ($viewVars as $field => $options) {
+            if (is_numeric($field)) {
+                $field = $options;
+                $options = ['limit' => 10];
+            }
+            $this->set(lcfirst($field), $this->Table->{ucfirst($field)}->find('list', $options));
+        }
+    }
 
     /**
      * Incorporates the routing parameters into the request body if they exist
@@ -397,8 +443,9 @@ class AppController extends Controller
     {
         $body = $this->getRequest()->getParsedBody();
         foreach ($params as $param) {
-            if ($value = $this->getRequest()->getParam($param))
+            if ($value = $this->getRequest()->getParam($param)) {
                 $body[$param] = $value;
+            }
         }
         $this->setRequest($this->getRequest()->withParsedBody($body));
     }

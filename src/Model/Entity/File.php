@@ -15,6 +15,7 @@ use Cake\ORM\Entity;
  * @property string $extension
  * @property int $size
  * @property \Cake\I18n\FrozenTime $created_at
+ * @property \Cake\I18n\FrozenTime|null $deleted_at
  *
  * @property \App\Model\Entity\User $user
  * @property \App\Model\Entity\Media[] $media
@@ -41,24 +42,24 @@ class File extends Entity
         'size' => true
     ];
 
-    /**
-     * @return string Full path to the file's directory
-     */
-    protected function _getFullDirectory()
-    {
-        return $this->directory . DS;
-    }
-
-    /**
-     * @return string Full path to the file (with file name)
-     */
-    protected function _getFullPath()
-    {
-        return $this->_getFullDirectory() . $this->name . '.' . $this->extension;
-    }
+//    /**
+//     * @return string Full path to the file's directory
+//     */
+//    protected function _getFullDirectory()
+//    {
+//        return $this->directory . DS;
+//    }
+//
+//    /**
+//     * @return string Full path to the file (with file name)
+//     */
+//    protected function _getFullPath()
+//    {
+//        return $this->_getFullDirectory() . $this->name . '.' . $this->extension;
+//    }
 
     protected function _getUrl()
     {
-        return 'http://' . $this->server . DS . $this->_getFullPath();
+        return 'http://' . $this->server . DS . $this->directory . DS . $this->name . '.' . $this->extension;
     }
 }

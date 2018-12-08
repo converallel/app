@@ -96,4 +96,13 @@ class UsersTableTest extends TestCase
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testFindRelatedToActivity()
+    {
+        $this->setExpectedExceptionFromAnnotation();
+        $this->Users->find('relatedToActivity');
+    }
 }

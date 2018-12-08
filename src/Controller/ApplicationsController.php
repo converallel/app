@@ -17,7 +17,7 @@ class ApplicationsController extends AppController
         $query = $this->Applications
             ->find()
             ->selectAllExcept($this->Applications, ['activity_id', 'user_id'])
-            ->contain(['Users' => ['finder' => 'basicInformation']])
+            ->contain(['Users' => ['finder' => 'basicInfo']])
             ->where(['activity_id' => $activity_id])
             ->limit(2);
 

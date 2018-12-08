@@ -17,8 +17,8 @@ class ActivitiesController extends AppController
     {
         $user_id = $this->current_user->id;
 
-        $start_date = date("Y-m-d h:i:s");
-        $end_date = date("Y-m-d h:i:s", strtotime("+10 year"));
+        $start_date = timestamp();
+        $end_date = date("Y-m-d H:i:s", strtotime("+10 year"));
 
         $this->loadModel('ActivityFilters');
         $this->ActivityFilters->find()
@@ -26,7 +26,7 @@ class ActivitiesController extends AppController
             ->where(['user_id' => $user_id]);
 
         $query = $this->Activities
-            ->find('basicInformation')
+            ->find('basicInfo')
             ->where([
                 'start_date BETWEEN :start_date AND :end_date',
                 'is_pair' => true,
@@ -47,7 +47,7 @@ class ActivitiesController extends AppController
     public function view($id = null)
     {
         $this->get($id, [
-            'finder' => 'basicInformation',
+            'finder' => 'basicInfo',
             'fields' => ['application_count', 'review_count'],
             'contain' => ['ActivityItineraries']
         ]);

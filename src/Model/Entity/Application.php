@@ -14,6 +14,7 @@ use Cake\ORM\Entity;
  * @property string $status
  * @property \Cake\I18n\FrozenTime $created_at
  * @property \Cake\I18n\FrozenTime $modified_at
+ * @property \Cake\I18n\FrozenTime|null $deleted_at
  *
  * @property \App\Model\Entity\Activity $activity
  * @property \App\Model\Entity\User $user

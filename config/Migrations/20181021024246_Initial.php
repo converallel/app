@@ -46,7 +46,7 @@ class Initial extends AbstractMigration
                 'limit' => 100,
                 'null' => true,
             ])
-            ->addColumn('organizer_id', 'integer', [
+            ->addColumn('admin_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => false,
@@ -122,6 +122,11 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'update' => 'CURRENT_TIMESTAMP',
             ])
+            ->addColumn('deleted_at', 'timestamp', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
             ->addIndex(
                 [
                     'location_id',
@@ -129,7 +134,7 @@ class Initial extends AbstractMigration
             )
             ->addIndex(
                 [
-                    'organizer_id',
+                    'admin_id',
                 ]
             )
             ->addIndex(
@@ -468,6 +473,11 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'update' => 'CURRENT_TIMESTAMP',
             ])
+            ->addColumn('deleted_at', 'timestamp', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
             ->addIndex(
                 [
                     'activity_id',
@@ -567,6 +577,11 @@ class Initial extends AbstractMigration
                 'limit' => 45,
                 'null' => false,
             ])
+            ->addColumn('deleted_at', 'timestamp', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
             ->addIndex(
                 [
                     'user_id',
@@ -646,6 +661,11 @@ class Initial extends AbstractMigration
                 'default' => 'CURRENT_TIMESTAMP',
                 'limit' => null,
                 'null' => false,
+            ])
+            ->addColumn('deleted_at', 'timestamp', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
             ])
             ->addIndex(
                 [
@@ -1017,6 +1037,11 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'update' => 'CURRENT_TIMESTAMP',
             ])
+            ->addColumn('deleted_at', 'timestamp', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
             ->addColumn('helpful', 'integer', [
                 'default' => 0,
                 'limit' => 11,
@@ -1366,6 +1391,11 @@ class Initial extends AbstractMigration
                 'limit' => null,
                 'null' => false,
             ])
+            ->addColumn('deleted_at', 'timestamp', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
             ->addIndex(
                 [
                     'email',
@@ -1418,7 +1448,7 @@ class Initial extends AbstractMigration
                 ]
             )
             ->addForeignKey(
-                'organizer_id',
+                'admin_id',
                 'users',
                 'id',
                 [
@@ -1920,7 +1950,7 @@ class Initial extends AbstractMigration
                 'location_id'
             )
             ->dropForeignKey(
-                'organizer_id'
+                'admin_id'
             )
             ->save();
 

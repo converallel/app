@@ -2,6 +2,7 @@
 
 namespace App\Model\Table;
 
+use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -135,5 +136,28 @@ class LocationsTable extends Table
             ->allowEmpty('time_zone');
 
         return $validator;
+    }
+
+    public function findMinimumInfo(Query $query, array $options)
+    {
+        return $query->select(['id', 'iso_country_code', 'administrative_area', 'time_zone']);
+    }
+
+    public function findBasicInfo(Query $query, array $options)
+    {
+        return $query->select([
+            'id',
+            'iso_country_code',
+            'postal_code',
+            'administrative_area',
+            'locality',
+            'sub_locality',
+            'time_zone'
+        ]);
+    }
+
+    public function findAll(Query $query, array $options)
+    {
+        return $query->enableAutoFields();
     }
 }

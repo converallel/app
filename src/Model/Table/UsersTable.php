@@ -14,6 +14,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\LocationsTable|\Cake\ORM\Association\BelongsTo $Locations
  * @property \App\Model\Table\PersonalitiesTable|\Cake\ORM\Association\BelongsTo $Personalities
  * @property \App\Model\Table\EducationTable|\Cake\ORM\Association\BelongsTo $Education
+ * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\HasMany $AdministratedActivities
  * @property \App\Model\Table\ActivityFilterEducationTable|\Cake\ORM\Association\HasMany $ActivityFilterEducation
  * @property \App\Model\Table\ActivityFiltersTable|\Cake\ORM\Association\HasMany $ActivityFilters
  * @property \App\Model\Table\ApplicationsTable|\Cake\ORM\Association\HasMany $Applications
@@ -39,6 +40,7 @@ use Cake\Validation\Validator;
  */
 class UsersTable extends Table
 {
+    use SoftDeleteTrait;
 
     /**
      * Initialize method
@@ -54,8 +56,6 @@ class UsersTable extends Table
         $this->setDisplayField('full_name');
         $this->setPrimaryKey('id');
 
-        $this->addBehavior('FileOwner');
-
         $this->belongsTo('Locations', [
             'foreignKey' => 'location_id',
             'joinType' => 'INNER'
@@ -66,6 +66,10 @@ class UsersTable extends Table
         $this->belongsTo('Education', [
             'foreignKey' => 'education_id'
         ]);
+        $this->hasMany('AdministratedActivities', [
+            'className' => 'Activities',
+            'foreignKey' => 'admin_id'
+        ]);
         $this->hasMany('ActivityFilterEducation', [
             'foreignKey' => 'user_id'
         ]);
@@ -73,16 +77,22 @@ class UsersTable extends Table
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('Applications', [
-            'foreignKey' => 'user_id'
+            'foreignKey' => 'user_id',
+            'cascadeCallbacks' => true,
+            'dependent' => true
         ]);
         $this->hasMany('Contacts', [
             'foreignKey' => 'user_id'
         ]);
         $this->hasMany('Devices', [
-            'foreignKey' => 'user_id'
+            'foreignKey' => 'user_id',
+            'cascadeCallbacks' => true,
+            'dependent' => true
         ]);
         $this->hasMany('Files', [
-            'foreignKey' => 'user_id'
+            'foreignKey' => 'user_id',
+            'cascadeCallbacks' => true,
+            'dependent' => true
         ]);
         $this->hasMany('LocationSelectionHistories', [
             'foreignKey' => 'user_id'
@@ -223,7 +233,7 @@ class UsersTable extends Table
      * @param array $options
      * @return Query
      */
-    public function findMinimumInformation(Query $query, array $options)
+    public function findMinimumInfo(Query $query, array $options)
     {
         return $query->select(['id', 'profile_image_path']);
     }
@@ -233,8 +243,26 @@ class UsersTable extends Table
      * @param array $options
      * @return Query
      */
-    public function findBasicInformation(Query $query, array $options)
+    public function findBasicInfo(Query $query, array $options)
     {
         return $query->select(['id', 'given_name', 'birthdate', 'gender', 'profile_image_path', 'verified']);
+    }
+
+    public function findRelatedToActivity(Query $query, array $options)
+    {
+        $activity_id = $options['activity_id'] ?? null;
+        if (!$activity_id) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $query
+            ->find('minimumInfo')
+            ->innerJoin(['a' => 'activities_users'], [
+                'a.user_id' => 'users.id',
+                'a.activity_id' => $activity_id,
+                "a.type IN ('Organizing', 'Participating')"
+            ])
+            ->orderDesc('rating')
+            ->limit(5);
     }
 }
