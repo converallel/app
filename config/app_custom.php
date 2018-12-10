@@ -20,7 +20,6 @@ return [
         ],
     ],
     'Security' => [
-//        'jwtKey' => env('JWT_KEY'),
         'jwtKey' => '9ac1225da084b1a51d73e121eff5ebbb7f86d212ab74dbc6c0728303318504e5'
     ]
 ];

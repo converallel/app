@@ -10,10 +10,10 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $activity_id
  * @property int $stop
- * @property int $location_id
- * @property \Cake\I18n\FrozenTime $arrive_at
- * @property \Cake\I18n\FrozenTime $depart_at
- * @property int $transportation_id
+ * @property int|null $location_id
+ * @property \Cake\I18n\FrozenTime|null $arrive_at
+ * @property \Cake\I18n\FrozenTime|null $depart_at
+ * @property int|null $transportation_id
  *
  * @property \App\Model\Entity\Activity $activity
  * @property \App\Model\Entity\Location $location
@@ -37,6 +37,6 @@ class ActivityItinerary extends Entity
         'location_id' => true,
         'arrive_at' => true,
         'depart_at' => true,
-        'transportation_id' => true,
+        'transportation_id' => true
     ];
 }

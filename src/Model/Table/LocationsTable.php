@@ -138,26 +138,28 @@ class LocationsTable extends Table
         return $validator;
     }
 
-    public function findMinimumInfo(Query $query, array $options)
+    public function findByVisibility(Query $query, array $options)
     {
-        return $query->select(['id', 'iso_country_code', 'administrative_area', 'time_zone']);
-    }
-
-    public function findBasicInfo(Query $query, array $options)
-    {
-        return $query->select([
-            'id',
-            'iso_country_code',
-            'postal_code',
-            'administrative_area',
-            'locality',
-            'sub_locality',
-            'time_zone'
-        ]);
-    }
-
-    public function findAll(Query $query, array $options)
-    {
-        return $query->enableAutoFields();
+        $visibility = $options['visibility'] ?? null;
+        if (!$visibility) {
+            throw new \InvalidArgumentException();
+        }
+        switch ($visibility) {
+            case 'Full Address':
+                return $query;
+            case 'Vicinity':
+                return $query->select([
+                    'iso_country_code',
+                    'postal_code',
+                    'administrative_area',
+                    'locality',
+                    'sub_locality',
+                    'time_zone'
+                ]);
+            case 'Hidden':
+                return $query->select(['iso_country_code', 'administrative_area', 'time_zone']);
+            default:
+                throw new \InvalidArgumentException("Unrecognized argument: $visibility");
+        }
     }
 }

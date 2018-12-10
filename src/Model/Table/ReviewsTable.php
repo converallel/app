@@ -81,6 +81,13 @@ class ReviewsTable extends Table
         $validator
             ->nonNegativeInteger('not_helpful');
 
+        $validator
+            ->add('activity_id', 'unique', [
+                'rule' => ['validateUnique', ['scope' => 'user_id']],
+                'message' => __('You\'ve already reviewed this activity.'),
+                'provider' => 'table'
+            ]);
+
         return $validator;
     }
 

@@ -11,8 +11,8 @@ use Cake\ORM\Entity;
  * @property int $user_id
  * @property int $device_id
  * @property \Cake\I18n\FrozenTime $logged_in_at
- * @property float $latitude
- * @property float $longitude
+ * @property float|null $latitude
+ * @property float|null $longitude
  *
  * @property \App\Model\Entity\User $user
  * @property \App\Model\Entity\Device $device
@@ -33,6 +33,6 @@ class UserLogin extends Entity
         'user_id' => true,
         'device_id' => true,
         'latitude' => true,
-        'longitude' => true,
+        'longitude' => true
     ];
 }

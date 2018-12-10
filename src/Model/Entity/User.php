@@ -82,7 +82,8 @@ class User extends Entity
      * @var array
      */
     protected $_hidden = [
-        'password'
+        'password',
+        '_joinData'
     ];
 
     protected function _getFullName()

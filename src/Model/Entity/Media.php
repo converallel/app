@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -31,7 +32,8 @@ class Media extends Entity
         'file_id' => true,
         'type' => true,
         'position' => true,
-        'caption' => true
+        'caption' => true,
+        'file' => true
     ];
 
     public function isViewableBy(User $user)

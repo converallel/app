@@ -10,11 +10,11 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $user_id
  * @property bool $using_current_location
- * @property int $location_id
+ * @property int|null $location_id
  * @property int $distance
  * @property int $date_type_id
- * @property \Cake\I18n\FrozenDate $start_date
- * @property \Cake\I18n\FrozenDate $end_date
+ * @property \Cake\I18n\FrozenDate|null $start_date
+ * @property \Cake\I18n\FrozenDate|null $end_date
  * @property int $from_age
  * @property int $to_age
  * @property bool $matching_personality

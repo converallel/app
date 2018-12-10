@@ -35,6 +35,6 @@ class Application extends Entity
     protected $_accessible = [
         'activity_id' => true,
         'user_id' => true,
-        'message' => true,
+        'message' => true
     ];
 }

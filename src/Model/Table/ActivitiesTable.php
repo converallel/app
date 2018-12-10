@@ -2,11 +2,11 @@
 
 namespace App\Model\Table;
 
+use Cake\Collection\CollectionInterface;
 use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -22,6 +22,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Followers
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Organizers
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Participants
+ * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Users
  *
  * @method \App\Model\Entity\Activity get($primaryKey, $options = [])
  * @method \App\Model\Entity\Activity newEntity($data = null, array $options = [])
@@ -109,6 +110,11 @@ class ActivitiesTable extends Table
             'cascadeCallbacks' => true,
             'conditions' => ['ActivitiesUsers.type' => 'Participating']
         ]);
+        $this->belongsToMany('Users', [
+            'foreignKey' => 'activity_id',
+            'targetForeignKey' => 'user_id',
+            'joinTable' => 'activities_users'
+        ]);
     }
 
     /**
@@ -170,7 +176,7 @@ class ActivitiesTable extends Table
             ->allowEmpty('group_size_limit');
 
         $validator
-            ->hasAtMost('tags', 10, 'You can only have 10 tags');
+            ->hasAtMost('tags', 10, 'Only 10 tags are allowed per activity.');
 
         return $validator;
     }
@@ -198,8 +204,6 @@ class ActivitiesTable extends Table
     public function findBasicInfo(Query $query, array $options)
     {
         $viewer_id = Configure::read('user_id');
-        $users = TableRegistry::getTableLocator()->get('Users');
-
         return $query
             ->select([
                 'id',
@@ -213,18 +217,22 @@ class ActivitiesTable extends Table
                 'status',
                 'location_visibility',
                 'group_size_limit',
-                'applied' => 'applications.user_id IS NOT NULL',
+                'applied' => $query->newExpr()->isNotNull('applications.user_id'),
                 'following' => 'followers.user_id IS NOT NULL',
                 'organizing' => 'organizers.user_id IS NOT NULL',
                 'participating' => 'participants.user_id IS NOT NULL',
                 'organizer_count',
                 'participant_count',
             ])
-            ->select($this->Locations)
             ->contain([
-                'Locations',
-                'Tags',
                 'Admin' => ['finder' => 'basicInfo'],
+                'Tags',
+                'Users' => function (Query $query) {
+                    return $query->find('minimumInfo')
+                        ->where("type IN ('Organizing', 'Participating')")
+                        ->orderDesc('rating')
+                        ->limit(5);
+                }
             ])
             ->leftJoin('applications',
                 ['activities.id = applications.activity_id', "applications.user_id = $viewer_id"])
@@ -246,9 +254,38 @@ class ActivitiesTable extends Table
                     "participants.user_id = $viewer_id",
                     "participants.type = 'Participating'"
                 ])
-            ->formatResults(function (\Cake\Collection\CollectionInterface $results) use ($users) {
-                return $results->map(function ($row) use ($users) {
-                    $row['users'] = $users->find('relatedToActivity', ['activity_id' => $row['id']]);
+            ->formatResults(function (CollectionInterface $results) use ($viewer_id) {
+                return $results->map(function ($row) use ($viewer_id) {
+                    $isAdmin = $row['admin']['id'] === $viewer_id;
+                    $finder = $isAdmin ? 'all' : 'byVisibility';
+                    $options = $isAdmin ? [] : ['visibility' => $row['location_visibility']];
+                    $row['location'] = $this->Locations->find($finder, $options);
+                    unset($row['location_visibility']);
+                    return $row;
+                });
+            });
+    }
+
+    public function findDetails(Query $query, array $options)
+    {
+        $viewer_id = Configure::read('user_id');
+
+        return $query->find('basicInfo')
+            ->select(['application_count', 'review_count'])
+            ->contain([
+                'ActivityItineraries',
+                'Applications' => function (Query $query) {
+                    return $query->limit(3);
+                },
+                'Reviews' => function (Query $query) {
+                    return $query->limit(5);
+                }
+            ])
+            ->formatResults(function (CollectionInterface $results) use ($viewer_id) {
+                return $results->map(function ($row) use ($viewer_id) {
+                    if (!($row['organizing'] || $row['admin']['id'] === $viewer_id)) {
+                        unset($row['applications'], $row['application_count']);
+                    }
                     return $row;
                 });
             });

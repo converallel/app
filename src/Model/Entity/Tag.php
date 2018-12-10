@@ -8,7 +8,7 @@ use Cake\ORM\Entity;
  * Tag Entity
  *
  * @property int $id
- * @property int $parent_id
+ * @property int|null $parent_id
  * @property string $name
  * @property int $count
  *

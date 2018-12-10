@@ -9,6 +9,8 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $mode
+ *
+ * @property \App\Model\Entity\ActivityItinerary[] $activity_itineraries
  */
 class Transportation extends Entity
 {

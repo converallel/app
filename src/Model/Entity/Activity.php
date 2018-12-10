@@ -62,17 +62,9 @@ class Activity extends Entity
         'details' => true,
         'status' => true,
         'group_size_limit' => true,
-        'application_count' => true,
-        'organizer_count' => true,
-        'participant_count' => true,
-        'review_count' => true,
-        'created_at' => true,
-        'modified_at' => true,
         'location' => true,
         'users' => true,
         'activity_itineraries' => true,
-        'applications' => true,
-        'reviews' => true,
         'media' => true,
         'tags' => true
     ];

@@ -247,22 +247,4 @@ class UsersTable extends Table
     {
         return $query->select(['id', 'given_name', 'birthdate', 'gender', 'profile_image_path', 'verified']);
     }
-
-    public function findRelatedToActivity(Query $query, array $options)
-    {
-        $activity_id = $options['activity_id'] ?? null;
-        if (!$activity_id) {
-            throw new \InvalidArgumentException();
-        }
-
-        return $query
-            ->find('minimumInfo')
-            ->innerJoin(['a' => 'activities_users'], [
-                'a.user_id' => 'users.id',
-                'a.activity_id' => $activity_id,
-                "a.type IN ('Organizing', 'Participating')"
-            ])
-            ->orderDesc('rating')
-            ->limit(5);
-    }
 }

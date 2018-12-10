@@ -13,7 +13,7 @@ use Cake\ORM\TableRegistry;
  * @property int $activity_id
  * @property int $user_id
  * @property int $rating
- * @property string $message
+ * @property string|null $message
  * @property \Cake\I18n\FrozenTime $created_at
  * @property \Cake\I18n\FrozenTime $modified_at
  * @property \Cake\I18n\FrozenTime|null $deleted_at
@@ -42,7 +42,7 @@ class Review extends Entity
         'rating' => true,
         'message' => true,
         'helpful' => true,
-        'not_helpful' => true,
+        'not_helpful' => true
     ];
 
     public function isCreatableBy($user)

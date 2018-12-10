@@ -9,6 +9,8 @@ use Cake\Validation\Validator;
 /**
  * Transportation Model
  *
+ * @property \App\Model\Table\ActivityItinerariesTable|\Cake\ORM\Association\HasMany $ActivityItineraries
+ *
  * @method \App\Model\Entity\Transportation get($primaryKey, $options = [])
  * @method \App\Model\Entity\Transportation newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\Transportation[] newEntities(array $data, array $options = [])
@@ -34,6 +36,10 @@ class TransportationTable extends Table
         $this->setTable('transportation');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        $this->hasMany('ActivityItineraries', [
+            'foreignKey' => 'transportation_id'
+        ]);
     }
 
     /**

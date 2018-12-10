@@ -10,17 +10,17 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property float $latitude
  * @property float $longitude
- * @property string $name
- * @property string $iso_country_code
- * @property string $country
- * @property string $postal_code
- * @property string $administrative_area
- * @property string $sub_administrative_area
- * @property string $locality
- * @property string $sub_locality
- * @property string $thoroughfare
- * @property string $sub_thoroughfare
- * @property string $time_zone
+ * @property string|null $name
+ * @property string|null $iso_country_code
+ * @property string|null $country
+ * @property string|null $postal_code
+ * @property string|null $administrative_area
+ * @property string|null $sub_administrative_area
+ * @property string|null $locality
+ * @property string|null $sub_locality
+ * @property string|null $thoroughfare
+ * @property string|null $sub_thoroughfare
+ * @property string|null $time_zone
  *
  * @property \App\Model\Entity\Activity[] $activities
  * @property \App\Model\Entity\ActivityFilter[] $activity_filters

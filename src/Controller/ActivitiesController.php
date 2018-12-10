@@ -46,11 +46,7 @@ class ActivitiesController extends AppController
 
     public function view($id = null)
     {
-        $this->get($id, [
-            'finder' => 'basicInfo',
-            'fields' => ['application_count', 'review_count'],
-            'contain' => ['ActivityItineraries']
-        ]);
+        $this->get($id, ['finder' => 'details']);
     }
 
     public function add()
