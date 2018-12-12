@@ -11,6 +11,13 @@ class EducationFixture extends TestFixture
 {
 
     /**
+     * Table name
+     *
+     * @var string
+     */
+    public $table = 'education';
+
+    /**
      * Fields
      *
      * @var array

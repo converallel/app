@@ -25,6 +25,7 @@ class FilesFixture extends TestFixture
         'extension' => ['type' => 'string', 'length' => 10, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'size' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'created_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
+        'deleted_at' => ['type' => 'timestamp', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         '_indexes' => [
             'user_id' => ['type' => 'index', 'columns' => ['user_id'], 'length' => []],
         ],
@@ -55,7 +56,8 @@ class FilesFixture extends TestFixture
                 'name' => 'Lorem ipsum dolor sit amet',
                 'extension' => 'Lorem ip',
                 'size' => 1,
-                'created_at' => 1543686963
+                'created_at' => 1544464766,
+                'deleted_at' => 1544464766
             ],
         ];
         parent::init();

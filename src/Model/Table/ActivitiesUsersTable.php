@@ -2,6 +2,8 @@
 
 namespace App\Model\Table;
 
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -87,6 +89,7 @@ class ActivitiesUsersTable extends Table
     {
         $rules->add($rules->existsIn(['activity_id'], 'Activities'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
+        $rules->add($rules->isUnique(['activity_id', 'user_id', 'type']));
 
         return $rules;
     }

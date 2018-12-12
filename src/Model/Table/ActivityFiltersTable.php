@@ -9,9 +9,7 @@ use Cake\Validation\Validator;
 /**
  * ActivityFilters Model
  *
- * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  * @property \App\Model\Table\LocationsTable|\Cake\ORM\Association\BelongsTo $Locations
- * @property \App\Model\Table\ActivityFilterDateTypesTable|\Cake\ORM\Association\BelongsTo $ActivityFilterDateTypes
  *
  * @method \App\Model\Entity\ActivityFilter get($primaryKey, $options = [])
  * @method \App\Model\Entity\ActivityFilter newEntity($data = null, array $options = [])
@@ -39,16 +37,8 @@ class ActivityFiltersTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
-        $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
-            'joinType' => 'INNER'
-        ]);
         $this->belongsTo('Locations', [
             'foreignKey' => 'location_id'
-        ]);
-        $this->belongsTo('ActivityFilterDateTypes', [
-            'foreignKey' => 'date_type_id',
-            'joinType' => 'INNER'
         ]);
     }
 
@@ -71,6 +61,10 @@ class ActivityFiltersTable extends Table
         $validator
             ->requirePresence('distance', 'create')
             ->notEmpty('distance');
+
+        $validator
+            ->scalar('date_type')
+            ->notEmpty('date_type');
 
         $validator
             ->date('start_date')
@@ -108,9 +102,7 @@ class ActivityFiltersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['location_id'], 'Locations'));
-        $rules->add($rules->existsIn(['date_type_id'], 'ActivityFilterDateTypes'));
 
         return $rules;
     }

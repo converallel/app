@@ -24,10 +24,10 @@ class ActivityItinerariesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.activity_itineraries',
-        'app.activities',
-        'app.locations',
-        'app.transportation'
+        'app.ActivityItineraries',
+        'app.Activities',
+        'app.Locations',
+        'app.Transportation'
     ];
 
     /**

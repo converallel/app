@@ -11,6 +11,13 @@ class PersonalityCompatibilityFixture extends TestFixture
 {
 
     /**
+     * Table name
+     *
+     * @var string
+     */
+    public $table = 'personality_compatibility';
+
+    /**
      * Fields
      *
      * @var array

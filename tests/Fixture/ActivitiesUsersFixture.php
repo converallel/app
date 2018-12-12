@@ -51,7 +51,7 @@ class ActivitiesUsersFixture extends TestFixture
                 'activity_id' => 1,
                 'user_id' => 1,
                 'type' => 'Lorem ipsum dolor sit amet',
-                'created_at' => 1543686963
+                'created_at' => 1544551750
             ],
         ];
         parent::init();

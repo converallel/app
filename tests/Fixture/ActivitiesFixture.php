@@ -23,7 +23,7 @@ class ActivitiesFixture extends TestFixture
         'end_date' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'location_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'customized_location' => ['type' => 'string', 'length' => 100, 'null' => true, 'default' => null, 'collate' => 'utf8mb4_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'organizer_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'admin_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'is_pair' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '1', 'comment' => '', 'precision' => null],
         'exclusive' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
         'location_visibility' => ['type' => 'string', 'length' => null, 'null' => false, 'default' => 'Vicinity', 'collate' => 'utf8mb4_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
@@ -36,15 +36,16 @@ class ActivitiesFixture extends TestFixture
         'review_count' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
         'created_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         'modified_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
+        'deleted_at' => ['type' => 'timestamp', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         '_indexes' => [
             'location_id' => ['type' => 'index', 'columns' => ['location_id'], 'length' => []],
-            'organizer_id' => ['type' => 'index', 'columns' => ['organizer_id'], 'length' => []],
+            'admin_id' => ['type' => 'index', 'columns' => ['admin_id'], 'length' => []],
             'start_date' => ['type' => 'index', 'columns' => ['start_date', 'is_pair', 'status'], 'length' => []],
         ],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
             'activities_ibfk_1' => ['type' => 'foreign', 'columns' => ['location_id'], 'references' => ['locations', 'id'], 'update' => 'cascade', 'delete' => 'noAction', 'length' => []],
-            'activities_ibfk_2' => ['type' => 'foreign', 'columns' => ['organizer_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
+            'activities_ibfk_2' => ['type' => 'foreign', 'columns' => ['admin_id'], 'references' => ['users', 'id'], 'update' => 'cascade', 'delete' => 'cascade', 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -64,11 +65,11 @@ class ActivitiesFixture extends TestFixture
             [
                 'id' => 1,
                 'title' => 'Lorem ipsum dolor sit amet',
-                'start_date' => '2018-12-02 05:22:26',
-                'end_date' => '2018-12-02 05:22:26',
+                'start_date' => '2018-12-10 17:59:26',
+                'end_date' => '2018-12-10 17:59:26',
                 'location_id' => 1,
                 'customized_location' => 'Lorem ipsum dolor sit amet',
-                'organizer_id' => 1,
+                'admin_id' => 1,
                 'is_pair' => 1,
                 'exclusive' => 1,
                 'location_visibility' => 'Lorem ipsum dolor sit amet',
@@ -79,8 +80,9 @@ class ActivitiesFixture extends TestFixture
                 'organizer_count' => 1,
                 'participant_count' => 1,
                 'review_count' => 1,
-                'created_at' => 1543728146,
-                'modified_at' => 1543728146
+                'created_at' => 1544464766,
+                'modified_at' => 1544464766,
+                'deleted_at' => 1544464766
             ],
         ];
         parent::init();

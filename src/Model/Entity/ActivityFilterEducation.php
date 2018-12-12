@@ -7,10 +7,10 @@ use Cake\ORM\Entity;
 /**
  * ActivityFilterEducation Entity
  *
- * @property int $user_id
+ * @property int $filter_id
  * @property int $education_id
  *
- * @property \App\Model\Entity\User $user
+ * @property \App\Model\Entity\ActivityFilter $activity_filter
  * @property \App\Model\Entity\Education $education
  */
 class ActivityFilterEducation extends Entity
@@ -26,7 +26,7 @@ class ActivityFilterEducation extends Entity
      * @var array
      */
     protected $_accessible = [
-        'user_id' => true,
+        '$filter_id' => true,
         'education_id' => true
     ];
 }

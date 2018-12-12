@@ -24,9 +24,9 @@ class EducationTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.education',
-        'app.activity_filter_education',
-        'app.users'
+        'app.Education',
+        'app.ActivityFilterEducation',
+        'app.Users'
     ];
 
     /**

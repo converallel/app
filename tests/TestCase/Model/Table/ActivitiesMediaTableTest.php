@@ -24,9 +24,9 @@ class ActivitiesMediaTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.activities_media',
-        'app.activities',
-        'app.media'
+        'app.ActivitiesMedia',
+        'app.Activities',
+        'app.Media'
     ];
 
     /**

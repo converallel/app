@@ -24,9 +24,9 @@ class ReviewsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.reviews',
-        'app.activities',
-        'app.users'
+        'app.Reviews',
+        'app.Activities',
+        'app.Users'
     ];
 
     /**

@@ -11,6 +11,13 @@ class TransportationFixture extends TestFixture
 {
 
     /**
+     * Table name
+     *
+     * @var string
+     */
+    public $table = 'transportation';
+
+    /**
      * Fields
      *
      * @var array

@@ -21,6 +21,7 @@ class DevicesFixture extends TestFixture
         'user_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'uuid' => ['type' => 'uuid', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'name' => ['type' => 'string', 'length' => 45, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'deleted_at' => ['type' => 'timestamp', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         '_indexes' => [
             'user_id' => ['type' => 'index', 'columns' => ['user_id'], 'length' => []],
         ],
@@ -47,8 +48,9 @@ class DevicesFixture extends TestFixture
             [
                 'id' => 1,
                 'user_id' => 1,
-                'uuid' => 'd7965390-5532-468f-bfa9-c92b3cf50b7a',
-                'name' => 'Lorem ipsum dolor sit amet'
+                'uuid' => '3cbe9194-c0ac-465f-95a9-bbb43a9f7286',
+                'name' => 'Lorem ipsum dolor sit amet',
+                'deleted_at' => 1544464766
             ],
         ];
         parent::init();

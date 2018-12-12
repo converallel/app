@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -8,11 +7,10 @@ use Cake\ORM\Entity;
  * ActivityFilter Entity
  *
  * @property int $id
- * @property int $user_id
  * @property bool $using_current_location
  * @property int|null $location_id
  * @property int $distance
- * @property int $date_type_id
+ * @property string $date_type
  * @property \Cake\I18n\FrozenDate|null $start_date
  * @property \Cake\I18n\FrozenDate|null $end_date
  * @property int $from_age
@@ -20,9 +18,7 @@ use Cake\ORM\Entity;
  * @property bool $matching_personality
  * @property bool $verified_user
  *
- * @property \App\Model\Entity\User $user
  * @property \App\Model\Entity\Location $location
- * @property \App\Model\Entity\ActivityFilterDateType $activity_filter_date_type
  */
 class ActivityFilter extends Entity
 {
@@ -37,16 +33,16 @@ class ActivityFilter extends Entity
      * @var array
      */
     protected $_accessible = [
-        'user_id' => true,
         'using_current_location' => true,
         'location_id' => true,
         'distance' => true,
-        'date_type_id' => true,
+        'date_type' => true,
         'start_date' => true,
         'end_date' => true,
         'from_age' => true,
         'to_age' => true,
         'matching_personality' => true,
-        'verified_user' => true
+        'verified_user' => true,
+        'location' => true
     ];
 }

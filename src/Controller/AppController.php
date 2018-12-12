@@ -58,9 +58,13 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        $this->using_api = !empty(array_intersect(['application/json', 'application/xml'], $this->getRequest()->accepts()));
-        $this->entity_name = Inflector::singularize(lcfirst($this->getName()));
+        $acceptsContentTypes = $this->getRequest()->accepts();
+        $this->using_api = !empty(array_intersect(['application/json', 'application/xml'], $acceptsContentTypes));
+        if (in_array('text/html', $acceptsContentTypes)) {
+            $this->using_api = false;
+        }
         $this->Table = $this->{$this->getName()};
+        $this->entity_name = Inflector::singularize(lcfirst($this->getName()));
 
         // load components
         if ($this->using_api) {

@@ -24,8 +24,8 @@ class SearchHistoriesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.search_histories',
-        'app.users'
+        'app.SearchHistories',
+        'app.Users'
     ];
 
     /**

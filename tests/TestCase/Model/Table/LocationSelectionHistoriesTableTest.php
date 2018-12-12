@@ -24,9 +24,9 @@ class LocationSelectionHistoriesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.location_selection_histories',
-        'app.users',
-        'app.locations'
+        'app.LocationSelectionHistories',
+        'app.Users',
+        'app.Locations'
     ];
 
     /**

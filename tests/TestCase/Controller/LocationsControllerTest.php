@@ -2,13 +2,15 @@
 namespace App\Test\TestCase\Controller;
 
 use App\Controller\LocationsController;
-use Cake\TestSuite\IntegrationTestCase;
+use Cake\TestSuite\IntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 
 /**
  * App\Controller\LocationsController Test Case
  */
-class LocationsControllerTest extends IntegrationTestCase
+class LocationsControllerTest extends TestCase
 {
+    use IntegrationTestTrait;
 
     /**
      * Fixtures
@@ -16,60 +18,20 @@ class LocationsControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'app.locations',
-        'app.activities',
-        'app.activity_filters',
-        'app.activity_itineraries',
-        'app.location_selection_histories',
-        'app.users'
+        'app.Locations',
+        'app.Activities',
+        'app.ActivityFilters',
+        'app.ActivityItineraries',
+        'app.LocationSelectionHistories',
+        'app.Users'
     ];
 
     /**
-     * Test index method
+     * Test lookup method
      *
      * @return void
      */
-    public function testIndex()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test view method
-     *
-     * @return void
-     */
-    public function testView()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test add method
-     *
-     * @return void
-     */
-    public function testAdd()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test edit method
-     *
-     * @return void
-     */
-    public function testEdit()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test delete method
-     *
-     * @return void
-     */
-    public function testDelete()
+    public function testLookup()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

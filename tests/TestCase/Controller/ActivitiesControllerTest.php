@@ -2,13 +2,15 @@
 namespace App\Test\TestCase\Controller;
 
 use App\Controller\ActivitiesController;
-use Cake\TestSuite\IntegrationTestCase;
+use Cake\TestSuite\IntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 
 /**
  * App\Controller\ActivitiesController Test Case
  */
-class ActivitiesControllerTest extends IntegrationTestCase
+class ActivitiesControllerTest extends TestCase
 {
+    use IntegrationTestTrait;
 
     /**
      * Fixtures
@@ -16,17 +18,18 @@ class ActivitiesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'app.activities',
-        'app.locations',
-        'app.organizer',
-        'app.statuses',
-        'app.activity_itineraries',
-        'app.applications',
-        'app.reviews',
-        'app.tags',
-        'app.followers',
-        'app.organizers',
-        'app.participants'
+        'app.Activities',
+        'app.Locations',
+        'app.Admin',
+        'app.ActivityItineraries',
+        'app.Applications',
+        'app.Reviews',
+        'app.Media',
+        'app.Tags',
+        'app.Followers',
+        'app.Organizers',
+        'app.Participants',
+        'app.Users'
     ];
 
     /**
@@ -55,26 +58,6 @@ class ActivitiesControllerTest extends IntegrationTestCase
      * @return void
      */
     public function testAdd()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test edit method
-     *
-     * @return void
-     */
-    public function testEdit()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test delete method
-     *
-     * @return void
-     */
-    public function testDelete()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

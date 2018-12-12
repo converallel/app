@@ -24,8 +24,8 @@ class BlockedUsersTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.blocked_users',
-        'app.users'
+        'app.BlockedUsers',
+        'app.Users'
     ];
 
     /**

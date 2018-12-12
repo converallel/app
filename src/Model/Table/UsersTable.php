@@ -15,7 +15,6 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\PersonalitiesTable|\Cake\ORM\Association\BelongsTo $Personalities
  * @property \App\Model\Table\EducationTable|\Cake\ORM\Association\BelongsTo $Education
  * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\HasMany $AdministratedActivities
- * @property \App\Model\Table\ActivityFilterEducationTable|\Cake\ORM\Association\HasMany $ActivityFilterEducation
  * @property \App\Model\Table\ActivityFiltersTable|\Cake\ORM\Association\HasMany $ActivityFilters
  * @property \App\Model\Table\ApplicationsTable|\Cake\ORM\Association\HasMany $Applications
  * @property \App\Model\Table\ContactsTable|\Cake\ORM\Association\HasMany $Contacts
@@ -27,6 +26,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\SearchHistoriesTable|\Cake\ORM\Association\HasMany $SearchHistories
  * @property \App\Model\Table\UserLoginsTable|\Cake\ORM\Association\HasMany $UserLogins
  * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\BelongsToMany $Activities
+ * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\BelongsToMany $BlockedUsers
  * @property \App\Model\Table\TagsTable|\Cake\ORM\Association\BelongsToMany $Tags
  *
  * @method \App\Model\Entity\User get($primaryKey, $options = [])
@@ -70,9 +70,6 @@ class UsersTable extends Table
             'className' => 'Activities',
             'foreignKey' => 'admin_id'
         ]);
-        $this->hasMany('ActivityFilterEducation', [
-            'foreignKey' => 'user_id'
-        ]);
         $this->hasMany('ActivityFilters', [
             'foreignKey' => 'user_id'
         ]);
@@ -113,6 +110,13 @@ class UsersTable extends Table
             'foreignKey' => 'user_id',
             'targetForeignKey' => 'activity_id',
             'joinTable' => 'activities_users'
+        ]);
+        $this->belongsToMany('BlockedUsers', [
+            'className' => 'Users',
+            'foreignKey' => 'blocker_id',
+            'targetForeignKey' => 'user_id',
+            'joinTable' => 'blocked_users',
+            'through' => 'BlockedUsers',
         ]);
         $this->belongsToMany('Tags', [
             'foreignKey' => 'user_id',
@@ -245,6 +249,36 @@ class UsersTable extends Table
      */
     public function findBasicInfo(Query $query, array $options)
     {
-        return $query->select(['id', 'given_name', 'birthdate', 'gender', 'profile_image_path', 'verified']);
+        return $query->find('minimumInfo')
+            ->select([
+                'given_name',
+                'birthdate',
+                'gender',
+                'verified'
+            ]);
+    }
+
+    public function findDetails(Query $query, array $options)
+    {
+        return $query->find('basicInfo')
+            ->select([
+                'bio',
+                'education' => 'Education.degree',
+                'personality' => 'Personalities.type',
+                'sexual_orientation',
+            ])
+            ->select($this->Locations)
+            ->contain([
+                'Education',
+                'Locations',
+                'Personalities',
+                'Tags',
+            ])
+            ->formatResults(function (\Cake\Collection\CollectionInterface $results) {
+                return $results->map(function ($row) {
+                    $row['activities'] = ActivitiesTable::findRelatedToUser($row['id']);
+                    return $row;
+                });
+            });
     }
 }

@@ -17,7 +17,7 @@ trait SoftDeleteTrait
 
     public function callFinder($type, Query $query, array $options = [])
     {
-        $query->where([$this->getSoftDeleteField() . ' IS NULL']);
+        $query->whereNull($this->getSoftDeleteField());
         return parent::callFinder($type, $query, $options);
     }
 

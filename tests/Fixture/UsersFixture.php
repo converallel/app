@@ -35,6 +35,7 @@ class UsersFixture extends TestFixture
         'rating' => ['type' => 'tinyinteger', 'length' => 3, 'unsigned' => true, 'null' => false, 'default' => '5', 'comment' => 'On a scale of 1 - 10', 'precision' => null],
         'verified' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
         'created_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
+        'deleted_at' => ['type' => 'timestamp', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         '_indexes' => [
             'education_id' => ['type' => 'index', 'columns' => ['education_id'], 'length' => []],
             'location_id' => ['type' => 'index', 'columns' => ['location_id'], 'length' => []],
@@ -73,7 +74,7 @@ class UsersFixture extends TestFixture
                 'failed_login_attempts' => 1,
                 'given_name' => 'Lorem ipsum dolor sit amet',
                 'family_name' => 'Lorem ipsum dolor sit amet',
-                'birthdate' => '2018-12-02',
+                'birthdate' => '2018-12-10',
                 'gender' => 'Lorem ipsum dolor sit amet',
                 'sexual_orientation' => 'Lorem ipsum dolor sit amet',
                 'location_id' => 1,
@@ -83,7 +84,8 @@ class UsersFixture extends TestFixture
                 'bio' => 'Lorem ipsum dolor sit amet',
                 'rating' => 1,
                 'verified' => 1,
-                'created_at' => 1543727829
+                'created_at' => 1544464767,
+                'deleted_at' => 1544464767
             ],
         ];
         parent::init();

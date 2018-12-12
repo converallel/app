@@ -24,7 +24,7 @@ class HttpStatusCodesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.http_status_codes'
+        'app.HttpStatusCodes'
     ];
 
     /**

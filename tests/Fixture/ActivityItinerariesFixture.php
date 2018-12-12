@@ -55,8 +55,8 @@ class ActivityItinerariesFixture extends TestFixture
                 'activity_id' => 1,
                 'stop' => 1,
                 'location_id' => 1,
-                'arrive_at' => '2018-12-01 17:56:03',
-                'depart_at' => '2018-12-01 17:56:03',
+                'arrive_at' => '2018-12-10 17:59:26',
+                'depart_at' => '2018-12-10 17:59:26',
                 'transportation_id' => 1
             ],
         ];

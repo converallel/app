@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use Cake\ORM\TableRegistry;
-
 /**
  * Users Controller
  *
@@ -21,31 +19,7 @@ class UsersController extends AppController
 
     public function view($id = null)
     {
-        $activities = TableRegistry::getTableLocator()->get('Activities')
-            ->find('relatedToUser', ['user_id' => $id]);
-
-        $query = $this->Users->find('basicInfo')
-            ->select([
-                'bio',
-                'education' => 'Education.degree',
-                'personality' => 'Personalities.type',
-                'sexual_orientation',
-            ])
-            ->select($this->Users->Locations)
-            ->contain([
-                'Education',
-                'Locations',
-                'Personalities',
-                'Tags',
-            ])
-            ->formatResults(function (\Cake\Collection\CollectionInterface $results) use ($activities) {
-                return $results->map(function ($row) use ($activities) {
-                    $row['activities'] = $activities;
-                    return $row;
-                });
-            });
-
-        $this->get($id, $query);
+        $this->get($id, ['finder' => 'details']);
     }
 
     public function login()

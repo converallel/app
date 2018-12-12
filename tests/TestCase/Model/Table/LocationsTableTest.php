@@ -24,12 +24,12 @@ class LocationsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.locations',
-        'app.activities',
-        'app.activity_filters',
-        'app.activity_itineraries',
-        'app.location_selection_histories',
-        'app.users'
+        'app.Locations',
+        'app.Activities',
+        'app.ActivityFilters',
+        'app.ActivityItineraries',
+        'app.LocationSelectionHistories',
+        'app.Users'
     ];
 
     /**

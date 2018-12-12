@@ -8,7 +8,7 @@ use Cake\ORM\Table;
 /**
  * ActivityFilterEducation Model
  *
- * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
+ * @property \App\Model\Table\ActivityFiltersTable|\Cake\ORM\Association\BelongsTo $ActivityFilters
  * @property \App\Model\Table\EducationTable|\Cake\ORM\Association\BelongsTo $Education
  *
  * @method \App\Model\Entity\ActivityFilterEducation get($primaryKey, $options = [])
@@ -37,8 +37,8 @@ class ActivityFilterEducationTable extends Table
         $this->setDisplayField('user_id');
         $this->setPrimaryKey(['user_id', 'education_id']);
 
-        $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
+        $this->belongsTo('ActivityFilters', [
+            'foreignKey' => 'filter_id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Education', [
@@ -56,7 +56,7 @@ class ActivityFilterEducationTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
+        $rules->add($rules->existsIn(['filter_id'], 'ActivityFilters'));
         $rules->add($rules->existsIn(['education_id'], 'Education'));
 
         return $rules;

@@ -24,7 +24,7 @@ class PersonalityCompatibilityLevelsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.personality_compatibility_levels'
+        'app.PersonalityCompatibilityLevels'
     ];
 
     /**

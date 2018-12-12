@@ -24,23 +24,23 @@ class UsersTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.users',
-        'app.locations',
-        'app.personalities',
-        'app.education',
-        'app.activity_filter_education',
-        'app.activity_filters',
-        'app.applications',
-        'app.contacts',
-        'app.devices',
-        'app.files',
-        'app.location_selection_histories',
-        'app.logs',
-        'app.reviews',
-        'app.search_histories',
-        'app.user_logins',
-        'app.activities',
-        'app.tags'
+        'app.Users',
+        'app.Locations',
+        'app.Personalities',
+        'app.Education',
+        'app.ActivityFilterEducation',
+        'app.ActivityFilters',
+        'app.Applications',
+        'app.Contacts',
+        'app.Devices',
+        'app.Files',
+        'app.LocationSelectionHistories',
+        'app.Logs',
+        'app.Reviews',
+        'app.SearchHistories',
+        'app.UserLogins',
+        'app.Activities',
+        'app.Tags'
     ];
 
     /**
@@ -95,14 +95,5 @@ class UsersTableTest extends TestCase
     public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testFindRelatedToActivity()
-    {
-        $this->setExpectedExceptionFromAnnotation();
-        $this->Users->find('relatedToActivity');
     }
 }

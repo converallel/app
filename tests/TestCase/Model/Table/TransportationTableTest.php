@@ -24,7 +24,8 @@ class TransportationTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.transportation'
+        'app.Transportation',
+        'app.ActivityItineraries'
     ];
 
     /**

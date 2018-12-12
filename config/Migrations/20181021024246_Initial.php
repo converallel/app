@@ -235,29 +235,8 @@ class Initial extends AbstractMigration
             )
             ->create();
 
-        $this->table('activity_filter_date_types')
-            ->addColumn('id', 'integer', [
-                'default' => null,
-                'limit' => MysqlAdapter::INT_TINY,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['id'])
-            ->addColumn('type', 'string', [
-                'default' => null,
-                'limit' => 20,
-                'null' => false,
-            ])
-            ->addIndex(
-                [
-                    'type',
-                ],
-                ['unique' => true]
-            )
-            ->create();
-
         $this->table('activity_filter_education')
-            ->addColumn('user_id', 'integer', [
+            ->addColumn('filter_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => false,
@@ -269,7 +248,7 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
-            ->addPrimaryKey(['user_id', 'education_id'])
+            ->addPrimaryKey(['filter_id', 'education_id'])
             ->addIndex(
                 [
                     'education_id',
@@ -286,12 +265,6 @@ class Initial extends AbstractMigration
                 'signed' => false,
             ])
             ->addPrimaryKey(['id'])
-            ->addColumn('user_id', 'integer', [
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
             ->addColumn('using_current_location', 'boolean', [
                 'default' => true,
                 'limit' => null,
@@ -310,11 +283,11 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
-            ->addColumn('date_type_id', 'integer', [
-                'default' => '1',
-                'limit' => MysqlAdapter::INT_TINY,
+            ->addColumn('date_type', 'enum', [
+                'default' => 'All',
+                'limit' => null,
                 'null' => false,
-                'signed' => false,
+                'values' => ['All', 'Today', 'Tomorrow', 'This Weekend', 'This Week', 'Next Week', 'Customized'],
             ])
             ->addColumn('start_date', 'date', [
                 'default' => null,
@@ -350,17 +323,6 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
-            ->addIndex(
-                [
-                    'user_id',
-                ],
-                ['unique' => true]
-            )
-            ->addIndex(
-                [
-                    'date_type_id',
-                ]
-            )
             ->addIndex(
                 [
                     'location_id',
@@ -1351,10 +1313,11 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
-            ->addColumn('profile_image_path', 'string', [
+            ->addColumn('profile_image_id', 'integer', [
                 'default' => null,
-                'limit' => 100,
+                'limit' => 11,
                 'null' => true,
+                'signed' => false,
             ])
             ->addColumn('personality_id', 'integer', [
                 'default' => null,
@@ -1425,7 +1388,7 @@ class Initial extends AbstractMigration
             )
             ->addIndex(
                 [
-                    'profile_image_path',
+                    'profile_image_id',
                 ]
             )
             ->addIndex(
@@ -1532,8 +1495,8 @@ class Initial extends AbstractMigration
                 ]
             )
             ->addForeignKey(
-                'user_id',
-                'users',
+                'filter_id',
+                'activity_filters',
                 'id',
                 [
                     'update' => 'CASCADE',
@@ -1544,15 +1507,6 @@ class Initial extends AbstractMigration
 
         $this->table('activity_filters')
             ->addForeignKey(
-                'date_type_id',
-                'activity_filter_date_types',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'NO_ACTION'
-                ]
-            )
-            ->addForeignKey(
                 'location_id',
                 'locations',
                 'id',
@@ -1562,7 +1516,7 @@ class Initial extends AbstractMigration
                 ]
             )
             ->addForeignKey(
-                'user_id',
+                'id',
                 'users',
                 'id',
                 [
@@ -1879,6 +1833,15 @@ class Initial extends AbstractMigration
                     'delete' => 'SET_NULL'
                 ]
             )
+            ->addForeignKey(
+                'profile_image_id',
+                'media',
+                'id',
+                [
+                    'update' => 'CASCADE',
+                    'delete' => 'SET_NULL'
+                ]
+            )
             ->update();
 
         // create triggers
@@ -1938,7 +1901,7 @@ class Initial extends AbstractMigration
           BEGIN
             DECLARE age TINYINT;
             SET age = YEAR(UTC_DATE()) - YEAR(NEW.birthdate);
-            INSERT INTO activity_filters (user_id, from_age, to_age) VALUE (NEW.id, GREATEST(18, age - 8), age + 8);
+            INSERT INTO activity_filters (id, from_age, to_age) VALUE (NEW.id, GREATEST(18, age - 8), age + 8);
           END;
         ");
     }
@@ -1983,7 +1946,7 @@ class Initial extends AbstractMigration
                 'education_id'
             )
             ->dropForeignKey(
-                'user_id'
+                'filter_id'
             )->save();
 
         $this->table('location_selection_histories')
@@ -1996,13 +1959,10 @@ class Initial extends AbstractMigration
 
         $this->table('activity_filters')
             ->dropForeignKey(
-                'date_type_id'
-            )
-            ->dropForeignKey(
                 'location_id'
             )
             ->dropForeignKey(
-                'user_id'
+                'id'
             )->save();
 
         $this->table('activity_itineraries')
@@ -2116,13 +2076,15 @@ class Initial extends AbstractMigration
             )
             ->dropForeignKey(
                 'personality_id'
+            )
+            ->dropForeignKey(
+                'profile_image_id'
             )->save();
 
         $this->table('activities')->drop()->save();
         $this->table('activities_media')->drop()->save();
         $this->table('activities_tags')->drop()->save();
         $this->table('activities_users')->drop()->save();
-        $this->table('activity_filter_date_types')->drop()->save();
         $this->table('activity_filter_education')->drop()->save();
         $this->table('activity_filters')->drop()->save();
         $this->table('activity_itineraries')->drop()->save();

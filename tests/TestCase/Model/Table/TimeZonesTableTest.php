@@ -24,7 +24,7 @@ class TimeZonesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.time_zones'
+        'app.TimeZones'
     ];
 
     /**

@@ -7,6 +7,7 @@ use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -217,12 +218,10 @@ class ActivitiesTable extends Table
                 'status',
                 'location_visibility',
                 'group_size_limit',
-                'applied' => $query->newExpr()->isNotNull('applications.user_id'),
-                'following' => 'followers.user_id IS NOT NULL',
-                'organizing' => 'organizers.user_id IS NOT NULL',
-                'participating' => 'participants.user_id IS NOT NULL',
                 'organizer_count',
                 'participant_count',
+                'applied' => 'applications.user_id IS NOT NULL',
+                'viewer_relations' => $query->func()->JSON_ARRAYAGG(['activities_users.type' => 'identifier']),
             ])
             ->contain([
                 'Admin' => ['finder' => 'basicInfo'],
@@ -234,33 +233,30 @@ class ActivitiesTable extends Table
                         ->limit(5);
                 }
             ])
-            ->leftJoin('applications',
-                ['activities.id = applications.activity_id', "applications.user_id = $viewer_id"])
-            ->leftJoin(['followers' => 'activities_users'],
-                [
-                    'activities.id = followers.activity_id',
-                    "followers.user_id = $viewer_id",
-                    "followers.type = 'Following'"
-                ])
-            ->leftJoin(['organizers' => 'activities_users'],
-                [
-                    'activities.id = organizers.activity_id',
-                    "organizers.user_id = $viewer_id",
-                    "organizers.type = 'Organizing'"
-                ])
-            ->leftJoin(['participants' => 'activities_users'],
-                [
-                    'activities.id = participants.activity_id',
-                    "participants.user_id = $viewer_id",
-                    "participants.type = 'Participating'"
-                ])
+            ->leftJoin('applications', [
+                'activities.id = applications.activity_id',
+                "applications.user_id = $viewer_id"
+            ])
+            ->leftJoin('activities_users', [
+                'activities_users.activity_id = activities.id',
+                "activities_users.user_id = $viewer_id",
+            ])
+            ->group('Activities.id')
             ->formatResults(function (CollectionInterface $results) use ($viewer_id) {
                 return $results->map(function ($row) use ($viewer_id) {
-                    $isAdmin = $row['admin']['id'] === $viewer_id;
-                    $finder = $isAdmin ? 'all' : 'byVisibility';
-                    $options = $isAdmin ? [] : ['visibility' => $row['location_visibility']];
+                    $row['applied'] = filter_var($row['applied'], FILTER_VALIDATE_BOOLEAN);
+                    $relations = json_decode($row['viewer_relations'], true);
+                    foreach ($relations as $relation) {
+                        if ($relation) {
+                            $row[strtolower($relation)] = true;
+                        }
+                    }
+                    // location visibility
+                    $canSeeLocation = $row['admin']['id'] === $viewer_id || $row['organizing'] || $row['participating'];
+                    $finder = $canSeeLocation ? 'all' : 'byVisibility';
+                    $options = $canSeeLocation ? [] : ['visibility' => $row['location_visibility']];
                     $row['location'] = $this->Locations->find($finder, $options);
-                    unset($row['location_visibility']);
+                    unset($row['location_visibility'], $row['viewer_relations']);
                     return $row;
                 });
             });
@@ -291,20 +287,16 @@ class ActivitiesTable extends Table
             });
     }
 
-    public function findRelatedToUser(Query $query, array $options)
+    /**
+     * Finds all activities this user has participated (one of admin, organizer, participant).
+     * @param int $user_id
+     * @return Query
+     */
+    static public function findRelatedToUser($user_id)
     {
-        $user_id = $options['user_id'] ?? null;
-        if (!$user_id) {
-            throw new \InvalidArgumentException();
-        }
-
-        return $query
+        return TableRegistry::getTableLocator()->get('Activities')
             ->find('basicInfo')
-            ->leftJoin(['a' => 'activities_users'], [
-                'a.activity_id' => 'Activities.id',
-                'a.user_id' => $user_id,
-                "a.type IN ('Organizing', 'Participating')"
-            ])
+            ->where("$user_id in (admin_id, activities_users.user_id)")
             ->orderDesc('Activities.id')
             ->limit(10);
     }

@@ -24,6 +24,7 @@ class ApplicationsFixture extends TestFixture
         'status' => ['type' => 'string', 'length' => null, 'null' => false, 'default' => 'TBD', 'collate' => 'utf8mb4_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'created_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         'modified_at' => ['type' => 'timestamp', 'length' => null, 'null' => false, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
+        'deleted_at' => ['type' => 'timestamp', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         '_indexes' => [
             'user_id' => ['type' => 'index', 'columns' => ['user_id'], 'length' => []],
             'status' => ['type' => 'index', 'columns' => ['status'], 'length' => []],
@@ -55,8 +56,9 @@ class ApplicationsFixture extends TestFixture
                 'user_id' => 1,
                 'message' => 'Lorem ipsum dolor sit amet',
                 'status' => 'Lorem ipsum dolor sit amet',
-                'created_at' => 1543686963,
-                'modified_at' => 1543686963
+                'created_at' => 1544464766,
+                'modified_at' => 1544464766,
+                'deleted_at' => 1544464766
             ],
         ];
         parent::init();
