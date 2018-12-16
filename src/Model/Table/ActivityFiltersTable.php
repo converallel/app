@@ -9,6 +9,7 @@ use Cake\Validation\Validator;
 /**
  * ActivityFilters Model
  *
+ * @property \App\Model\Table\LocationsTable|\Cake\ORM\Association\HasOne $User
  * @property \App\Model\Table\LocationsTable|\Cake\ORM\Association\BelongsTo $Locations
  *
  * @method \App\Model\Entity\ActivityFilter get($primaryKey, $options = [])
@@ -37,6 +38,10 @@ class ActivityFiltersTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
+        $this->hasOne('User', [
+            'className' => 'Users',
+            'foreignKey' => 'user_id'
+        ]);
         $this->belongsTo('Locations', [
             'foreignKey' => 'location_id'
         ]);
@@ -83,12 +88,20 @@ class ActivityFiltersTable extends Table
             ->notEmpty('to_age');
 
         $validator
+            ->scalar('gender')
+            ->allowEmpty('gender');
+
+        $validator
+            ->scalar('sexual_orientation')
+            ->allowEmpty('sexual_orientation');
+
+        $validator
             ->boolean('matching_personality')
             ->notEmpty('matching_personality');
 
         $validator
-            ->boolean('verified_user')
-            ->notEmpty('verified_user');
+            ->boolean('verified_users')
+            ->notEmpty('verified_users');
 
         return $validator;
     }
@@ -102,6 +115,7 @@ class ActivityFiltersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
+        $rules->add($rules->existsIn(['id'], 'User'));
         $rules->add($rules->existsIn(['location_id'], 'Locations'));
 
         return $rules;

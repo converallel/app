@@ -146,23 +146,23 @@ class Initial extends AbstractMigration
             )
             ->create();
 
-        $this->table('activities_media')
+        $this->table('activities_files')
             ->addColumn('activity_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => false,
                 'signed' => false,
             ])
-            ->addColumn('media_id', 'integer', [
+            ->addColumn('file_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => false,
                 'signed' => false,
             ])
-            ->addPrimaryKey(['activity_id', 'media_id'])
+            ->addPrimaryKey(['activity_id', 'file_id'])
             ->addIndex(
                 [
-                    'media_id',
+                    'file_id',
                 ]
             )
             ->create();
@@ -235,30 +235,8 @@ class Initial extends AbstractMigration
             )
             ->create();
 
-        $this->table('activity_filter_education')
-            ->addColumn('filter_id', 'integer', [
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addColumn('education_id', 'integer', [
-                'default' => null,
-                'limit' => MysqlAdapter::INT_TINY,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['filter_id', 'education_id'])
-            ->addIndex(
-                [
-                    'education_id',
-                ]
-            )
-            ->create();
-
         $this->table('activity_filters')
             ->addColumn('id', 'integer', [
-                'autoIncrement' => true,
                 'default' => null,
                 'limit' => 11,
                 'null' => false,
@@ -311,13 +289,25 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
+            ->addColumn('gender', 'set', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+                'values' => ['Male', 'Female', 'Other'],
+            ])
+            ->addColumn('sexual_orientation', 'set', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+                'values' => ['Straight', 'Gay', 'Bisexual'],
+            ])
             ->addColumn('matching_personality', 'boolean', [
                 'default' => false,
                 'limit' => null,
                 'null' => false,
                 'signed' => false,
             ])
-            ->addColumn('verified_user', 'boolean', [
+            ->addColumn('verified_users', 'boolean', [
                 'default' => false,
                 'limit' => null,
                 'null' => false,
@@ -557,27 +547,6 @@ class Initial extends AbstractMigration
             )
             ->create();
 
-        $this->table('education')
-            ->addColumn('id', 'integer', [
-                'default' => null,
-                'limit' => MysqlAdapter::INT_TINY,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['id'])
-            ->addColumn('degree', 'string', [
-                'default' => null,
-                'limit' => 20,
-                'null' => false,
-            ])
-            ->addIndex(
-                [
-                    'degree',
-                ],
-                ['unique' => true]
-            )
-            ->create();
-
         $this->table('files')
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
@@ -593,24 +562,14 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
-            ->addColumn('server', 'string', [
+            ->addColumn('url', 'string', [
                 'default' => null,
-                'limit' => 30,
+                'limit' => 255,
                 'null' => false,
             ])
-            ->addColumn('directory', 'string', [
+            ->addColumn('mime_type', 'string', [
                 'default' => null,
-                'limit' => 50,
-                'null' => false,
-            ])
-            ->addColumn('name', 'string', [
-                'default' => null,
-                'limit' => 30,
-                'null' => false,
-            ])
-            ->addColumn('extension', 'string', [
-                'default' => null,
-                'limit' => 10,
+                'limit' => 20,
                 'null' => false,
             ])
             ->addColumn('size', 'integer', [
@@ -619,10 +578,27 @@ class Initial extends AbstractMigration
                 'null' => false,
                 'signed' => false,
             ])
+            ->addColumn('notes', 'text', [
+                'default' => null,
+                'limit' => null,
+                'null' => true,
+            ])
+            ->addColumn('published', 'boolean', [
+                'default' => false,
+                'limit' => null,
+                'null' => false,
+                'signed' => false,
+            ])
             ->addColumn('created_at', 'timestamp', [
                 'default' => 'CURRENT_TIMESTAMP',
                 'limit' => null,
                 'null' => false,
+            ])
+            ->addColumn('modified_at', 'timestamp', [
+                'default' => 'CURRENT_TIMESTAMP',
+                'limit' => null,
+                'null' => false,
+                'update' => 'CURRENT_TIMESTAMP',
             ])
             ->addColumn('deleted_at', 'timestamp', [
                 'default' => null,
@@ -840,44 +816,6 @@ class Initial extends AbstractMigration
             ->addIndex(
                 [
                     'status_code',
-                ]
-            )
-            ->create();
-
-        $this->table('media')
-            ->addColumn('id', 'integer', [
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addPrimaryKey(['id'])
-            ->addColumn('file_id', 'integer', [
-                'default' => null,
-                'limit' => 11,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addColumn('type', 'enum', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-                'values' => ['Image', 'Video']
-            ])
-            ->addColumn('position', 'integer', [
-                'default' => null,
-                'limit' => MysqlAdapter::INT_TINY,
-                'null' => false,
-                'signed' => false,
-            ])
-            ->addColumn('caption', 'string', [
-                'default' => null,
-                'limit' => 100,
-                'null' => true,
-            ])
-            ->addIndex(
-                [
-                    'file_id',
                 ]
             )
             ->create();
@@ -1325,12 +1263,6 @@ class Initial extends AbstractMigration
                 'null' => true,
                 'signed' => false,
             ])
-            ->addColumn('education_id', 'integer', [
-                'default' => null,
-                'limit' => MysqlAdapter::INT_TINY,
-                'null' => true,
-                'signed' => false,
-            ])
             ->addColumn('bio', 'string', [
                 'default' => null,
                 'limit' => 300,
@@ -1373,11 +1305,6 @@ class Initial extends AbstractMigration
             )
             ->addIndex(
                 [
-                    'education_id',
-                ]
-            )
-            ->addIndex(
-                [
                     'location_id',
                 ]
             )
@@ -1396,6 +1323,7 @@ class Initial extends AbstractMigration
                     'birthdate',
                     'gender',
                     'verified',
+                    'sexual_orientation',
                 ]
             )
             ->create();
@@ -1421,7 +1349,7 @@ class Initial extends AbstractMigration
             )
             ->update();
 
-        $this->table('activities_media')
+        $this->table('activities_files')
             ->addForeignKey(
                 'activity_id',
                 'activities',
@@ -1432,8 +1360,8 @@ class Initial extends AbstractMigration
                 ]
             )
             ->addForeignKey(
-                'media_id',
-                'media',
+                'file_id',
+                'files',
                 'id',
                 [
                     'update' => 'CASCADE',
@@ -1476,27 +1404,6 @@ class Initial extends AbstractMigration
             ->addForeignKey(
                 'user_id',
                 'users',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
-            ->update();
-
-        $this->table('activity_filter_education')
-            ->addForeignKey(
-                'education_id',
-                'education',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'NO_ACTION'
-                ]
-            )
-            ->addForeignKey(
-                'filter_id',
-                'activity_filters',
                 'id',
                 [
                     'update' => 'CASCADE',
@@ -1676,18 +1583,6 @@ class Initial extends AbstractMigration
             )
             ->update();
 
-        $this->table('media')
-            ->addForeignKey(
-                'file_id',
-                'files',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
-            ->update();
-
         $this->table('personality_compatibility')
             ->addForeignKey(
                 'level_id',
@@ -1807,15 +1702,6 @@ class Initial extends AbstractMigration
 
         $this->table('users')
             ->addForeignKey(
-                'education_id',
-                'education',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'SET_NULL'
-                ]
-            )
-            ->addForeignKey(
                 'location_id',
                 'locations',
                 'id',
@@ -1835,7 +1721,7 @@ class Initial extends AbstractMigration
             )
             ->addForeignKey(
                 'profile_image_id',
-                'media',
+                'files',
                 'id',
                 [
                     'update' => 'CASCADE',
@@ -1904,6 +1790,31 @@ class Initial extends AbstractMigration
             INSERT INTO activity_filters (id, from_age, to_age) VALUE (NEW.id, GREATEST(18, age - 8), age + 8);
           END;
         ");
+
+        $this->execute("
+CREATE FUNCTION great_circle_distance(lat1 FLOAT(10, 7), lng1 FLOAT(10, 7), lat2 FLOAT(10, 7), lng2 FLOAT(10, 7),
+                                      unit CHAR(1))
+  RETURNS DECIMAL(9, 4)
+  BEGIN
+    DECLARE theta FLOAT(10, 7);
+    DECLARE dist DOUBLE;
+    DECLARE miles DOUBLE;
+
+    SET theta = lng1 - lng2;
+    SET dist = SIN(RADIANS(lat1)) * SIN(RADIANS(lat2)) + COS(RADIANS(lat1)) * COS(RADIANS(lat2)) * COS(RADIANS(theta));
+    SET dist = ACOS(dist);
+    SET dist = DEGREES(dist);
+    SET miles = dist * 60 * 1.1515;
+
+    RETURN CASE UPPER(unit)
+           WHEN 'K'
+             THEN miles * 1.609344
+           WHEN 'N'
+             THEN miles * 0.8684
+           ELSE miles
+           END;
+  END;
+        ");
     }
 
     public function down()
@@ -1917,12 +1828,12 @@ class Initial extends AbstractMigration
             )
             ->save();
 
-        $this->table('activities_media')
+        $this->table('activities_files')
             ->dropForeignKey(
                 'activity_id'
             )
             ->dropForeignKey(
-                'media_id'
+                'file_id'
             )->save();
 
         $this->table('activities_users')
@@ -1939,14 +1850,6 @@ class Initial extends AbstractMigration
             )
             ->dropForeignKey(
                 'tag_id'
-            )->save();
-
-        $this->table('activity_filter_education')
-            ->dropForeignKey(
-                'education_id'
-            )
-            ->dropForeignKey(
-                'filter_id'
             )->save();
 
         $this->table('location_selection_histories')
@@ -2015,12 +1918,6 @@ class Initial extends AbstractMigration
                 'user_id'
             )->save();
 
-        $this->table('media')
-            ->dropForeignKey(
-                'file_id'
-            )
-            ->save();
-
         $this->table('personality_compatibility')
             ->dropForeignKey(
                 'level_id'
@@ -2069,9 +1966,6 @@ class Initial extends AbstractMigration
 
         $this->table('users')
             ->dropForeignKey(
-                'education_id'
-            )
-            ->dropForeignKey(
                 'location_id'
             )
             ->dropForeignKey(
@@ -2082,23 +1976,20 @@ class Initial extends AbstractMigration
             )->save();
 
         $this->table('activities')->drop()->save();
-        $this->table('activities_media')->drop()->save();
+        $this->table('activities_files')->drop()->save();
         $this->table('activities_tags')->drop()->save();
         $this->table('activities_users')->drop()->save();
-        $this->table('activity_filter_education')->drop()->save();
         $this->table('activity_filters')->drop()->save();
         $this->table('activity_itineraries')->drop()->save();
         $this->table('applications')->drop()->save();
         $this->table('blocked_users')->drop()->save();
         $this->table('contacts')->drop()->save();
         $this->table('devices')->drop()->save();
-        $this->table('education')->drop()->save();
         $this->table('files')->drop()->save();
         $this->table('http_status_codes')->drop()->save();
         $this->table('location_selection_histories')->drop()->save();
         $this->table('locations')->drop()->save();
         $this->table('logs')->drop()->save();
-        $this->table('media')->drop()->save();
         $this->table('personalities')->drop()->save();
         $this->table('personality_compatibility')->drop()->save();
         $this->table('personality_compatibility_levels')->drop()->save();
@@ -2110,5 +2001,6 @@ class Initial extends AbstractMigration
         $this->table('user_logins')->drop()->save();
         $this->table('users_tags')->drop()->save();
         $this->table('users')->drop()->save();
+        $this->execute("DROP FUNCTION IF EXISTS great_circle_distance;");
     }
 }

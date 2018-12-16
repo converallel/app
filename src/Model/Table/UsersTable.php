@@ -11,11 +11,12 @@ use Cake\Validation\Validator;
 /**
  * Users Model
  *
+ * @property \App\Model\Table\ActivityFiltersTable|\Cake\ORM\Association\HasOne $ActivityFilter
  * @property \App\Model\Table\LocationsTable|\Cake\ORM\Association\BelongsTo $Locations
+ * @property \App\Model\Table\FilesTable|\Cake\ORM\Association\BelongsTo $ProfileImageFile
  * @property \App\Model\Table\PersonalitiesTable|\Cake\ORM\Association\BelongsTo $Personalities
  * @property \App\Model\Table\EducationTable|\Cake\ORM\Association\BelongsTo $Education
  * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\HasMany $AdministratedActivities
- * @property \App\Model\Table\ActivityFiltersTable|\Cake\ORM\Association\HasMany $ActivityFilters
  * @property \App\Model\Table\ApplicationsTable|\Cake\ORM\Association\HasMany $Applications
  * @property \App\Model\Table\ContactsTable|\Cake\ORM\Association\HasMany $Contacts
  * @property \App\Model\Table\DevicesTable|\Cake\ORM\Association\HasMany $Devices
@@ -56,9 +57,17 @@ class UsersTable extends Table
         $this->setDisplayField('full_name');
         $this->setPrimaryKey('id');
 
+        $this->hasOne('ActivityFilter', [
+            'className' => 'ActivityFilters',
+            'foreignKey' => 'id'
+        ]);
         $this->belongsTo('Locations', [
             'foreignKey' => 'location_id',
             'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('ProfileImageFile', [
+            'className' => 'Files',
+            'foreignKey' => 'profile_image_id'
         ]);
         $this->belongsTo('Personalities', [
             'foreignKey' => 'personality_id'
@@ -69,9 +78,6 @@ class UsersTable extends Table
         $this->hasMany('AdministratedActivities', [
             'className' => 'Activities',
             'foreignKey' => 'admin_id'
-        ]);
-        $this->hasMany('ActivityFilters', [
-            'foreignKey' => 'user_id'
         ]);
         $this->hasMany('Applications', [
             'foreignKey' => 'user_id',
@@ -114,7 +120,7 @@ class UsersTable extends Table
         $this->belongsToMany('BlockedUsers', [
             'className' => 'Users',
             'foreignKey' => 'blocker_id',
-            'targetForeignKey' => 'user_id',
+            'targetForeignKey' => 'blocked_id',
             'joinTable' => 'blocked_users',
             'through' => 'BlockedUsers',
         ]);
@@ -194,11 +200,6 @@ class UsersTable extends Table
             ->notEmpty('sexual_orientation');
 
         $validator
-            ->scalar('profile_image_path')
-            ->maxLength('profile_image_path', 100)
-            ->allowEmpty('profile_image_path');
-
-        $validator
             ->scalar('bio')
             ->maxLength('bio', 300)
             ->allowEmpty('bio');
@@ -226,6 +227,7 @@ class UsersTable extends Table
         $rules->add($rules->isUnique(['email']));
         $rules->add($rules->isUnique(['phone_number']));
         $rules->add($rules->existsIn(['location_id'], 'Locations'));
+        $rules->add($rules->existsIn(['profile_image_id'], 'ProfileImageFile'));
         $rules->add($rules->existsIn(['personality_id'], 'Personalities'));
         $rules->add($rules->existsIn(['education_id'], 'Education'));
 
@@ -239,7 +241,8 @@ class UsersTable extends Table
      */
     public function findMinimumInfo(Query $query, array $options)
     {
-        return $query->select(['id', 'profile_image_path']);
+        return $query->select(['id', 'profile_image_url' => 'ProfileImageFile.url'])
+            ->contain('ProfileImageFile');
     }
 
     /**

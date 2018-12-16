@@ -9,16 +9,15 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $user_id
- * @property string $server
- * @property string $directory
- * @property string $name
- * @property string $extension
+ * @property string $url
+ * @property string $mime_type
  * @property int $size
+ * @property string|null $notes
  * @property \Cake\I18n\FrozenTime $created_at
  * @property \Cake\I18n\FrozenTime|null $deleted_at
  *
  * @property \App\Model\Entity\User $user
- * @property \App\Model\Entity\Media[] $media
+ * @property \App\Model\Entity\Activity[] $activities
  */
 class File extends Entity
 {
@@ -35,15 +34,9 @@ class File extends Entity
      */
     protected $_accessible = [
         'user_id' => true,
-        'server' => true,
-        'directory' => true,
-        'name' => true,
-        'extension' => true,
-        'size' => true
+        'url' => true,
+        'mime_type' => true,
+        'size' => true,
+        'notes' => true
     ];
-
-    protected function _getUrl()
-    {
-        return 'http://' . $this->server . DS . $this->directory . DS . $this->name . '.' . $this->extension;
-    }
 }

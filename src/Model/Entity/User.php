@@ -19,7 +19,7 @@ use Cake\ORM\Entity;
  * @property string $gender
  * @property string $sexual_orientation
  * @property int $location_id
- * @property string|null $profile_image_path
+ * @property int|null $profile_image_id
  * @property int|null $personality_id
  * @property int|null $education_id
  * @property string|null $bio
@@ -29,10 +29,10 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime|null $deleted_at
  *
  * @property \App\Model\Entity\Location $location
+ * @property \App\Model\Entity\Media $media
  * @property \App\Model\Entity\Personality $personality
  * @property \App\Model\Entity\Education $education
- * @property \App\Model\Entity\ActivityFilterEducation[] $activity_filter_education
- * @property \App\Model\Entity\ActivityFilter[] $activity_filters
+ * @property \App\Model\Entity\ActivityFilter $activity_filter
  * @property \App\Model\Entity\Application[] $applications
  * @property \App\Model\Entity\Contact[] $contacts
  * @property \App\Model\Entity\Device[] $devices
@@ -69,7 +69,7 @@ class User extends Entity
         'gender' => true,
         'sexual_orientation' => true,
         'location_id' => true,
-        'profile_image_path' => true,
+        'profile_image_id' => true,
         'personality_id' => true,
         'education_id' => true,
         'bio' => true,

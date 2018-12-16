@@ -10,7 +10,7 @@ use Cake\Validation\Validator;
  * Files Model
  *
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
- * @property \App\Model\Table\MediaTable|\Cake\ORM\Association\HasMany $Media
+ * @property \App\Model\Table\ActivitiesTable|\Cake\ORM\Association\BelongsToMany $Activities
  *
  * @method \App\Model\Entity\File get($primaryKey, $options = [])
  * @method \App\Model\Entity\File newEntity($data = null, array $options = [])
@@ -43,8 +43,10 @@ class FilesTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
-        $this->hasMany('Media', [
-            'foreignKey' => 'file_id'
+        $this->belongsToMany('Activities', [
+            'foreignKey' => 'file_id',
+            'targetForeignKey' => 'activity_id',
+            'joinTable' => 'activities_files'
         ]);
     }
 
@@ -61,33 +63,25 @@ class FilesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->scalar('server')
-            ->maxLength('server', 30)
-            ->requirePresence('server', 'create')
-            ->notEmpty('server');
+            ->scalar('url')
+            ->maxLength('url', 255)
+            ->requirePresence('url', 'create')
+            ->notEmpty('url');
 
         $validator
-            ->scalar('directory')
-            ->maxLength('directory', 50)
-            ->requirePresence('directory', 'create')
-            ->notEmpty('directory');
-
-        $validator
-            ->scalar('name')
-            ->maxLength('name', 30)
-            ->requirePresence('name', 'create')
-            ->notEmpty('name');
-
-        $validator
-            ->scalar('extension')
-            ->maxLength('extension', 10)
-            ->requirePresence('extension', 'create')
-            ->notEmpty('extension');
+            ->scalar('mime_type')
+            ->maxLength('mime_type', 20)
+            ->requirePresence('mime_type', 'create')
+            ->notEmpty('mime_type');
 
         $validator
             ->nonNegativeInteger('size')
             ->requirePresence('size', 'create')
             ->notEmpty('size');
+
+        $validator
+            ->scalar('notes')
+            ->allowEmpty('notes');
 
         return $validator;
     }

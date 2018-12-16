@@ -190,7 +190,7 @@ class AppController extends Controller
         if (is_array($query)) {
             $query = $this->Table->find('all', $query);
         }
-        $entities = $this->paginate($query, $options['pagination'] ?? []);
+        $entities = $query->all();
         if ($this->using_api) {
             return $this->setSerialized($entities);
         }

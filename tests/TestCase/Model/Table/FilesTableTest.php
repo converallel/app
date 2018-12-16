@@ -26,7 +26,7 @@ class FilesTableTest extends TestCase
     public $fixtures = [
         'app.Files',
         'app.Users',
-        'app.Media'
+        'app.Activities'
     ];
 
     /**

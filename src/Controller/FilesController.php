@@ -15,18 +15,9 @@ class FilesController extends AppController
     public function index()
     {
         $query = $this->Files->find()
+            ->select(['id,', 'url', 'size', 'notes', 'created_at'])
             ->where(['user_id' => $this->current_user->id])
-            ->orderDesc('created_at')
-            ->formatResults(function (\Cake\Collection\CollectionInterface $results) {
-                return $results->map(function ($row) {
-                    return [
-                        'id' => $row->id,
-                        'url' => $row->url,
-                        'size' => $row->size,
-                        'created_at' => $row->created_at
-                    ];
-                });
-            });
+            ->orderDesc('created_at');
         $this->load($query);
     }
 

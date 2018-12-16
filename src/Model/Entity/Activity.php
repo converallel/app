@@ -33,7 +33,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\ActivityItinerary[] $activity_itineraries
  * @property \App\Model\Entity\Application[] $applications
  * @property \App\Model\Entity\Review[] $reviews
- * @property \App\Model\Entity\Media[] $media
+ * @property \App\Model\Entity\File[] $files
  * @property \App\Model\Entity\Tag[] $tags
  */
 class Activity extends Entity
@@ -82,7 +82,7 @@ class Activity extends Entity
 
     public function isCreatableBy(User $user)
     {
-        return $this->admin_id === $user->id && !is_null($user->profile_image_path);
+        return $this->admin_id === $user->id && !is_null($user->profile_image_id);
     }
 
     public function isEditableBy(User $user)

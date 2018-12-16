@@ -20,7 +20,6 @@ class ReviewsController extends AppController
             ->where(['activity_id' => $activity_id])
             ->limit(5);
 
-        $options = ['pagination' => ['maxLimit' => 5]];
-        $this->load($query, $options);
+        $this->load($query);
     }
 }

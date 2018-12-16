@@ -21,7 +21,6 @@ class ApplicationsController extends AppController
             ->where(['activity_id' => $activity_id])
             ->limit(2);
 
-        $options = ['pagination' => ['maxLimit' => 2]];
-        $this->load($query, $options);
+        $this->load($query);
     }
 }

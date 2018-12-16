@@ -26,10 +26,9 @@ class UsersTableTest extends TestCase
     public $fixtures = [
         'app.Users',
         'app.Locations',
+        'app.Media',
         'app.Personalities',
         'app.Education',
-        'app.ActivityFilterEducation',
-        'app.ActivityFilters',
         'app.Applications',
         'app.Contacts',
         'app.Devices',

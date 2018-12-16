@@ -69,6 +69,8 @@ Router::scope('/', function (RouteBuilder $routes) {
         $routes->resources('Reviews', ['only' => ['index']]);
     });
 
+    $routes->resources('ActivityFilters', ['only' => ['view', 'update']]);
+
     $routes->resources('Applications', ['only' => ['create', 'update', 'delete']]);
 
     $routes->resources('Contacts', ['only' => ['create', 'update', 'delete']]);
@@ -79,8 +81,6 @@ Router::scope('/', function (RouteBuilder $routes) {
         'only' => ['view', 'create'],
         'actions' => ['view' => 'lookup'],
     ]);
-
-    $routes->resources('Media', ['only' => ['create', 'update', 'delete']]);
 
     $routes->resources('Reviews', ['only' => ['create', 'update', 'delete']]);
 

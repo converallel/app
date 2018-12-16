@@ -22,9 +22,13 @@ class ActivitiesController extends AppController
         $user_id = $this->current_user->id;
 
         $queryParams = $this->getRequest()->getQueryParams();
-        $isPair = $queryParams['is_pair'] ?? true;
-        $refresh = $queryParams['refresh'] ?? true;
+        $isPair = filter_var($queryParams['is_pair'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        $refresh = filter_var($queryParams['refresh'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $position = $queryParams['position'] ?? null; // id of the closest activity
+
+        if ($refresh && !$position) {
+            throw new BadRequestException();
+        }
 
         // get viewer filter
         $activityFilter = $this->ActivityFilters->find()
@@ -35,7 +39,7 @@ class ActivitiesController extends AppController
             ])
             ->selectAllExcept($this->ActivityFilters, ['id', 'user_id'])
             ->contain(['Locations'])
-            ->where(['user_id' => $user_id])->first();
+            ->where(['ActivityFilters.id' => $user_id])->first();
 
         if (!$activityFilter['latitude'] || !$activityFilter['longitude']) {
             throw new BadRequestException('Unable to load activities because location is not set.');
@@ -104,7 +108,6 @@ class ActivitiesController extends AppController
         // find activities
         $query = $this->Activities
             ->find('basicInfo')
-            ->notMatching('Admin.BlockedUsers')
             ->where([
                 'start_date >=' => $startDate,
                 'is_pair' => $isPair,
@@ -115,30 +118,70 @@ class ActivitiesController extends AppController
                 'Activities.id' => 'DESC'
             ]);
 
-        if (!$refresh) {
-            $query->limit(10);
-        }
-
         if ($endDate) {
             $query->where(['start_date <=' => $endDate]);
         }
 
-        $closestActivityStartDate = null;
-
         if ($position) {
+            $positionActivityStartDate = $this->Activities->find()
+                ->select('start_date')->where(['id' => $position]);
             $query->where([
                 'OR' => [
                     'AND' => [
-                        'Activities.start_date' => $closestActivityStartDate,
+                        'Activities.start_date' => $positionActivityStartDate,
                         'Activities.id ' . ($refresh ? '>' : '<') => $position,
                     ],
-                    'Activities.start_date ' . ($refresh ? '<' : '>') => $closestActivityStartDate
+                    'Activities.start_date ' . ($refresh ? '<' : '>') => $positionActivityStartDate
                 ]
             ]);
         }
 
-        $options = ['pagination' => ['maxLimit' => 10]];
-        $this->load($query, $options);
+        // users
+        $query->where([
+            'Admin.birthdate >=' => $now->copy()->subYears($activityFilter['to_age']),
+            'Admin.birthdate <=' => $now->copy()->subYears($activityFilter['from_age'])
+        ]);
+
+        if ($activityFilter['verified_users']) {
+            $query->where(['Admin.verified' => true]);
+        }
+
+        $gender = explode(',', $activityFilter['gender']);
+        $sexual_orientation = explode(',', $activityFilter['sexual_orientation']);
+        if ($gender === ['']) {
+            $gender = [];
+        }
+        if ($sexual_orientation === ['']) {
+            $sexual_orientation = [];
+        }
+
+        if ($gender) {
+            $query->whereInList('Admin.gender', $gender);
+        }
+
+        if ($sexual_orientation) {
+            $query->whereInList('Admin.sexual_orientation', $sexual_orientation);
+        }
+
+        if (!$refresh) {
+            $query->limit(10);
+        }
+
+        // location
+        $distance = $activityFilter['distance'];
+        $latitude = $activityFilter['latitude'];
+        $longitude = $activityFilter['longitude'];
+        $deltaLatitudeDegrees = rad2deg($distance / 3959);
+        $deltaLongitudeDegrees = rad2deg(asin($distance / 3959) / cos(deg2rad($latitude)));
+        $query->where([
+            'latitude >=' => $latitude - $deltaLatitudeDegrees,
+            'latitude <=' => $latitude + $deltaLatitudeDegrees,
+            'longitude >=' => $longitude - $deltaLongitudeDegrees,
+            'longitude <=' => $longitude + $deltaLongitudeDegrees,
+            "great_circle_distance($latitude, $longitude, latitude, longitude, 'M') <= $distance"
+        ]);
+
+        $this->load($query);
     }
 
     public function view($id = null)

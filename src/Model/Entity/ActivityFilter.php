@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -15,13 +16,16 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenDate|null $end_date
  * @property int $from_age
  * @property int $to_age
+ * @property string|null $gender
+ * @property string|null $sexual_orientation
  * @property bool $matching_personality
- * @property bool $verified_user
+ * @property bool $verified_users
  *
  * @property \App\Model\Entity\Location $location
  */
 class ActivityFilter extends Entity
 {
+    use AuthorizationTrait;
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -41,8 +45,19 @@ class ActivityFilter extends Entity
         'end_date' => true,
         'from_age' => true,
         'to_age' => true,
+        'gender' => true,
+        'sexual_orientation' => true,
         'matching_personality' => true,
-        'verified_user' => true,
-        'location' => true
+        'verified_users' => true
     ];
+
+    public function isViewableBy(User $user)
+    {
+        return $this->id === $user->id;
+    }
+
+    public function isEditableBy(User $user)
+    {
+        return $this->id === $user->id;
+    }
 }

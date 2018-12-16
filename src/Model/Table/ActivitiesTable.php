@@ -18,7 +18,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\ActivityItinerariesTable|\Cake\ORM\Association\HasMany $ActivityItineraries
  * @property \App\Model\Table\ApplicationsTable|\Cake\ORM\Association\HasMany $Applications
  * @property \App\Model\Table\ReviewsTable|\Cake\ORM\Association\HasMany $Reviews
- * @property \App\Model\Table\MediaTable|\Cake\ORM\Association\BelongsToMany $Media
+ * @property \App\Model\Table\FilesTable|\Cake\ORM\Association\BelongsToMany $Files
  * @property \App\Model\Table\TagsTable|\Cake\ORM\Association\BelongsToMany $Tags
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Followers
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsToMany $Organizers
@@ -74,10 +74,10 @@ class ActivitiesTable extends Table
             'cascadeCallbacks' => true,
             'dependent' => true
         ]);
-        $this->belongsToMany('Media', [
+        $this->belongsToMany('Files', [
             'foreignKey' => 'activity_id',
-            'targetForeignKey' => 'media_id',
-            'joinTable' => 'activities_media'
+            'targetForeignKey' => 'file_id',
+            'joinTable' => 'activities_files'
         ]);
         $this->belongsToMany('Tags', [
             'foreignKey' => 'activity_id',
@@ -223,23 +223,37 @@ class ActivitiesTable extends Table
                 'applied' => 'applications.user_id IS NOT NULL',
                 'viewer_relations' => $query->func()->JSON_ARRAYAGG(['activities_users.type' => 'identifier']),
             ])
+            ->from([
+                'Viewer' => 'users',
+                'Activities' => 'activities',
+            ])
             ->contain([
                 'Admin' => ['finder' => 'basicInfo'],
+                'Locations',
                 'Tags',
                 'Users' => function (Query $query) {
                     return $query->find('minimumInfo')
-                        ->where("type IN ('Organizing', 'Participating')")
+                        ->where("ActivitiesUsers.type IN ('Organizing', 'Participating')")
                         ->orderDesc('rating')
                         ->limit(5);
                 }
             ])
             ->leftJoin('applications', [
-                'activities.id = applications.activity_id',
+                'Activities.id = applications.activity_id',
                 "applications.user_id = $viewer_id"
             ])
             ->leftJoin('activities_users', [
-                'activities_users.activity_id = activities.id',
+                'activities_users.activity_id = Activities.id',
                 "activities_users.user_id = $viewer_id",
+            ])
+            ->leftJoin('blocked_users', [
+                'blocked_users.blocker_id' => $viewer_id,
+                'blocked_users.blocked_id = admin_id',
+            ])
+            ->where([
+                'Viewer.id' => $viewer_id,
+                "IF(Viewer.verified, TRUE, Admin.verified = FALSE)",
+                'blocked_users.blocked_id IS NULL'
             ])
             ->group('Activities.id')
             ->formatResults(function (CollectionInterface $results) use ($viewer_id) {
